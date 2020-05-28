@@ -1,0 +1,2929 @@
+<style type="text/css">
+	html, body { margin:0px; padding:0px }
+
+	canvas {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: #101010;
+	}
+</style>
+
+<canvas id="canvas"></canvas>
+
+<script type="text/javascript">
+	// JS utility functions
+	function isdef(x) {
+		return typeof(x) != 'undefined';
+	}
+	function toHex(x) {
+		return (x>15)?x.toString(16):'0'+x.toString(16);
+	}
+</script>
+
+<!-- Game data -->
+<script type="text/javascript">
+	// Events
+	const EVENTS_DATA = [
+		{
+			name: 'startEvent',
+			special: true
+		},
+		{
+			name: 'LeviathanEvent',
+			text: "You don't recall waking up, but you are nonetheless awake, and you don't recall being awake before now. You don't recall having memories either, but, if you did, they're no longer present. Amidst the carefully arranged dials, knobs, and pilot lights around you, you find a set of instruments that, together, provide you with a comprehensive representation of your ship's surroundings. The comfort of the well-worn seat and your ability to read each of the heavily faded labels on the controls seem to indicate that this ship must have been yours for a very long time.",
+			next: 'TutorialEvent'
+		},
+		{
+			name: 'VedetteEvent',
+			text: "You don't recall waking up, but you are nonetheless awake, and you don't recall being awake before now. You don't recall having memories either, but, if you did, they're no longer present. Your seat almost imperceptably adjusts to your movements as you look around in search of something that could tell you why you're here, or what you ought to do. You find none, leaving you in much the same position as every other sapient creature in the universe.",
+			next: 'TutorialEvent'
+		},
+		{
+			name: 'CorvetteEvent',
+			text: "You don't recall waking up, but you are nonetheless awake, and you don't recall being awake before now. You don't recall having memories either, but, if you did, they're no longer present. You look over the plastic monitor in front of you, which displays a utilitarian two-dimensional representation of the surrounding celestial bodies. You can't help but recognize that you are alone here, and your mind fails to provide you with any knowledge of who, if anyone, might be out in the wider universe.",
+			next: 'TutorialEvent'
+		},
+		{
+			name: 'TutorialEvent',
+			text: "You implicitly understand that you can turn your ship with the A and D keys, thrust forwards with the W key, and brake with the S key. Furthermore, you know that the E key can be used to interact with planets, or to trigger a jump when you are sufficiently far from the center of a system, and that the mouse, its left button, and its right button can be used to aim your ship's weapons, fire its primary weapons, and fire its secondary weapons respectively. Finally, it comes naturally to you that the spacebar can be used to toggle the IFF settings on your weaponry, which prevent it from targeting those that are not hostile to you."
+		}
+	];
+	// Factions, ships, and weapons
+	const FACTIONS_DATA = [
+		{
+			name: 'Player',
+			color: '#FFFFFF',
+			shipTable: [{
+				name: 'STAR',
+				shape: [[0,10],[2.5,2.5],[10,0],[2.5,-2.5],[0,-10],[-2.5,-2.5],[-10,0],[-2.5,2.5],[0,10]],
+				weaponSlots: []
+			}]
+		},
+		{
+			name: 'Grey Republic',
+			color: '#AAAAAA',
+			relationships: {
+				'Golden Empire': -100
+			},
+			conquestText: 'The previous inhabitants of this world have long since fled. A small cadre of combat engineers maintains the vital industry and defensive emplacements.', // The text shown on worlds that they have conquered.
+			shipTable: [ // 3 ships. Fighter; Bomber; Capship.
+				{
+					name: "Leviathan",
+					desc: "The design of the X-5 Leviathan gunship has seen countless revisions and adaptations over its decades of service. While several attempts have been made to replace it, the costs of reorganizing the Republic's military around a new main attack craft have thus far outweighed the potential benefits, especially given the Leviathan's inarguable effectiveness against even the most novel threats.",
+					tier:0,
+					maxHealth: 200,
+					regen: .2,
+					max_vel: 4,
+					acceleration: .07,
+					turn_rate: .1,
+					shape: [[10,-5],[11.0625,-6.25],[11.1875,-9],[10.3125,-11],[8.8125,-13.5],[7.6875,-13.625],[7.6875,-18.5],[8.9375,-25],[8.9375,-32.5],[8.0625,-36.125],[7.8125,-38.875],[6.9375,-40.25],[4.8125,-39.875],[2.8125,-37.375],[0.8125,-36.625],[-0.4375,-34.5],[-1.5625,-21.375],[-3.6875,-7],[-3.1875,-5],[-2.0625,-3.625],[-0.0625,-3.75],[-0.4375,-2.5],[-0.4375,-0.625],[0.0625,-0.625],[0,0],[0,0],[0.0625,0.625],[-0.4375,0.625],[-0.4375,2.5],[-0.0625,3.75],[-2.0625,3.625],[-3.1875,5],[-3.6875,7],[-1.5625,21.375],[-0.4375,34.5],[0.8125,36.625],[2.8125,37.375],[4.8125,39.875],[6.9375,40.25],[7.8125,38.875],[8.0625,36.125],[8.9375,32.5],[8.9375,25],[7.6875,18.5],[7.6875,13.625],[8.8125,13.5],[10.3125,11],[11.1875,9],[11.0625,6.25],[10,5],[10,-5],[10,-5]],
+					engines: [
+						[.5,0]
+					],
+					weaponSlots: [
+						{
+							location: [11.1875,-9],
+							angle: 0,
+							arc: 1.5,
+							secondary: false
+						},
+						{
+							location: [11.1875,9],
+							angle: 0,
+							arc: 1.5,
+							secondary: false
+						}
+					]
+				},
+				{
+					name: "Tyrant",
+					desc: "The X-23 Tyrant Weapons Platform is emblematic of the Republic's military doctrine. Equipped with a pair of heavy weapons alongside a forward gun mount, it is armed well enough to open a battle by inflicting severely disproportionate casualties on the enemy, and well-protected enough to ensure that the ensuing cleanup operation will go smoothly.",
+					tier:1,
+					maxHealth: 350,
+					regen: .5,
+					max_vel: 3.9,
+					acceleration: .05,
+					turn_rate: .05,
+					shape: [[19.375,0],[10,7.5],[10,13.125],[4.375,11.25],[-8.75,18.75],[-10.625,18.75],[-10.625,5.625],[-6.875,1.875],[-6.875,0],[-6.875,0],[-6.875,-1.875],[-10.625,-5.625],[-10.625,-18.75],[-8.75,-18.75],[4.375,-11.25],[10,-13.125],[10,-7.5],[19.375,0],[19.375,0]],
+					engines: [
+						[-7.5,0]
+					],
+					weaponSlots: [
+						{
+							location: [10,-13.125],
+							angle: -.55,
+							arc: 1.4,
+							secondary: true
+						},
+						{
+							location: [19.375,0],
+							angle: 0,
+							arc: .4,
+							secondary: false
+						},
+						{
+							location: [10,13.125],
+							angle: .55,
+							arc: 1.4,
+							secondary: true
+						}
+					]
+				}
+			],
+			weaponTable: {
+				primary: [
+					{
+						name: "Chaingun",
+						desc: "The Republic's GX-38 chaingun uses a combination of magnetic and chemical propulsion systems to fire large numbers of small, armor-penetrating projectiles at speeds sufficient to pose a threat to virtually anything.",
+						projectileCount: 1,
+						accuracy: .1, // Max potential deviation from the firing angle
+						rof: 5, // Frames between shots
+						// Ammunition and reloading
+						clipSize: 20, // defaults to 1
+						reloadRate: 10, // defaults to rof
+						incReload: true, // defaults to false
+						firingResets: true, // defaults to true
+						projectile: { // Unused traits are left undefined
+							damage: 5,
+							damageVar: 2, // Max potential deviation from base damage
+							range: 700,
+							speed: 10
+						}
+					}
+				],
+				secondary: [
+					{
+						name: "Missile Pod",
+						desc: "The ME-19 rapid-fire guided missile pod was designed as a means of quickly destroying entire squadrons of opposing fighters at the outset of a battle. While it does not quite live up to this lofty goal, and vessels fielding this weapon often require point defenses or significant fighter escort, it remains one of the most frightening weapons the Republic's enemies have yet encountered.",
+						projectileCount: 1,
+						accuracy: 1/6*Math.PI,
+						rof: 20, 
+						clipSize: 5,
+						reloadRate: 200,
+						incReload: false,
+						firingResets: false,
+						projectile: { 
+							damage: 25,
+							damageVar: 5,
+							AoE: 50, // AOE applies damage to all enemies in the blast radius.
+							lockingAngle: 2/3*Math.PI, // Weapon will lock onto the enemy with the lowest angular dist.
+							trackingRate: .05, // Weapon will track the locked target at this rate.
+							range: 900,
+							speed: 7
+						}
+					}
+				]
+			}
+		},
+		{
+			name: 'Golden Empire',
+			color: '#FFAA22',
+			relationships: {
+				'Grey Republic': -100
+			},
+			conquestText: 'The streets of this world are virtually empty, swept over by an occasional patrol. The residents that remain here spend their time indoors whenever possible, and recorded speeches in a foreign, almost alien tongue echo through the walls of every building.',
+			shipTable: [ // 3 ships. Fighter; Bomber; Capship.
+				{
+					name: "Vedette",
+					desc: "The Vedette was the workhorse of the Imperial people, before the scarlet revolution. Nowadays, the vast stocks of these vessels are slowly running dry.",
+					tier: 0,
+					maxHealth: 75,
+					regen: .1,
+					max_vel: 5,
+					acceleration: .1,
+					turn_rate: .15,
+					shape: [[14.375,0],[9.375,6.25],[3.125,3.75],[2.59375,6.1875],[1.34375,4],[0.625,3.75],[-0.28125,16.625],[-1.65625,16.875],[-3.125,8.75],[-6.78125,6.6875],[-6.875,2.5],[-5.96875,1.375],[-6.03125,0],[-6.03125,0],[-5.96875,-1.375],[-6.875,-2.5],[-6.78125,-6.6875],[-3.125,-8.75],[-1.65625,-16.875],[-0.28125,-16.625],[0.625,-3.75],[1.34375,-4],[2.59375,-6.1875],[3.125,-3.75],[9.375,-6.25],[14.375,0],[14.375,0]],
+					engines: [
+						[-6.5,0]
+					],
+					weaponSlots: [
+						{
+							location: [14.375,0],
+							angle: 0,
+							arc: 1.7,
+							secondary: false
+						}
+					]
+				},
+				{
+					name: "Avant-Courier",
+					desc: "Until recently, the formidable, agile Avant-Courier made up the core of the Imperial Remnant fleets. While a few core facilities are still believed to have the means to produce them, the conflict with the Federation had already stretched them thin by the time some of the last complete Avant-Courier squadrons were deployed in a futile attempt to stem the bleeding brought on by one warlord's ill-considered invasion of the Republic.",
+					tier: 1,
+					maxHealth: 500,
+					regen: .25,
+					max_vel: 2.5,
+					acceleration: .1,
+					turn_rate: .05,
+					shape: [[30.9375,0],[27.3515625,1.8984375],[9.7734375,4.1484375],[12.3046875,8.9296875],[8.4375,8.4375],[0,8.4375],[-4.4296875,10.8984375],[-2.8125,14.0625],[5.8359375,15.6796875],[14.2734375,14.8359375],[25.2421875,15.6796875],[16.6640625,19.6171875],[6.3984375,19.1953125],[1.0546875,21.4453125],[-6.3984375,19.7578125],[-12.1640625,20.6015625],[-16.875,16.875],[-19.6875,8.4375],[-22.5,5.625],[-21.1640625,3.0234375],[-20.0390625,1.7578125],[-19.6875,0],[-19.6875,0],[-20.0390625,-1.7578125],[-21.1640625,-3.0234375],[-22.5,-5.625],[-19.6875,-8.4375],[-16.875,-16.875],[-12.1640625,-20.6015625],[-6.3984375,-19.7578125],[1.0546875,-21.4453125],[6.3984375,-19.1953125],[16.6640625,-19.6171875],[25.2421875,-15.6796875],[14.2734375,-14.8359375],[5.8359375,-15.6796875],[-2.8125,-14.0625],[-4.4296875,-10.8984375],[0,-8.4375],[8.4375,-8.4375],[12.3046875,-8.9296875],[9.7734375,-4.1484375],[27.3515625,-1.8984375],[30.9375,0],[30.9375,0]],
+					engines: [
+						[-20.5,0]
+					],
+					weaponSlots: [
+						{
+							location: [25.2421875, -15.6796875],
+							angle: 0,
+							arc: .55,
+							secondary: true
+						},
+						{
+							location: [25.2421875, 15.6796875],
+							angle: 0,
+							arc: .55,
+							secondary: true
+						}
+					]
+				}
+			],
+			weaponTable: {
+				primary: [
+					{
+						name: "Fragmentation Gun",
+						desc: "The fragmentation gun is the mainstay of the Imperial Remnant's arsenal. An intricate mechanism allows its shell to fragment upon hitting a target, posing an especially severe threat to tightly grouped squadrons.",
+						projectileCount: 1,
+						accuracy: .07,
+						rof: 12, 
+						projectile: { 
+							damage: 10,
+							damageVar: 2,
+							range: 700,
+							speed: 6,
+							fragments: {
+								count: 4,
+								spread: .6,
+								projectile: {
+									damage: 5,
+									damageVar: 2,
+									range: 100,
+									speed: 6
+								}
+							}
+						}
+					}
+				],
+				secondary: [
+					{
+						name: "Railgun",
+						desc: "The venerable railgun, like all Imperial Remnant weapons, relies on technology whose core mode of operations is beyond contemporary man. Despite this, its core design, drawn up in far better times, is simple and reliable enough that it is one of the only Imperial weapons that is still being produced in significant quantities.",
+						projectileCount: 1,
+						accuracy: 0,
+						rof: 30, 
+						projectile: { 
+							damage: 15,
+							damageVar: 2,
+							range: 900,
+							speed: 15,
+							pierce: .5
+						}
+					}
+				]
+			}
+		}
+	];
+	// Systems
+	const SYSTEMS_DATA = [
+		// 
+		{
+			name: "Vagrant",
+			sunColor: '#FFAABB',
+			sunRadius: 225,
+			location: [480, 500],
+			connections: ['Renascence'],
+			jumpRadius: 1200,
+			planets: [
+				{
+					name: "Vagrant I", radius: 100, orbit: 750,
+					desc: "Vagrant I's surface is eerily still. The lack of atmosphere means that, even atop its tallest mountain ranges, there is no wind whatsoever. Occasionally, you come across damp, shallow caverns, their walls thinly coated with a faintly glowing white moss."
+				}
+			]
+		},
+		/*
+					
+			Golden Empire Systems
+			
+		*/
+		// Renascence
+		// The headquarters of the warlord responsible for the invasion of the Republic
+		{
+			name: "Renascence",
+			sunColor: '#FFFFAA',
+			sunRadius: 350,
+			location: [710, 475],
+			connections: ["Prolegomenon", 'Vagrant'],
+			jumpRadius: 2000,
+			planets: [
+				{
+					name: "Renascence I", radius: 30, orbit: 400,
+					desc: "Renascence I was clearly once inhabited. Faded white structures peek through the surface of the world, their purpose lost to time, but their aesthetic clearly practical in nature. A number of empty settlements dot the world, though the wear of time has ensured that barely anything remains of the oldest of them."
+				},
+				{
+					name: "Renascence II", radius: 20, orbit: 800,
+					desc: "A few thousand Imperials still live on Renascence II. Among the handful of them barely lucid enough to acknowledge your presence, there is a sense of quiet desperation. The thick metal plates at the edge of the housing facilities have long since broken open - a Republic or Federation human would not be able to breathe here.",
+					initialFaction: "Golden Empire",
+					industrialCapacity: 0,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [1, 0, 0]
+						}
+					]
+				},
+				{
+					name: "Renascence III", radius: 80, orbit: 1050,
+					desc: "Renascence III remains a fairly large, functional settlement. While the ability to maintain the mechanisms that allow their minds to function has faded from Imperial memory, the decline is slowest here. The bleeding from the initial stages of the war with the Republic has slowed here, with less essential personnel now being used to crew the nearby warlord's fleets.",
+					initialFaction: "Golden Empire",
+					industrialCapacity: 3,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [4, 0, 0]
+						}
+					]
+				},
+				{
+					name: "Renascence IIII", radius: 25, orbit: 1200,
+					desc: "Attempts have clearly been made to settle Renascence IIII. Every so often, you notice a clear, exigent flaw in an outpost you explore, ranging in severity from a lack of agriculture to a major structural oversight. In the case of the latter, a number of heavily eroded skeletons can be found amongst the wreckage."
+				},
+				{
+					name: "Renascence V", radius: 90, orbit: 1700,
+					desc: "The palatial cities of Renascence V stand above a layer of silver, shining clouds. As you fly in to observe more closely, you notice that all of these but the closest to the world's capital are uninhabited, the tallest buildings plated over with thin sheets of gleaming metal.",
+					initialFaction: "Golden Empire",
+					industrialCapacity: 3,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 1, 0]
+						},
+						{
+							defensive: 0,
+							shipCapacities: [4, 0, 0]
+						}
+					]
+				}
+			]
+		},
+		// Prolegomenon
+		// A GE system that was uninhabited until the extended conflict with the GR.
+		{
+			name: "Prolegomenon",
+			sunColor: '#330000',
+			sunRadius: 250,
+			location: [700, 520], // Location in the galaxy
+			connections: ["Horizon's Call", "Renascence"], // Names of systems that can be jumped to from here
+			jumpRadius: 2000,
+			planets: [
+				{
+					name: "Prolegomenon I", radius: 100, orbit: 800,
+					desc: "The enormous supply base established at Prolegomenon I tells the story of the war with the Republic quite well. Vast, once-full hangers meant for Vedettes and Avant-Couriers gradually bleed their remaining ships, surrounded by graying celebretory banners. The men crewing the facility are more lucid than most of the Empire's remaining population. Unlike their husked compatriots, the death in their eyes is all too human.",
+					initialFaction: "Golden Empire",
+					industrialCapacity: 2, // Used to build ships. The ship built next is decided by min((count+1)/max). Costs: 1=fighter, 3=bomber, 10=capital
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [3, 1, 0]
+						}
+					]
+				},
+				{
+					name: "Prolegomenon II", radius: 40, orbit: 1340,
+					desc: "Though the surface of Prolegomenon II is green, the planet is utterly lifeless. Storms of copper dust obfuscate the sky and sweep aimlessly across the vast, empty plains.", moons: [
+						{
+							name: "Prolegomenon IIa", radius: 10, orbit: 100,
+							desc: "The rocky, crater-filled moon of Prolegomenon II features very little that would be of interest. Even if the Empire had not fallen long before this system was discovered, it is unlikely that much attention would have been paid to Prolegomenon IIa."
+						}
+					]
+				},
+				{
+					name: "Prolegomenon III", radius: 15, orbit: 1800,
+					desc: "Prolegomenon III sits at the edge of the system, completely lifeless. Sheltering your ship behind the skeleton of a Pine-Class Cruiser, you can see the occasional flake of frozen carbon dioxide falling from the sky. The mountainous landscape and dim lighting reduce your field of view, but a sensor sweep indicates that a handful of shipwrecks dot the planet, likely due to its use as a navigation point by Republic strike groups."
+				}
+			]
+		},
+
+		/*
+
+			Grey Republic Systems
+
+		*/
+		// Horizon's Call
+		// Agricultural colony, 
+		{
+			name: "Horizon's Call",
+			sunColor: '#8810AA',
+			sunRadius: 300,
+			location: [540, 770],
+			connections: ['Prolegomenon', 'Resolution'],
+			jumpRadius: 2400,
+			planets: [
+				{
+					name: "Horizon's Call I", radius: 30, orbit: 700,
+					desc: "In response to the violent first contact with the Imperial Remnant, the Republic quickly moved to militarize Horizon's call. While it is unlikely that the Empire would have any interest in Horizon's Call I, Republic generals, not knowing what to expect from the first foreign enemy they had faced, ordered that it be fortified.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 1,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 0, 0]
+						}
+					]
+				},
+				{name: "Horizon's Call II", radius: 70, orbit: 1160,
+					desc: "Horizon's Call II was once an agricultural colony. With almost a third of the settlers it once housed taken away by the war, everywhere you go feels distinctly empty. Still, the coarse, graying settlers you occasionally spot going about their work seem undaunted, ready to see their home through its trials, or else perish alongside it.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 1,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 1, 0]
+						}
+					]
+				},
+				{name: "Horizon's Call III", radius: 60, orbit: 1600,
+					desc: "A skeleton crew in a deeply buried bunker maintains the early warning systems and outer defences of the Horizon's Call system. A disproportionately large factory complex, heavily automated, houses a number of incomplete frames that will soon become Leviathan gunships.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 1,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [3, 0, 0]
+						}
+					]
+				}
+			]
+		},
+		// Resolution
+		// One of two core military systems
+		{
+			name: "Resolution",
+			sunColor: '#CC5522',
+			sunRadius: 500,
+			location: [490, 820],
+			connections: ["Horizon's Call","Daylight"],
+			jumpRadius: 4000,
+			planets: [
+				{
+					name: "Resolution I", radius: 85, orbit: 950,
+					desc: "Resolution was one of the first systems colonized by the Republic. Since its establishment, the tremendous fortress network on Resolution I has served as a vital supply point for the nearby colonies, and a bulwark against the unknown. It is Resolution I that acts as the Republic's command center in the war against the Imperial Remnant.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 3,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [4, 3, 0]
+						},
+						{	// Non-defensive fleets will build to capacity, then move to invade the nearest hostile system
+							defensive: 0,
+							shipCapacities: [3, 1, 0]
+						}
+					], 
+					moons: [
+						{
+							name: "Resolution Ia", radius: 14, orbit: 150,
+							desc: "The grim, spartan outpost on Resolution Ia is a testament to the Republic's values. Soldiers in deep gray uniforms man a densely packed array of consoles, carrying out tasks in a variety of military and scientific domains.",
+							initialFaction: "Grey Republic",
+							industrialCapacity: 1,
+							fleets: [
+								{
+									defensive: 1,
+									shipCapacities: [1, 0, 0]
+								}
+							]
+						}
+					]
+				},
+				{name: "Resolution II", radius: 40, orbit: 1600,
+					desc: "The Resolution II research facility is a sight to behold. Enormous, heavily reinforced stone buildings dot the landscape, decorated with tall columns and striking statues. Within them, some of the Republic's best engineers use the technology gleamed from the nearby conflict to develop the next generation of weapons to be mounted on their Leviathan and Tyrant-class attack ships. It's said that, every so often, careful observers can spot sleek, uncanny aircraft passing them by as they land.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 1,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 2, 0]
+						}
+					]
+				},
+				{name: "Resolution III", radius: 20, orbit: 3800,
+					desc: "The underground facility tasked with maintaining early warning capability in the Resolution system is manned by a skeleton crew. The men standing watch have a grim determination about them - they know that, in the event of an invasion, help would be unlikely to reach them in time.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 1,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 0, 0]
+						}
+					]
+				}
+			]
+		},
+		// Daylight
+		{
+			name: "Daylight",
+			sunColor: '#AAAA00',
+			sunRadius: 150,
+			location: [550, 840],
+			connections: ['Resolution'],
+			jumpRadius: 2600,
+			planets: [
+				{
+					name: "Daylight I", radius: 60, orbit: 950,
+					desc: "Daylight I was, like Horizon's Call II, set up as an agricultural colony that would support the colonization of the outer frontier of the Republic. While the idyllic, pastoral planet and its population have been largely untouched by the war, its garrison has been substantially increased. The idea of hostile civilizations lurking just out of view, previously an academic matter, has become an ever-present concern.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 1,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [3, 0, 0]
+						}
+					]
+				},
+				{name: "Daylight II", radius: 60, orbit: 1700,
+					desc: "Daylight II was intended as a secondary colony in the system, supported by the settlement on Daylight I, and built up to support further outward exploration. The war with the Imperial Remnant routed resources and personnel away from expansion efforts, and the half-built settlements on this world now sit uninhabited."
+				}
+			]
+		}
+	];
+</script>
+
+<!-- Math -->
+<script type="text/javascript">
+	
+	function ad(ang) {
+		return ang * 180 / Math.PI;
+	}
+	function pt(mag, ang) {
+		y = Math.sin(ang) * mag;
+		x = Math.cos(ang) * mag;
+		return [x,y];
+	}
+	function pt_add(p1, p2) {
+		return [p1[0]+p2[0], p1[1]+p2[1]];
+	}
+	function pt_sub(p1, p2) {
+		return [p1[0]-p2[0], p1[1]-p2[1]];
+	}
+	function pt_mul(p, m) {
+		return [p[0]*m, p[1]*m];
+	}
+	function get_mag(p) {
+		return (p[0]**2+p[1]**2)**.5;
+	}
+	function get_ang(p) {
+		var a = Math.atan2(p[1], p[0]);
+		if (a < 0) { a += 2 * Math.PI; }
+		return a;
+	}
+	function pt_mag(p, m) {
+		ang = get_ang(p);
+		return pt(m, ang);
+	}
+	function pt_addAng(p, a) {
+		mag = get_mag(p);
+		ang = get_ang(p);
+		ang += a;
+		return pt(mag, ang);
+	}
+	function angDist(a1,a2) {
+		let ad = Math.abs(a1-a2);
+		return (ad>Math.PI)?Math.PI*2-ad:ad;
+	}
+	function ang_turnTowards(a1, a2, amt) {
+		if (angDist(a1,a2)<=amt) { return [a2,true]; }
+		var at = a2 - a1;
+		if (at > Math.PI) {
+			at -= 2 * Math.PI;
+		} else if (at < -Math.PI) {
+			at += 2 * Math.PI;
+		}
+		var ang = a1 + Math.sign(at) * Math.min(Math.abs(at), amt);
+		if (ang < 0) {
+			ang += 2 * Math.PI;
+		} else if (ang > 2 * Math.PI) {
+			ang -= 2 * Math.PI;
+		}
+		return [ang, false];
+	}
+</script>
+
+<script type="text/javascript">
+	// Classes
+	/*
+		obj
+	*/
+	class Obj {
+		constructor() {
+			// Initialize core variables
+			this.location = [0,0];
+			this.altitude = 100;
+		}
+		getRadius() {
+			var r = 0;
+			this.shape.forEach(function(p){
+				r = Math.max(r, p[0]**2 + p[1]**2);
+			});
+			this.radius = r**.5;
+		}
+
+		render(ctx, c_loc) {
+			var c = pt_sub(this.location, c_loc);
+			var s = this.shape;
+			ctx.strokeStyle = this.color;
+			ctx.beginPath();
+			var a = this.angle;
+			var start = true;
+			var t = this;
+			s.forEach(function(p) {
+				p = pt_addAng(p, a);
+				if (t.altitude < 100) {p = pt_mul(p, t.altitude/100); }
+				p = pt_add(p, c);
+				if (start) {
+					ctx.moveTo(...p);
+					start = false;
+				} else {
+					ctx.lineTo(...p);
+				}
+			});
+			ctx.stroke();
+		}
+	}
+	// Visual effects
+	class CircleEffect {
+		constructor(loc, velocity, radius, deltaRad, color,life) {
+			/*
+				Exhaust and explosions.
+				Wrecks will be handled by a class that extends 'Obj'.
+			*/
+			this.location = loc;
+			this.velocity = velocity;
+			this.radius = radius;
+			this.deltaRad = deltaRad;
+			this.color = color;
+			this.life = this.maxLife = life;
+		}
+		render(ctx, c_loc) {
+			var c = pt_sub(this.location, c_loc);
+			ctx.strokeStyle = this.color + Math.floor(10+this.life/this.maxLife*89);
+			ctx.beginPath();
+			ctx.arc(c[0],c[1],this.radius,0,2*Math.PI);
+			ctx.stroke();
+		}
+		update(objs) {
+			this.radius+=this.deltaRad;
+			this.location = pt_add(this.location, this.velocity);
+			if (--this.life < 0) {
+				objs.fx.splice(objs.fx.indexOf(this),1);
+			}
+		}
+	}
+	// Visual effects involving polygons
+	class WreckEffect extends Obj {
+		constructor(shape, loc, ang, vel, color, life, smoke=false, explodes=false) {
+			super();
+			this.shape=shape;
+			this.getRadius();
+			this.location = loc;
+			this.angle = ang;
+			this.velocity = vel;
+			this.angVel = (.025-.05*Math.random());
+			this.baseColor = color;
+			this.color = this.baseColor+'90';
+			this.life = this.maxLife = life;
+			this.smokeTimer = this.smoke = smoke;
+			this.explodes=explodes;
+		}
+		render(ctx, c_loc) {
+			//this.color = this.baseColor+Math.floor(10+this.life/this.maxLife*89);
+			super.render(ctx,c_loc);
+		}
+		update(objs) {
+			this.life--;
+			if (this.life<0) {
+				objs.fx.splice(objs.fx.indexOf(this),1);
+				objs.fx.push(new CircleEffect(this.location, [0,0], this.radius, this.radius/150, this.baseColor,150));
+				if (this.explodes==true) {
+					let prev = this.shape[this.shape.length-1];
+					let expMag = get_mag(this.velocity)/3;
+					for (let i=0; i<this.shape.length;i++) {
+						let cur = this.shape[i]
+						objs.fx.push(new WreckEffect([prev,cur], this.location, this.angle, pt_add(pt(expMag,Math.random()*2*Math.PI),this.velocity), this.baseColor, Math.random()*200));
+						prev=cur;
+					}
+				}
+			}
+			this.location = pt_add(this.location, this.velocity);
+			this.angle += this.angVel;
+			this.angVel=this.angVel<0?this.angVel+2*Math.PI:this.angVel%(2*Math.PI);
+			if (this.smoke != false) {
+				if (this.smokeTimer-- == 0) {
+					objs.fx.push(new CircleEffect(this.location, pt(2,Math.random()*(Math.PI*2)), this.radius/3, this.radius/150, this.baseColor,70));
+					this.smokeTimer=this.smoke;
+				}
+			}
+		}
+	}
+	// Ship
+	class Ship extends Obj {
+		constructor(sd, faction, fleet) {
+			super();
+			// The physical aspects of the ship
+			this.shape = sd.shape;
+			this.getRadius();
+			this.color = faction.color;
+			this.engines = sd.engines;
+			// The weapons of the ship
+			var t = this;
+			this.weaponSlots = sd.weaponSlots.map(function(w){return new WeaponSlot(w,t)});
+			this.IFF = true; // Is the IFF engaged?
+			// Defensive stats
+			this.health = this.maxHealth = sd.maxHealth;
+			this.regen = sd.regen;
+			// Maneuverability stats
+			this.acceleration = sd.acceleration;
+			this.max_vel = sd.max_vel;
+			this.turn_rate = sd.turn_rate;
+			//
+			this.player = false;
+			this.faction = faction;
+			this.tier = sd.tier;
+			//
+			this.angle = 0;
+			this.location = [0,0];
+			this.velocity = [0,0];
+			this.jumpReady = false;
+			this.jumpDelay = MAXJUMPDELAY;
+			// RKV variables
+			this.rkv_time = this.rkv_max = 300;
+			this.rkv_count = 0;
+			this.rkv_angle = -1;
+			// AI variables
+			this.fleet = fleet;
+			if (fleet) {
+				this.system = fleet.location; // The player's system is manually set upon entering a system.
+			}
+			this.target = false;
+			this.orbitDistance = this.radius+50+Math.random()*100;
+			this.orbitDirection = Math.sign(Math.random()-.5);
+			// For faction purposes, track the last enemy to damage us.
+			this.lastHit = false;
+		}
+
+		createWreckEffect(objs) {
+			if (Math.random() > .5) {
+				// Split the wreck at all points
+				let prev = this.shape[this.shape.length-1];
+				for (let i=0; i<this.shape.length;i++) {
+					let cur = this.shape[i]
+					objs.fx.push(new WreckEffect([prev,cur], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.color, Math.random()*200));
+					prev=cur;
+				}
+			} else { // Intact wreck
+				objs.fx.push(new WreckEffect(this.shape.slice(), this.location, this.angle, this.velocity, this.color, Math.random()*200, Math.floor(Math.random()*15+5), true));
+			}
+			objs.fx.push(new CircleEffect(this.location, [0,0], this.radius, this.radius/150, this.color,150));
+		}
+		
+		update(objs) {
+			if (this.health < 0) {
+				objs.ships.splice(objs.ships.indexOf(this), 1);
+				if (this.lastHit != false) {
+					this.faction.handleCasualty(objs, this, this.lastHit.faction);
+				}
+				if (this.fleet != false) {
+					this.fleet.shipCounts[this.tier] -= 1;
+				}
+				// Add a wreck effect
+				this.createWreckEffect(objs);
+			}
+			this.health = Math.min(this.maxHealth, this.health + this.regen);
+			this.weaponSlots.forEach(function(w){
+				w.update();
+			});
+			this.run_AI(objs);
+			this.location = pt_add(this.location, this.velocity);
+			// Handle RKVs
+			this.handle_rkvs();
+			// 
+			this.jumpDelay = Math.max(0,this.jumpDelay-1);
+		}
+
+		render(context, c_loc) {
+			super.render(context, c_loc);
+			if (this.altitude == 100) {
+				this.weaponSlots.forEach(function(w){
+					w.render(context, c_loc);
+				});
+			}
+			// Show health
+			if (this.health < this.maxHealth) {
+				var l = pt_sub(this.location, c_loc);;
+				context.strokeStyle = this.color + '22';
+				context.beginPath();
+				context.arc(l[0], l[1], this.radius+5, 0, 2*Math.PI);
+				context.stroke();
+				context.strokeStyle = this.color + '55';
+				context.beginPath();
+				context.arc(l[0], l[1], this.radius+5, Math.PI*(1-this.health/this.maxHealth)+Math.PI*3/2, Math.PI*(this.health/this.maxHealth)+Math.PI*5/2);
+				context.stroke();
+			}
+			// Show RKV lock
+			if (this.rkv_time != this.rkv_max) {
+				var l = pt_sub(this.location, c_loc);;
+				context.strokeStyle = (get_mag(this.location) > this.system.killRadius)?'#FF0000':'#FF000055';
+				context.beginPath();
+				if (this.rkv_angle < 0) {
+					context.arc(l[0], l[1], this.rkv_time/this.rkv_max * (screenWidth+screenHeight), 0, 2*Math.PI);
+				} else {
+					var rkvA = pt(screenWidth+screenHeight, this.rkv_angle);
+					context.moveTo(...pt_add(l,rkvA));
+					context.lineTo(...pt_sub(l,rkvA));
+				}
+				context.stroke();
+			}
+		}
+
+		respondToHit(proj) {
+			if (this.player == false) {
+				let s = proj.source;
+				this.lastHit = s;
+				s.faction.adjRelationship(this.faction,-1);
+				if (!this.target || (this.target!=s && get_mag(pt_sub(this.location, this.target.location)) > get_mag(pt_sub(this.location, s.location)))) {
+					this.target = s;
+				}
+			}
+		}
+
+		decelerate() {
+			var tt = ang_turnTowards(this.angle, get_ang(pt_sub([0,0], this.velocity)), this.turn_rate);
+			this.angle = tt[0];
+			if (tt[1] == true) {
+				return 1;
+			}
+			return 0;
+		}
+
+		run_AI(objs) {
+			var turn = 0;
+			var thrust = 0;
+			var t = this;
+			this.jumpReady = false;
+			// One AI for all NPCs.
+			if (this.player == false) {
+
+				let locMag = get_mag(this.location);
+				let sunDist = this.fleet.location.sunKillRadius+200+get_mag(this.velocity)/this.acceleration+Math.PI/this.turn_rate;
+				if (locMag > this.fleet.location.killRadius) {
+					this.angle = ang_turnTowards(this.angle, get_ang(pt_sub([0,0],this.location)), this.turn_rate)[0];
+					thrust = 1;
+				} else if (locMag < sunDist) { // If we're too close to the sun, get away from it.
+					this.angle = ang_turnTowards(this.angle, get_ang(pt_sub(this.location,[0,0])), this.turn_rate)[0];
+					thrust = 1;
+				} else {
+					if (this.target == false || objs.ships.indexOf(this.target) == -1) {
+						// Find the nearest hostile ship
+						this.target = false;
+						var dist = Infinity;
+						objs.ships.forEach(function(s){
+							if (s.faction.getRelationship(t.faction) < 0) {
+								var dist2 = get_mag(pt_sub(s.location, t.location));
+								if (dist2 < dist) {
+									dist = dist2;
+									t.target = s;
+								}
+							}
+						});
+					}
+					if (this.target != false) { // We have a target
+						// AI
+						// If our target is "friendly" to our faction, disengage IFF
+						this.IFF = (this.target.faction.getRelationship(this.faction)<0);
+						// If we're in the RKV killzone, get out of there.
+						// Thrust towards the enemy, fire when possible.
+						var p = pt_sub(this.target.location, this.location);
+						var ang = get_ang(p);
+						var mag = get_mag(p);
+						// For now, just thrust towards the enemy, and fire every gun available at it.
+						// If resources permit, more complex AI behavior can be attempted.
+						this.angle = ang_turnTowards(this.angle, ang, this.turn_rate)[0];
+						thrust = 1;
+						// Fire on the target with every available weapon
+						this.weaponSlots.forEach(function(w){
+							if (w.canFire() && w.weapon.projectile.range+t.radius+t.target.radius > mag) {
+								// Get a firing solution
+								var fs = w.getFiringSolution(t.target.velocity, t.target.location);
+								if (fs != false) {
+									w.fire(fs, objs, true);
+								}
+							}
+						});
+					} else { // We have no target.
+						// If we're in our home system, orbit our home planet. Otherwise, orbit the sun.
+						let orbitDistance = this.orbitDistance;
+						let p;
+						if (this.fleet.location == this.fleet.homeSystem) {
+							p = pt_sub(this.fleet.homeWorld.location, this.location);
+							orbitDistance+=this.fleet.homeWorld.radius;
+						} else {
+							p = pt_sub([0,0], this.location);
+							orbitDistance+=sunDist;
+						}
+						let dist = get_mag(p);
+						let ang = get_ang(p);
+						if (dist <= orbitDistance-100) { // If we're too close, move away
+							ang = (ang+Math.PI)%(2*Math.PI);
+						} else if (dist < orbitDistance+100) { // If we're in the right distance range, orbit.
+							ang = (ang+this.orbitDirection*Math.PI/2)%(2*Math.PI);
+							if (ang < 0) { ang+=2*Math.PI; }
+						}
+						this.angle = ang_turnTowards(this.angle, ang, this.turn_rate)[0];
+						thrust=1;
+					}
+				}
+			} else if (keysDown.indexOf(E_KEY) != -1 && this.jumpTarget != false) { // Jumping disables other controls
+				if (get_mag(this.velocity) < 1.1*this.acceleration) {
+					var tt = ang_turnTowards(this.angle, get_ang(pt_sub(this.jumpTarget.location, this.system.location)), this.turn_rate);
+					this.angle = tt[0];
+					this.jumpReady = tt[1];
+				} else { // Decelerate if moving too fast
+					thrust = this.decelerate();
+				}
+			} else {
+				var landing = false;
+				if (keysDown.indexOf(E_KEY) != -1) {
+					if (this.landingTarget != false && (this.landingTarget.faction == false || this.landingTarget.faction.getRelationship(this.faction) >= 0)) {
+						landing=true;
+					}
+					if (landing == true) {
+						if (get_mag(this.velocity) < 1.1*this.acceleration) {
+							this.altitude = Math.max(0, this.altitude-1);
+						} else {
+							thrust = this.decelerate();
+						}
+					} 
+					
+				}
+				if (this.altitude != 100 && landing == false) { // Taking off after landing.
+						landing = true;
+						this.altitude = Math.min(100, this.altitude+1);
+					}
+				if (!landing) {
+					if (keysDown.indexOf(LEFT_KEY) != -1 || keysDown.indexOf(A_KEY) != -1) {
+						turn = -1;
+					} else if (keysDown.indexOf(RIGHT_KEY) != -1 || keysDown.indexOf(D_KEY) != -1) {
+						turn = 1;
+					} 
+					if (keysDown.indexOf(UP_KEY) != -1 || keysDown.indexOf(W_KEY) != -1) {
+						thrust = 1;
+					}
+					// IFF is engaged whenever the spacebar isn't held
+					this.IFF = (keysDown.indexOf(SPACE_KEY) == -1);
+					// If the mouse is down, fire every weapon that can shoot at its position
+					if (leftMouseDown) {
+						this.weaponSlots.forEach(function(w){
+							if (!w.secondary) {
+								w.fire(pt_add(mousePos, t.location), objs, restrictPlayerFire);
+							}
+						});
+					}
+					if (rightMouseDown) {
+						this.weaponSlots.forEach(function(w){
+							if (w.secondary) {
+								w.fire(pt_add(mousePos, t.location), objs, restrictPlayerFire);
+							}
+						});
+					}
+					// Adjust angle (the AI does this directly with ang_turnTowards)
+					this.angle += turn * this.turn_rate;
+					if (this.angle < 0) {
+						this.angle += 2*Math.PI;
+					} else if (this.angle > 2*Math.PI) {
+						this.angle -= 2*Math.PI;
+					}
+				}
+			}
+			// Thrust control
+			if (thrust == 1) {
+				this.thrust(objs);
+			} else if (get_mag(this.velocity) > this.max_vel/2) {
+				// If we aren't actively accelerating, slow down. This helps simulate space combat without the velocity cap, since an accelerating object will catch a non-accelerating object.
+				this.velocity = pt_mul(this.velocity, 0.99);
+			}
+		}
+
+		thrust(objs) {
+			this.applyForce(this.angle, this.acceleration);
+			let smokeAng = (this.angle+(.95+.1*Math.random())*Math.PI)%(2*Math.PI);
+			if (Math.random() > .5) {
+				this.engines.forEach(e=>{
+					objs.fx.push(new CircleEffect(pt_add(pt_addAng(e,this.angle),this.location), pt_add(this.velocity, pt(this.max_vel,smokeAng)), 2, .5, this.color,30));
+				});
+			}
+		}
+
+		applyForce(direction, magnitude) {
+			var v = this.velocity;
+			var v_add = pt(magnitude, direction);
+			v = pt_add(v, v_add);
+			this.velocity = pt_mag(v, Math.min(get_mag(v), this.max_vel));
+		}
+
+		handle_rkvs() {
+			if (get_mag(this.location) > this.system.killRadius) { // Later, this could only occur in enemy systems.
+				this.rkv_time -= 1;
+				if (this.rkv_time <= 0) {
+					this.rkv_angle = (get_ang(this.location)+Math.PI/2+Math.random()*Math.PI)%(2*Math.PI);
+					this.applyForce(this.rkv_angle, 10);
+					this.health -= 50+Math.random()*200;
+					this.rkv_time = (.5+.5*Math.random())*this.rkv_max*.97**this.rkv_count; // Subsequent RKVs lock on faster.
+					this.rkv_count += 1;
+				} else {
+					this.rkv_angle = -1;
+				}
+			} else {
+				this.rkv_time = Math.min(this.rkv_max, this.rkv_time+1);
+				this.rkv_count = 0;
+				this.rkv_angle = -1;
+			}
+		}
+	}
+	/*
+		
+		WeaponSlot
+
+	*/
+	class WeaponSlot {
+		constructor(wd, ship) {
+			//
+			this.shape = [
+				[5,0],
+				[-5,0]
+			]
+			// 
+			this.ship = ship;
+			//
+			this.angle = wd.angle;
+			this.arc = wd.arc;
+			this.location = wd.location;
+			this.secondary = wd.secondary;
+			// 
+			this.weapon = false;
+		}
+
+		installWeapon(weapon) {
+			this.weapon = new Weapon(weapon, this);
+		}
+
+		getTrueLocation() {
+			return pt_add(this.ship.location, pt_addAng(this.location, this.ship.angle));
+		}
+
+		getTrueAngle() {
+			return (this.angle + this.ship.angle) % (2*Math.PI);
+		}
+
+		render(context, c_loc) {
+			context.strokeStyle = (this.weapon==false)?'#FF000055':'#FF0000AA';
+			// Get the initial location
+			var p = pt_sub(this.getTrueLocation(), c_loc);
+			var a = this.getTrueAngle();
+			context.beginPath();
+			context.arc(p[0], p[1], (this.secondary)?5:2, 0, 2*Math.PI);
+			context.stroke();
+			context.beginPath();
+			context.arc(p[0], p[1], 10, a - this.arc, a + this.arc);
+			context.stroke();
+		}
+
+		update() {
+			if (this.weapon != false) {
+				this.weapon.update();
+			}
+		}
+
+		canFire() {
+			if (this.weapon == false) { return false; }
+			return this.weapon.canFire();
+		}
+
+		getFiringSolution(targetVel, targetLoc) {
+			if (this.weapon == false) { return false; }
+			var tv = pt_sub(targetVel,this.ship.velocity);
+			var tp = pt_sub(targetLoc,this.getTrueLocation());
+			var s = this.weapon.projectile.speed;
+			//
+			var a = (s**2-tv[0]**2-tv[1]**2);
+			var b = -2*(tv[0]+tv[1]+tp[0]+tp[1]);
+			var c = -(tp[0]**2+tp[1]**2);
+			//
+			var temp = (b**2-4*a*c);
+			if (temp < 0) { return false; }
+			temp = temp**.5;
+			var impactTime_1 = (-b+temp)/(2*a);
+			var impactTime_2 = (-b-temp)/(2*a);
+			var it = Math.min(impactTime_1,impactTime_2);
+			it = it>=0?it:Math.max(impactTime_1,impactTime_2);
+			// 
+			return pt_add(targetLoc, [tv[0]*it,tv[1]*it]);
+		}
+
+		fire(targetLoc, objs, onlyValid) {
+			if (this.canFire()) {
+				var pd = pt_sub(targetLoc, this.getTrueLocation());
+				var tt = ang_turnTowards(this.getTrueAngle(), get_ang(pd), this.arc);
+				if (tt[1] || !onlyValid) {
+					this.weapon.handleFire();
+					for (var i = 0; i < this.weapon.projectileCount; i++) {
+						var angle = tt[0];
+						angle += this.weapon.accuracy * (.5-Math.random());
+						objs.projs.push(new Proj(objs, this.getTrueLocation(), angle, this.ship, this.weapon.projectile));
+					}
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	/*
+
+		Weapon
+	
+	*/
+	class Weapon {
+		constructor(wd, ship) {
+			//
+			this.ship = ship;
+			//
+			this.rof = wd.rof;
+			this.accuracy = wd.accuracy;
+			this.projectile=wd.projectile;
+			this.projectileCount = isdef(wd.projectileCount)?wd.projectileCount:1;
+			//
+			this.clipSize = isdef(wd.clipSize)?wd.clipSize:1;
+			this.reloadRate = isdef(wd.reloadRate)?wd.reloadRate:this.rof;
+			this.incReload = isdef(wd.incReload)?wd.incReload:false;
+			this.firingResets = isdef(wd.firingResets)?wd.firingResets:true;
+			this.clipAmmo = this.clipSize; // Initialize the ammount of ammo in the clip.
+			this.reloadProg = 0;
+			//
+			this.lastFired = 0;
+		}
+
+		update() {
+			this.lastFired += 1;
+			this.reloadProg = this.clipAmmo==this.clipSize?0:this.reloadProg+1;
+			if (this.reloadProg >= this.reloadRate) {
+				this.clipAmmo = this.incReload?Math.min(this.clipAmmo+1,this.clipSize):this.clipSize;
+				this.reloadProg = 0;
+			}
+		}
+
+		canFire() {
+			return (this.lastFired>=this.rof)&&(this.clipAmmo>0);
+		}
+
+		handleFire() {
+			this.lastFired = 0;
+			this.clipAmmo -= 1;
+			if (this.firingResets==true) { this.reloadProg=0; }
+		}
+	}
+	/*
+		
+		Projectile
+
+	*/
+	class Proj extends Obj {
+		
+		constructor(objs,location, angle, source, pd) {
+			super();
+			//
+			this.shape = [
+				[pd.speed,0],
+				[-pd.speed,0]
+			];
+			this.getRadius();
+			// 
+			this.source = source;
+			this.IFF = source.IFF;
+			this.color = this.IFF ? source.color : '#FF0000';
+			//
+			this.angle = angle;
+			this.location = pt_add(location, pt(this.radius, this.angle));
+			this.velocity = pt_add(this.source.velocity, pt(pd.speed, angle));
+			this.life = pd.range/pd.speed;
+			// 
+			this.damage = pd.damage+pd.damageVar*(.5-Math.random());
+			// Special
+			// Pierce
+			this.pierce = isdef(pd.pierce)?pd.pierce:false;
+			this.pierced = [];
+			// AoE
+			this.AoE = isdef(pd.AoE)?pd.AoE:false;
+			// Tracking
+			this.target = false;
+			if (isdef(pd.lockingAngle)) {
+				// Only lock onto hostiles, regardless of IFF.
+				var t = this;
+				var closest = Math.PI*2;
+				objs.ships.forEach(s=>{
+					if ((t.source.faction.getRelationship(s.faction)<0) &&
+						(get_mag(pt_sub(t.location,s.location))<=pd.range)) {
+						let temp = angDist(t.angle, get_ang(pt_sub(s.location,t.location)));
+						if (temp < closest) { closest=temp; t.target=s;}
+					}
+				});
+				t.trackingRate = pd.trackingRate;
+			}
+			// Fragmentation
+			this.fragments = isdef(pd.fragments)?pd.fragments:false;
+		}
+
+		applyAoE(objs, hit) { // Apply AOE, ignoring the original target.
+			var t=this;
+			objs.ships.forEach(s => {
+				if ((s != hit) &&
+					(t.source.faction.getRelationship(s.faction)<0 || t.IFF == false) &&
+					(get_mag(pt_sub(t.location, s.location)) < s.radius+t.AoE)) {
+					s.health -= t.damage;
+					s.respondToHit(t);
+				}
+			}); 
+			// Add an explosion effect.
+			objs.fx.push(new CircleEffect(this.location.slice(), [0,0], this.AoE, this.AoE*.01, this.color,100));
+		}
+
+		fragment(objs, hit) {
+			let f = this.fragments;
+			for (let i=0;i<f.count;i++) {
+				let ang = get_ang(this.velocity) + (.5-1*Math.random())*f.spread;
+				ang = (ang>=0)?(ang<2*Math.PI?ang:ang-2*Math.PI):ang+2*Math.PI;
+				let proj = new Proj(objs, this.location, ang, this.source, f.projectile);
+				proj.IFF = this.IFF; // IFF comes from the projectile, not the source ship.
+				proj.pierced.push(hit); // Ignore the ship we've already hit.
+				objs.projs.push(proj);
+			}
+		}
+
+		update(objs) {
+			// Handle tracking
+			if (this.target!=false) {
+				// tracking rate
+				if (objs.ships.indexOf(this.target)==-1) {
+					this.target = false;
+				} else {
+					let newAng = ang_turnTowards(this.angle,get_ang(pt_sub(this.target.location,this.location)), this.trackingRate)[0]
+					let vMag = get_mag(this.velocity);
+					this.velocity = pt(vMag, newAng);
+					this.angle = newAng;
+					// Generate exhaust
+					let smokeAng = (this.angle+(.95+.1*Math.random())*Math.PI)%(2*Math.PI);
+					if (Math.random() > .5) {
+						objs.fx.push(new CircleEffect(this.location.slice(), pt_add(this.velocity, pt(vMag,smokeAng)), 2, .5, this.color,30));
+					}
+				}
+			}
+			//
+			this.location = pt_add(this.location, this.velocity);
+			this.life -= 1;
+			if (this.life <= 0) {
+				objs.projs.splice(objs.projs.indexOf(this), 1);
+			} else {
+				var t = this;
+				var dead = false;
+				objs.ships.forEach(function(s){
+					if (dead == false) {
+						if ((t.source != s) && 
+							(t.pierced.indexOf(s)==-1) && // Handle pierce
+							(t.source.faction.getRelationship(s.faction) < 0 || t.IFF == false) && // IFF
+							(get_mag(pt_sub(t.location, s.location)) < t.radius + s.radius*(s.altitude/100)) // For now, check by radius
+							) {
+							// The weapon's base damage
+							s.health -= t.damage;
+							s.respondToHit(t);
+							if (t.pierce!=false && t.pierce>Math.random()) {
+								t.pierced.push(s);
+							} else {
+								objs.projs.splice(objs.projs.indexOf(t), 1);
+								dead=true;
+								// Apply AoE
+								if (t.AoE!=false) {t.applyAoE(objs, s);}
+								// Apply fragmentation
+								if (t.fragments!=false) {t.fragment(objs,s);}
+							}
+						}
+					}
+				});
+			}
+		}
+
+	}
+	/*
+
+		Faction
+
+	*/
+	class Faction {
+		constructor(fd) {
+			// 
+			this.name = fd.name;
+			this.relationships = {};
+			for (var f in fd.relationships) {
+				this.relationships[f] = [fd.relationships[f]];
+			}
+			this.color = fd.color;
+			// Ship table. A list of 3 ship specifications, including weapon slots,
+			// shape, acceleration, max velocity, turn rate, health, and regen rate.
+			this.shipTable = fd.shipTable;
+			// Weapon table. A list of primary and secondary weapons.
+			this.weaponTable = fd.weaponTable;
+			// Text displayed in place of the description of conquered planets.
+			this.conquestText = fd.conquestText;
+		}
+
+		setRelationship(faction, value) {
+			var relationship = [value];
+			this.relationships[faction.name] = faction.relationships[this.name] = relationship;
+		}
+
+		adjRelationship(faction, value) {
+			this.relationships[faction.name] = faction.relationships[this.name] = [this.getRelationship(faction) + value]
+		}
+
+		getRelationship(faction) {
+			if (faction==this) { return Infinity; }
+			if (!isdef(this.relationships[faction.name])) {
+				if (!isdef(faction.relationships[this.name])) {
+					this.relationships[faction.name] = faction.relationships[this.name] = [0];
+				}
+			}
+			return this.relationships[faction.name][0];
+		}
+
+		armShip(s) {
+			var wt = this.weaponTable;
+			var pmy = wt.primary[Math.floor(Math.random()*wt.primary.length)];
+			var scy = wt.secondary[Math.floor(Math.random()*wt.secondary.length)];
+			s.weaponSlots.forEach(function(w){
+				w.installWeapon(w.secondary?(new Weapon(scy)):(new Weapon(pmy)));
+			});
+		}
+
+		handleCasualty(objs, ship, killerFaction) {
+			// Factions don't like it when you kill their ships.
+			// If the killer faction was previously seen as a friend, cut relationship by half.
+			var cur = this.getRelationship(killerFaction);
+			if (cur > 0) {
+				this.adjRelationship(killerFaction, -cur/2);
+			}
+			this.adjRelationship(killerFaction, -shipCosts[ship.tier] * 10);
+			// Factions like it when you kill their enemies ships.
+			var totalHate = 0;
+			var enemies = [];
+			var hateValues = [];
+			for (var k in this.relationships) {
+				var r = this.relationships[k][0];
+				if (r < 0) {
+					totalHate += -r;
+					enemies.push(objs.factions[k]);
+					hateValues.push(-r);
+				}
+			}
+			// I suppose I could use softmax or something, but linear weighting works fine.
+			for (var i=0; i<enemies.length;i++) {
+				killerFaction.adjRelationship(enemies[i], shipCosts[ship.tier] * 5 * hateValues[i]/totalHate);
+			}
+		}
+	}
+	/*
+
+		Fleet
+
+		- Fleets cannot be destroyed. (empty) Defense fleets can switch factions when their system is conquered, and
+		invasion fleets are relocated to their home system when defeated.
+	*/
+	class Fleet {
+		constructor(name, homeSystem, homeWorld, faction, defensive, shipCapacities) {
+			// 
+			this.name = name;
+			this.homeSystem = this.location = homeSystem;
+			this.homeWorld = homeWorld;
+			//
+			this.faction = faction;
+			this.defensive = defensive;
+			this.shipCapacities = shipCapacities;
+			// Defensive fleets start out full, invasion fleets start out empty.
+			this.shipCounts = (defensive?shipCapacities.slice():new Array(shipCapacities.length).fill(0));
+		}
+
+		moveToSystem(system) {
+			// Move to a new system. Build a list of hostile fleets. Calculate battle results. Distribute casualties.
+			this.location = system;
+		}
+
+		// Check hostile system
+		checkHostileSystem(sys) {
+			for(var i=0;i<sys.planets.length;i++){
+				let p = sys.planets[i];
+				if (p.faction != false && p.faction.getRelationship(this.faction) < 0) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// Move towards the nearest hostile system, if any
+		seekHostileSystem() {
+			var links = {};
+			var buf = [this.location];
+			var t = this;
+			while (buf.length != 0) {
+				var buf2 = [];
+				for (let i=0;i<buf.length;i++) {
+					let s = buf[i];
+					for (let j=0;j<s.connections.length;j++) {
+						let c = s.connections[j];
+						if (!isdef(links[c.name])) { // If we haven't encountered this system yet
+							buf2.push(c);
+							links[c.name] = s;
+							if (t.checkHostileSystem(c)) {
+								var target = c;
+								while (links[target.name] != t.location) {
+									target = links[target.name];
+								}
+								console.log(t.name + ' moved from ' + t.location.name + ' to ' + target.name + '.');
+								t.moveToSystem(target);
+								return;
+							}
+						}
+					}
+				}
+				buf = buf2;
+			}
+		}
+
+		attackFleet(fleet) {
+			/*
+				Ships perform well against the next rank, evenly against each other, poorly against 
+				everything higher.
+			*/
+			var tsc = this.shipCounts;
+			var fsc = fleet.shipCounts;
+			console.log(this.name + ' is attacking ' + fleet.name + ".");
+			console.log(tsc);
+			console.log(fsc);
+			// Sweep down the list to determine whether a message should be sent after the battle concludes.
+			let notable = false;
+			for (let i = 0; i < fsc.length; i++){
+				if (fsc[i]>0) {notable=true;}
+			}
+			// Initial skirmishes. Attack your own tier, then the next tier up.
+			for (var i = 0; i<tsc.length; i++) {
+				let cas = Math.min(tsc[i],fsc[i]);
+				tsc[i] -= cas;
+				fsc[i] -= cas;
+				if (i+1<tsc.length) {
+					let atkr = (tsc[i] > 0)?tsc:fsc;
+					let dfdr = (tsc[i] == 0)?tsc:fsc;
+					let atkPow = atkr[i] * shipCosts[i] * 2;
+					let defPow = dfdr[i+1] * shipCosts[i+1];
+					cas = Math.min(atkPow, defPow);
+					// Round up defpow after dividing.
+					atkPow -= cas;
+					defPow -= cas;
+					atkr[i] = Math.floor(atkPow / shipCosts[i] / 2);
+					dfdr[i+1] = Math.ceil(defPow / shipCosts[i+1]);
+				}
+			}
+			// Cleanup. The most powerful ships sweep down the list until there are no survivors on one side.
+			var win = false;
+			for (var i = tsc.length-1; i >= 0; i--) {
+				let atkr = tsc[i]>0?tsc:fsc;
+				let dfdr = tsc[i]==0?tsc:fsc;
+				let atkPow = atkr[i]*shipCosts[i]*2;
+				let j = i-1;
+				while (atkPow != 0 && j >= 0) {
+					let defPow = shipCosts[j]*dfdr[j];
+					let cas = Math.min(atkPow, defPow);
+					defPow -= cas;
+					dfdr[j] = Math.floor(defPow/shipCosts[j]);
+					atkPow -= cas;
+					j -= 1;
+				}
+				atkr[i] = Math.ceil(atkPow / shipCosts[i] / 2);
+			}
+			// Sweep down the list one last time to check for survivors
+			for (let i = 0; i < tsc.length; i++){
+				if (tsc[i]>0) {win=true;}
+			}
+			console.log('Results:');
+			console.log(tsc);
+			console.log(fsc);
+			if (notable) {addMsg(win?'The '+this.name+' attacked and destroyed the '+fleet.name+'.':'The '+this.name+' was destroyed in an engagement with the '+fleet.name+'.');}
+			return win;
+		}
+
+		invadeSystem(objs) {
+			// Fight each hostile fleet until we are dead or no hostile fleets remain.
+			var fleets = objs.globalFleets.filter(f => f.location == this.location);
+			var i = 0;
+			var win = true;
+			while (win == true && i < fleets.length) {
+				var f = fleets[i];
+				if (f.faction.getRelationship(this.faction) < 0) {
+					win = this.attackFleet(f);
+				}
+				i += 1;
+			}
+			if (win) {
+				this.location.planets.forEach(p => {
+					if (p.faction != false) { // uninhabited worlds remain empty.
+						p.faction = this.faction;
+						addMsg(p.name + ' is now held by the ' + this.faction.name + '.');
+					}
+				});
+			}
+		}
+
+		// Handle movement after restocking
+		update(objs) {
+			this.prevSystem = this.location; // Allows us to place the fleet in a suitable in-system position.
+			var shipCount = 0;
+			this.shipCounts.forEach(c => {shipCount+=c;});
+			if (shipCount == 0) {
+				this.moveToSystem(this.homeSystem); // Destroyed fleets return to their home systems to restock.
+			} else if (this.checkHostileSystem(this.location)) { // If we start in a hostile system, simulate a battle.
+				this.invadeSystem(objs);
+			} else {
+				if (this.defensive == 0) {
+					var proceed=true;
+					if (this.location == this.homeSystem) {
+						for (var i=0;i<this.shipCounts.length;i++) {
+							if (this.shipCounts[i]<this.shipCapacities[i]) {
+								proceed = false;
+							}
+						}
+					}
+					if (proceed == true) {
+						this.seekHostileSystem();
+					}
+				}
+			}
+		}
+
+		buyShip(value) {
+			// What ship do we want?
+			var tgt = -1;
+			var need = 1.1;
+			for (var i=0; i < this.shipCounts.length; i++) {
+				var cap = this.shipCapacities[i];
+				var cnt = this.shipCounts[i];
+				if (cap != 0 && cnt != cap) {
+					var n = (cnt+1)/cap;
+					if (n <= need) {
+						tgt = i;
+						need = n;
+					}
+				}
+			}
+			if (tgt == -1 || value < shipCosts[tgt]) {
+				return [(tgt==-1?0:1), value];
+			} else {
+				value -= shipCosts[tgt];
+				this.shipCounts[tgt] += 1;
+				return [2, value];
+			}
+
+		}
+
+		restock(value) { // Attempt to restock with a certain amount of industry
+			var status = 2;
+			while (status == 2) {
+				var res = this.buyShip(value);
+				status = res[0];
+				value = res[1];
+			}
+			return [value, (status==1)];
+		}
+	}
+	/*
+
+		System
+
+	*/
+	class System {
+		constructor(objs, sd) {
+			this.name = sd.name;
+			objs.systems[this.name] = this;
+			//
+			this.jumpRadius = sd.jumpRadius;
+			this.killRadius = this.jumpRadius + 500
+			// 
+			this.connections = sd.connections;
+			// The sun
+			this.sunRadius = sd.sunRadius;
+			this.sunKillRadius = sd.sunRadius*1.5;
+			this.sunColor = sd.sunColor;
+			// 
+			this.location = sd.location; 
+			this.planets = sd.planets;
+			var t = this;
+			this.planets.forEach(function(p) {
+				t.initPlanet(p, objs);
+			});
+		}
+
+		initPlanet(p, objs) {
+			if (!isdef(p.initialFaction)) { p.initialFaction = p.faction = false; p.shipCapacities = [0,0,0]; } else {
+				p.faction = objs.factions[p.initialFaction];
+				p.storedIndustry = 0; // Stored industry
+			}
+			if (!isdef(p.moons)) { p.moons = []; }
+			var t = this;
+			p.moons.forEach(function(m){ t.initPlanet(m, objs); });
+			// At the start of the game, all planets' defensive fleets are at capacity.
+			if (isdef(p.fleets)) {
+				p.fleets.forEach(f => {
+					var desc = (f.defensive==1)?"Defense":"Invasion";
+					objs.globalFleets.push(new Fleet(p.name + " "+desc+" Fleet", this, p, objs.factions[p.faction.name], f.defensive, f.shipCapacities.slice()));
+				});
+			}
+		}
+
+		cache_connections(objs) {
+			// Cache the start and end radians for jumps
+			// Start and end radii can't be more than 90 degrees from the angle.
+			var nc = [];
+			var angles = [];
+			var t = this;
+			this.connections.forEach(function(c) {
+				// build a list of angles
+				var co = objs.systems[c];
+				angles.push({name: c, angle: get_ang(pt_sub(co.location,t.location))});
+				// cache the connection target
+				nc.push(co);
+			});
+			this.connections = nc;
+			// Sort the array of angles
+			angles.sort(function(a,b) {
+				return a.angle - b.angle;
+			});
+			let seAngles = [];
+			if (angles.length>2) {
+				for (let i=0; i<angles.length;i++) {
+					let a = angles[i];
+					let an = angles[(i+1)%angles.length];
+					let ap = angles[i!=0?i:angles.length-1];
+					let ax = ang_turnTowards(a.angle,an.angle,Math.PI);
+					let ad = angDist(a.angle,an.angle);
+					a.end = (ax[1])?a.angle+ad/2:a.angle+Math.PI/2;
+					ax = ang_turnTowards(ap.angle,a.angle,Math.PI);
+					ad = angDist(ap.angle,a.angle);
+					a.start = (ax[1])?a.angle-ad/2:a.angle-Math.PI/2;
+				}
+				seAngles = angles;
+			} else if (angles.length==2) {
+				// Special case: ap==an
+				let a0 = angles[0].angle;
+				let a1 = angles[1].angle;
+				let ad = angDist(a0,a1);
+				let ac = ang_turnTowards(a0,a1,ad/2)[0];
+				if (ac > a0 && ac < a0+Math.PI) {
+					angles[0].end = angles[1].start = ac;
+					angles[0].start = a0-Math.PI/2;
+					angles[1].end = a1+Math.PI/2;
+				} else {
+					angles[0].start = angles[1].end = ac;
+					angles[1].start = a1-Math.PI/2;
+					angles[0].end = a0+Math.PI/2;
+				}
+				seAngles = angles;
+			} else {
+				seAngles = [{name:angles[0].name,start:angles[0].angle-Math.PI/2,end:angles[0].angle+Math.PI/2}]
+			}
+			// To enable simpler jump targeting, start is always < end.
+			seAngles.forEach(a=>{
+				if (a.start>a.end) {
+					a.start -= 2*Math.PI;
+				}
+			});
+			/*let prev_angle = {start: angles[angles.length-1].angle-Math.PI/2, end: (angles[angles.length-1].angle+Math.PI/2)%(2*Math.PI)};
+			let last_angle = prev_angle;
+			angles.forEach(function(a){
+				let n = a.name;
+				a = a.angle;
+				let new_angle = {name: n, start:a-Math.PI/2, end:(a+Math.PI/2)%(2*Math.PI)};
+				if (new_angle.start<0) { new_angle.start+=2*Math.PI; }
+				if (angles.length>1&&prev_angle.end >= new_angle.start) { // If the previous angle is close, the start angle is the average.
+					let avg = (a + prev_angle.end-Math.PI/2)/2;
+					avg = (avg>0)?avg:avg+Math.PI/2;
+					prev_angle.end = new_angle.start = avg;
+				}
+				seAngles.push(new_angle);
+			});
+			// If we adjusted the last angle for the first angle, propagate the change to the final list.
+			seAngles[seAngles.length-1].end=last_angle.end;
+			if (seAngles[seAngles.length-1].end > seAngles[0].start + 2 * Math.PI) { // Handle the edge case
+				seAngles[seAngles.length-1].end = seAngles[0].start = (seAngles[0].start + 2 * Math.PI + seAngles[seAngles.length-1].end)/2;
+			}*/
+			this.seAngles = seAngles;
+		}
+
+		load_planet(p, offset, objs) {
+			p.location = pt_add(offset, pt(p.orbit, Math.random() * 2*Math.PI));
+			var t = this;
+			p.moons.forEach(function(m) {
+				t.load_planet(m, p.location, objs);
+			});
+		}
+
+		// Build the system
+		buildSystem(objs, player) {
+			objs.ships = [];
+			objs.projs = [];
+			objs.fx = [];
+			objs.fleets = objs.globalFleets.filter(f => f.location == this);
+			objs.ships.push(player);
+			// Set planet locations
+			var t = this;
+			this.planets.forEach(function(p) {
+				t.load_planet(p, [0,0], objs);
+			});
+			// Spawn in fleets
+			objs.fleets.forEach(function(f){
+				var tier = 0;
+				f.shipCounts.forEach(function(c){
+					for (var i = 0; i < c; i++) {
+						//
+						var s = new Ship(f.faction.shipTable[tier], f.faction, f);
+						// Spawn defensive fleets around the planet
+						if (f.homeSystem == t) {
+							s.location = pt_add(f.homeWorld.location, pt((f.homeWorld.radius + 100) * Math.random(), 2 * Math.PI*Math.random()));
+						} else {
+							if (f.prevSystem != t) {
+								s.location = pt_add(pt(t.jumpRadius + 250 * Math.random(), get_ang(pt_sub(f.prevSystem.location, t.location))), pt((f.homeWorld.radius + 100) * Math.random(), 2 * Math.PI*Math.random()));
+							} else {
+								s.location = pt(t.sunRadius + 200 + Math.random()*(f.homeWorld.radius+100), Math.random()*Math.PI*2);
+							}
+						}
+						s.angle = Math.random()*2*Math.PI;
+						f.faction.armShip(s);
+						objs.ships.push(s);
+					}
+					tier += 1;
+				});
+				
+			});
+		}
+
+		// Enter the system
+		// Initialize planet and ship locations
+		enterSystem(objs, player) {
+			//
+			addMsg("Welcome to " + this.name + ".");
+			// New system; clear everything but the player.
+			player.location = pt(this.jumpRadius + 250 * Math.random(), get_ang(pt_sub(player.system.location, this.location)));
+			player.system = this;
+			 
+			this.buildSystem(objs, player);
+			
+		}
+
+		// For refreshing a system the player is already in.
+		reloadSystem(objs, player) {
+			this.buildSystem(objs, player);
+		}
+
+		renderPlanet(p, context, offset, objs) {
+			var t = this;
+			context.strokeStyle = (p.faction==false)?planetColor:p.faction.color;
+			context.beginPath();
+			context.arc(offset[0] + p.location[0], offset[1] + p.location[1], p.radius, 0, 2*Math.PI);
+			context.stroke();
+			if (objs.player.landingTarget == p) {
+				context.strokeStyle = (p.faction == false || p.faction.getRelationship(objs.player.faction) >= 0)?objs.player.faction.color:'#FF0000';
+				context.beginPath();
+				context.arc(offset[0] + p.location[0], offset[1] + p.location[1], p.radius+20, 0, 2*Math.PI);
+				context.stroke();
+			}
+			p.moons.forEach(function(m) {
+				t.renderPlanet(m, context, offset, objs);
+			});
+		}	
+
+		render(context, c_loc, objs) {
+			var t = this;
+			var offset = pt_sub([0,0], c_loc);
+			// Render sun
+			context.strokeStyle = context.fillStyle = this.sunColor;
+			context.beginPath();
+			context.arc(offset[0], offset[1], this.sunRadius, 0, 2*Math.PI);
+			context.fill();
+			// Render jump radius
+			context.strokeStyle = jumpRadiusColor+'77';
+			context.beginPath();
+			context.arc(offset[0], offset[1], this.jumpRadius, 0, 2*Math.PI);
+			context.stroke();
+			// Render RKV lock radius
+			context.strokeStyle = killRadiusColor+'77';
+			context.beginPath();
+			context.arc(offset[0], offset[1], this.killRadius, 0, 2*Math.PI);
+			context.stroke();
+			// Render planets
+			this.planets.forEach(function(p) {
+				t.renderPlanet(p, context, offset, objs);
+			});
+		}
+
+		updatePlanet(p, objs) {
+			var t = this;
+			var dist = get_mag(pt_sub(p.location, objs.player.location));
+			if (dist < p.radius) {
+				objs.player.landingTarget = p;
+			}
+			p.moons.forEach(m => {
+				t.updatePlanet(m, objs);
+			});
+		}
+
+		update(objs) {
+			var t = this;
+			// Damage ships that are flying too close to the sun
+			objs.ships.forEach(s=>{
+				let locMag = get_mag(s.location);
+				if (locMag < this.sunKillRadius) {
+					s.health -= 100 * (1 - locMag / (this.sunKillRadius));
+				}
+			});
+			// Handle jumping
+			player.jumpTarget = false;
+			let playerAng = get_ang(player.location);
+			if (get_mag(player.location) > this.jumpRadius) {
+				this.seAngles.forEach(function(a){
+					if (playerAng >= a.start && playerAng < a.end || 
+						(a.end > 2*Math.PI && (playerAng < a.end-2*Math.PI)) || //  last angle's end could exceed 2pi
+						(a.start < 0 && (playerAng > a.start + 2*Math.PI))) { // First angle's start could be negative
+						player.jumpTarget = objs.systems[a.name];
+					}
+				});
+			}
+			// Handle landing
+			objs.player.landingTarget = false;
+			this.planets.forEach(p =>{
+				t.updatePlanet(p, objs);
+			});
+		}
+
+	}
+</script>
+
+<!--
+
+	Gameplay
+
+-->
+<script type="text/javascript">
+	var canvas, screenWidth, screenHeight;
+	var keysDown = [];
+	var leftMouseDown = false;
+	var rightMouseDown = false;
+	var mousePos = [0,0]; // Adjusted mouse position; 0,0 is the center of the screen.
+	const W_KEY = 87;
+	const A_KEY = 65;
+	const S_KEY = 83;
+	const D_KEY = 68;
+	const UP_KEY = 38;
+	const LEFT_KEY = 37;
+	const DOWN_KEY = 40;
+	const RIGHT_KEY = 39;
+	const E_KEY = 69;
+	const SPACE_KEY = 32;
+
+	// System variables
+	var system = null;
+	var player = null;
+	var date = 0;
+	var playerLanded = false;
+	var msgBuf = [];
+	var objs = {
+		// Player
+		player: null,
+		// Local
+		ships: [],
+		projs: [],
+		fleets: [],
+		fx: [], // For both kinds of effects.
+		// Global
+		globalFleets: [],
+		systems: {},
+		factions: {},
+		events: {}
+	};
+
+	// Event variables
+	var event;
+	var eventVar=0;
+
+	// Menu variables
+	var currentMenu;
+	const MAIN_MENU = 0;
+	const BUY_SHIP = 1;
+	const SELECT_SLOT = 2;
+	const BUY_WEAPON = 3;
+	var menuPosition;
+	var menuConfirm = false;
+	var menuOptions;
+
+	// Menu visual constants
+	const menuBackgroundColor = '#00000088';
+	const menuWidth = 800;
+	const menuHeight = 500;
+	const sidebarWidth = 250;
+	const menuFontSize = 20; 
+	const menuFont = menuFontSize + 'px consolas';
+
+	// Gameplay constants
+	const shipCosts = [1,3,10]; // Industry costs for each ship type.
+	const restrictPlayerFire = false;
+	const MAXJUMPDELAY = 150;
+
+	// Visual constants
+	const jumpRadiusColor = '#FFFF00';
+	const killRadiusColor = '#FF0000';
+	const planetColor = '#AAAAAA';
+	const msgFontSize = 10; 
+	const msgFont = msgFontSize + 'px consolas'
+	const msgBufSize = 10;
+	const minimapOpacityPhysical = '55';
+	const minimapOpacityVirtual = '25';
+	const minimapScale = 40;
+	const starmapScale = 2;
+
+	window.getAnimationFrame =
+	window.requestAnimationFrame ||
+	window.webkitRequestAnimationFrame ||
+	window.mozRequestAnimationFrame ||
+	window.oRequestAnimationFrame ||
+	window.msRequestAnimationFrame ||
+	function(callback)
+	{
+		window.setTimeout(callback, 16.6);
+	};
+
+	window.onload = function()
+	{
+		canvas = document.getElementById('canvas');
+		context = canvas.getContext('2d');
+
+		window.onresize();
+
+		initControls();
+
+		initGame();
+
+		loop();
+	};
+
+	function initGame() {
+		// This is going to be where the testing code goes for the forseeable future.
+		FACTIONS_DATA.forEach(function(f) {
+			objs.factions[f.name] = new Faction(f);
+		});
+		// Initialize systems
+		SYSTEMS_DATA.forEach(function(s) {
+			new System(objs, s);
+		});
+		SYSTEMS_DATA.forEach(function(s) {
+			objs.systems[s.name].cache_connections(objs);
+		});
+		// Initialize events
+		EVENTS_DATA.forEach(function(e) {
+			objs.events[e.name] = e;
+		});
+		setPlayerShip(objs.factions['Player'].shipTable[0]);
+		objs.player = player;
+		
+		/*
+		let sf = 'Grey Republic';
+		objs.factions[sf].armShip(player);
+		player.regen=100;
+		player.weaponSlots[1].weapon.rof=1;
+		player.weaponSlots[1].arc = Math.PI*2;
+		player.weaponSlots[1].weapon.reloadRate=1;
+		player.weaponSlots[1].weapon.incReload=false;
+		player.weaponSlots[1].weapon.projectile.damage = 1000;
+		player.max_vel=7;
+
+		player.faction.setRelationship(objs.factions['Golden Empire'],-1);
+		//*/
+		objs.ships.push(player);
+		// Update the universe
+		updateUniverse(objs);
+		//
+		player.system = objs.systems["Vagrant"]; // Because enterSystem places the player on his entry vector.
+		objs.systems['Vagrant'].enterSystem(objs, player);
+		// Call up the start event
+		startEvent('startEvent');
+	}
+
+	function setPlayerShip(shipType) {
+		let ix = objs.ships.indexOf(player);
+		let sys;
+		let loc;
+		if (ix != -1) {
+			objs.ships.splice(ix,1);
+			sys = player.system;
+			loc = player.location;
+		}
+		objs.player = player = new Ship(shipType, objs.factions['Player'], false);
+		player.player = true;
+		if (ix != -1) {
+			player.system = sys;
+			player.location = loc;
+		}
+		objs.ships.push(player);
+	}
+
+	function addMsg(msg) {
+		msgBuf.splice(0,0,msg);
+		if (msgBuf.length == msgBufSize) {
+			msgBuf.splice(msgBuf.length-1,1);
+		}
+	}
+
+	function updateUniverse(objs) {
+		// 
+		date += 1;
+		addMsg('-~= DAY ' + date + ' =~-');
+		// Invasion fleets will run a BFS for the nearest hostile system, and then move.
+		objs.globalFleets.forEach(f => { f.update(objs); });
+		//
+		for (var n in objs.systems) {
+			var s = objs.systems[n];
+			// Get the set of fleets in the system
+			sf = objs.globalFleets.filter(f => f.location==s);
+			// Each planet generates some industry
+			s.planets.forEach(p => {
+				p.storedIndustry = Math.min(p.storedIndustry + p.industrialCapacity, 10);
+				p.saveIndustry = false;
+			});
+			// Each fleet gets to restock from its homeworld, if in the same system.
+			sf.forEach(f => {
+				if (f.homeSystem == s) {
+					var p = f.homeWorld;
+					if (p.faction==f.faction) {
+						let saveIndustry = false;
+						res = f.restock(p.storedIndustry);
+						p.storedIndustry = res[0];
+						saveIndustry = res[1];
+						p.saveIndustry = (p.saveIndustry || saveIndustry);
+					}
+				}
+			});
+			// The remaining industry is used to regenerate any remaining fleets in the system.
+			sf.forEach(f => {
+				s.planets.forEach(p => {
+					if (p.saveIndustry == false&&p.faction==f.faction) {
+						p.storedIndustry = f.restock(p.storedIndustry)[0];
+					}
+				});
+			});
+		}
+	}
+
+	function renderMap(objs, player, sys, context) {
+		//
+		let size = 100;
+		let scale = starmapScale;
+		let offset = 100;
+		let inRange = get_mag(player.location) > sys.jumpRadius;
+		context.strokeStyle = inRange ? '#FFFFFF99' : '#FFFFFF55';
+		// Scale down the galactic map and display it
+		let base = [screenWidth-offset-size/2, screenHeight-offset-size/2]
+		context.beginPath();
+		context.arc(base[0],base[1],3,0,2*Math.PI);
+		context.stroke();
+		sys.connections.forEach(function(s) {
+			context.beginPath();
+			let loc = [s.location[0]-sys.location[0], s.location[1]-sys.location[1]];
+			context.arc(base[0]+loc[0]/scale,base[1]+loc[1]/scale,2,0,2*Math.PI);
+			context.stroke();
+			// Show the connections
+			if (inRange) {
+				context.beginPath();
+				context.strokeStyle='#FFFFFF33';
+				context.moveTo(base[0], base[1]);
+				context.lineTo(base[0]+loc[0]/scale,base[1]+loc[1]/scale);
+				context.stroke();
+			}
+		});
+		// Show the player's position
+		if (inRange) {
+			var temp = pt(15, get_ang(player.location));
+			context.beginPath();
+			context.strokeStyle='#FFFFFF55';
+			context.moveTo(base[0], base[1]);
+			context.lineTo(base[0]+temp[0],base[1]+temp[1]);
+			context.stroke();
+		}
+		// Show the angles
+		let playerAng = get_ang(player.location);
+		if (get_mag(player.location) > sys.jumpRadius) {
+			sys.seAngles.forEach(function(a){
+				context.beginPath();
+				if (player.jumpTarget == objs.systems[a.name]) { // First angle's start could be negative
+					context.strokeStyle = '#FFFFFF';
+				} else {
+					context.strokeStyle = '#FFFFFF33';
+				}
+				context.arc(base[0],base[1],10,a.start,a.end);
+				context.stroke();
+			});
+		}
+		//
+	}
+
+	function renderMessages(context) {
+		var offset = 100; // Distance from the lower left corner
+		var color = '#FFFFFF';
+		context.font = msgFont;
+		for (var i=0;i<msgBuf.length;i++) {
+			context.fillStyle = color + Math.round(10+80*(msgBufSize-i)/msgBufSize);
+			context.fillText(msgBuf[i], offset, screenHeight-offset-msgFontSize*i);
+		}
+	}
+
+	function drawPlanetScale(context, p, s, b, o) {
+		context.strokeStyle =(p.faction==false?planetColor:p.faction.color)+o;
+		context.beginPath();
+		let l = pt_add(b, pt_mul(p.location, s));
+		context.arc(l[0],l[1],p.radius*s,0,2*Math.PI);
+		context.stroke();
+		if (p.moons) {
+			p.moons.forEach(m=>{drawPlanetScale(context,m,s,b,o);});
+		}
+	}
+
+	function renderMinimap(objs, player, sys, context) {
+		let scale = 1/minimapScale;
+		let size = sys.jumpRadius*scale;
+		let offset = 100;
+		let opacity = minimapOpacityPhysical;
+		let opacity2 = minimapOpacityVirtual;
+		// Display:
+		let base = [offset+size/2, offset+size/2];
+		// Planets
+		let pl = player.location;
+		sys.planets.forEach(function(p) {
+			/*
+			context.strokeStyle =(p.faction==false?planetColor:p.faction.color)+opacity;
+			context.beginPath();
+			var l = pt_sub(p.location,pl);
+			context.arc(base[0]+l[0]*scale,base[1]+l[1]*scale,p.radius*scale,0,2*Math.PI);
+			context.stroke();//*/
+			drawPlanetScale(context,p,scale,pt_sub(base, pt_mul(pl, scale)),opacity);
+		});
+		// Sun
+		context.fillStyle = '#FFFFFF'+opacity;//sys.sunColor+opacity;
+		let l = pt_sub([0,0],pl);
+		context.beginPath();
+		context.arc(base[0]+l[0]*scale,base[1]+l[1]*scale,sys.sunRadius*scale,0,2*Math.PI);
+		context.fill();
+		// Jump and kill radii
+		context.strokeStyle = '#FFFFFF'+opacity2;//jumpRadiusColor+opacity2;
+		context.beginPath();
+		context.arc(base[0]+l[0]*scale,base[1]+l[1]*scale,sys.jumpRadius*scale,0,2*Math.PI);
+		context.stroke();
+		context.strokeStyle = '#FFFFFF'+opacity2;//killRadiusColor+opacity2;
+		context.beginPath();
+		context.arc(base[0]+l[0]*scale,base[1]+l[1]*scale,sys.killRadius*scale,0,2*Math.PI);
+		context.stroke();	
+		// Ships
+		objs.ships.forEach(function(s) {
+			context.strokeStyle = s.color+opacity;
+			context.beginPath();
+			l = pt_sub(s.location,pl);
+			context.arc(base[0]+l[0]*scale,base[1]+l[1]*scale,s.radius*scale,0,2*Math.PI);
+			context.stroke();
+		});
+	}
+
+	function renderPlayerHUD(context, player) {
+		let offsetX = 100;
+		let offsetY = 25;
+		let opacity = minimapOpacityVirtual;
+		let wdw = 10; // Weapon display width
+		let wdh = 50; // Weapon display height
+		let wds = 5; // Weapon display spacing
+		let hbh = 5;
+		//
+		let base = [screenWidth-offsetX, offsetY];
+		let temp = 0;
+		let pm = get_mag(player.location);
+		context.fillStyle = ((pm>player.system.killRadius||pm<player.system.sunKillRadius+100) && Math.random()>0.5)?'#FF0000'+opacity:player.faction.color + opacity;
+		// Weapon displays
+		player.weaponSlots.forEach(s=>{
+			if (s.weapon) {
+				let w = s.weapon;
+				context.fillRect(base[0]-temp,base[1],wdw,wdh); // Background
+				let f = w.clipAmmo/w.clipSize;
+				context.fillRect(base[0]-temp,base[1]+wdh*(1-f),wdw,wdh*f); // Ammo loaded
+				if (w.incReload) {
+					f = Math.min(1, f+((w.reloadProg/w.reloadRate)/w.clipSize));
+				} else {
+					f = Math.min(1, (w.reloadProg/w.reloadRate));
+				}
+				context.fillRect(base[0]-temp,base[1]+wdh*(1-f),wdw/2,wdh*f); // Reload progress
+			} else {
+				let c = context.fillStyle;
+				context.fillStyle = '#FF0000'+opacity
+				context.fillStyle = c;
+			}
+			temp += wdw + wds;
+		});
+		temp -= (wdw + wds);
+		// Health bar is as wide as the weapon display
+		context.fillRect(base[0]-temp, base[1]+wdh+wds, temp+wdw, hbh);
+		context.fillRect(base[0]-temp, base[1]+wdh+wds, (temp+wdw)*player.health/player.maxHealth, hbh);
+	}
+
+	function drawGrid(context, cm) {
+		var grid_size = 100;
+		var parallax = 0.5
+		context.strokeStyle = '#222222';
+		for (var gp=screenWidth-(cm[0]*parallax)%grid_size; gp>0;gp-=grid_size) {
+			context.beginPath();
+			context.moveTo(gp,0);
+			context.lineTo(gp,screenHeight);
+			context.stroke();
+		}
+		for (var gp=screenHeight-(cm[1]*parallax)%grid_size; gp>0;gp-=grid_size) {
+			context.beginPath();
+			context.moveTo(0,gp);
+			context.lineTo(screenWidth,gp);
+			context.stroke();
+		}
+	}
+
+	function keyPress(kc) {
+		if (event != false) {
+			if (kc == D_KEY || kc == RIGHT_KEY) {
+				eventVar += 1;
+			} else if (kc == A_KEY || kc == LEFT_KEY) {
+				eventVar -= 1;
+			} else if (kc == W_KEY || kc == UP_KEY) {
+				concludeEvent(event);
+			}
+		} else if (playerLanded != false) {
+			if (kc == S_KEY || kc == DOWN_KEY) {
+				menuConfirm = false;
+				menuPosition = (menuPosition+1)%menuOptions.length;
+			} else if (kc == W_KEY || kc == UP_KEY) {
+				menuConfirm = false;
+				menuPosition = menuPosition!=0?menuPosition-1:menuOptions.length-1;
+			} else if (kc == D_KEY || kc == RIGHT_KEY) {
+				if (menuConfirm == true) {
+					menuConfirm = false;
+				} else {
+					menuOptions[menuOptions.length-1].function();
+				}
+			} else if (kc == A_KEY || kc == LEFT_KEY) {
+				var f = menuOptions[menuPosition].function;
+				if (f != null) {
+					f();
+				}
+			}
+		}
+	}
+
+	function planetMainMenu() {
+		currentMenu = MAIN_MENU;
+		menuPosition = menuConfirm = 0;
+		var f=playerLanded.faction;
+		menuOptions = [
+			{
+				text: "Main",
+				function: null,
+			},
+			{
+				text: "Switch Ship",
+				function: (playerLanded.faction==false?null:function(){
+					planetBuyShip();
+				}),
+			},
+			{
+				text: "Install Weapon",
+				function: (playerLanded.faction==false?null:function(){
+					planetSelectSlot();
+				}),
+			},
+			{
+				text: "Take off", // Pressing 'left' runs the last menu option's function
+				function: function(){
+					updateUniverse(objs);
+					player.system.reloadSystem(objs,player);
+					player.location = playerLanded.location.slice();
+					playerLanded = false;
+				},
+			}
+		];
+	}
+
+	function planetBuyShip(objs) {
+		currentMenu = BUY_SHIP;
+		menuPosition = menuConfirm = 0;
+		var f=playerLanded.faction;
+		menuOptions = [{
+			text: "Current Ship",
+			ship: player,
+			function: null
+		}]; 
+		var tf = new Array(shipCosts.length).fill(0);
+		playerLanded.fleets.forEach(f=>{
+			for (var i=0;i<f.shipCapacities.length;i++){
+				tf[i] += f.shipCapacities[i];
+			}
+		});
+		// Options: Current ship, all faction ships in faction table, exit 
+		var rel = player.faction.getRelationship(playerLanded.faction);
+		for (var i=0;i<tf.length;i++) {
+			
+			if (tf[i] > 0) {
+				var sn = playerLanded.faction.shipTable[i].name;
+				var cost = shipCosts[i] * 15;
+				var i2 = i;
+				menuOptions.push({
+					text: sn,
+					ship: playerLanded.faction.shipTable[i2], // What ship can we buy here?
+					cost: cost,
+					function: ((rel<cost)?null:function(){
+						if (menuConfirm == true) {
+							// Buy the ship and return to the menu
+							setPlayerShip(playerLanded.faction.shipTable[i2]);
+							player.altitude = 0;
+							planetMainMenu();
+							player.faction.adjRelationship(playerLanded.faction, -cost);
+							//
+							addMsg('Acquired a ' + playerLanded.faction.shipTable[i2].name + '.');
+						} else {
+							menuConfirm = true;
+						}
+					})
+				});
+			}
+		}
+		//
+		menuOptions.push({
+			text: "Back",
+			function: function(){
+				planetMainMenu();
+			},
+		});
+	}
+
+	function planetSelectSlot() {
+		currentMenu = SELECT_SLOT;
+		menuPosition = menuConfirm = 0;
+		var f=playerLanded.faction;
+		menuOptions = []; 
+		// Options: Current ship, all faction ships in faction table, exit 
+		var rel = player.faction.getRelationship(playerLanded.faction);
+		primarySlots = 0;
+		secondarySlots = 0;
+		for (var i=0;i<player.weaponSlots.length;i++) {
+			let i2 = i;
+			let slot = player.weaponSlots[i2];
+			menuOptions.push({
+				text: (slot.secondary?'Secondary slot '+(++secondarySlots):'Primary slot '+(++primarySlots)),
+				slot: slot,
+				function: function() {
+					// Select this slot and move to the weapon purchase screen.
+					planetBuyWeapon(slot);
+				}
+			});
+		}
+		//
+		menuOptions.push({
+			text: "Back",
+			function: function(){
+				planetMainMenu();
+			}
+		});
+	}
+
+	function planetBuyWeapon(slot) {
+		currentMenu = BUY_WEAPON;
+		menuPosition = menuConfirm = 0;
+		var f=playerLanded.faction;
+		menuOptions = []; 
+		// Options: Current ship, all faction ships in faction table, exit 
+		var rel = player.faction.getRelationship(playerLanded.faction);
+		var wpnList = (slot.secondary)?f.weaponTable.secondary:f.weaponTable.primary;
+		for (var i=0;i<wpnList.length;i++) {
+			var wpn = wpnList[i];
+			menuOptions.push({
+				text: wpn.name,
+				wpn: wpn,
+				function: (player.faction.getRelationship(f)<=0)?null:function() {
+					if (menuConfirm==true) {
+						// Equip the weapon in the chosen slot
+						slot.installWeapon(new Weapon(wpn));
+						addMsg('Installed ' + wpn.name + ".");
+						// Back
+						planetSelectSlot();
+					} else {
+						menuConfirm = true;
+					}
+				}
+			});
+		}
+		//
+		menuOptions.push({
+			text: "Back",
+			function: function(){
+				planetSelectSlot();
+			}
+		});
+	}
+
+	function drawTextBlock(ctx,x,y,w,h,text,fs) {
+		let sentences = [];
+		let words = text.split(' ');
+		let cur = "";
+		words.forEach(wd=>{
+			let temp = cur+" "+wd;
+			if (ctx.measureText(temp).width > w) { // If we exceed the maximum width, continue.
+				sentences.push(cur);
+				cur = "";
+			}
+			cur += " "+wd;
+		});
+		sentences.push(cur);
+		th = 0;
+		for (let i=0;i<sentences.length;i++) {
+			let s = sentences[i];
+			ctx.fillText(s,x,y+th);
+			th+=fs;
+			if (th>h) { return sentences.slice(i+1); }
+		}
+		return [];
+	}
+
+	function displayMainMenu(context,x,w,y,h,c) {
+		// Planet name, image, description
+		let color = context.strokeStyle = context.fillStyle = c;
+		// Header
+		y+=menuFontSize;
+		context.fillText(playerLanded.name,x+10,y);
+		y+=5;
+		context.beginPath();
+		context.moveTo(x, y);
+		context.lineTo(x+w,y);
+		context.stroke();
+		// Image
+		/*
+		context.beginPath();
+		context.arc(x+w/2,y+h/6,h/6,0,2*Math.PI);
+		*/
+		// Sun
+		let s = player.system;
+		let center = [x+w/2, y+h/6];
+		let imgScale = (h/6-15)/s.killRadius;
+		context.fillStyle = playerLanded.sunColor;
+		context.beginPath();
+		context.arc(center[0],center[1],s.sunRadius*imgScale,0,2*Math.PI);
+		context.fill();
+		// Planets
+		player.system.planets.forEach(p=>{
+			drawPlanetScale(context, p, imgScale, center, '');
+		});
+		context.strokeStyle='#FFFFFF';
+		context.beginPath();
+		context.arc(...pt_add(center,pt_mul(playerLanded.location,imgScale)),playerLanded.radius*imgScale+5,0,2*Math.PI);
+		context.stroke();
+		// Adjust position
+		context.strokeStyle = color;
+		y += h/3;
+		context.moveTo(x, y);
+		context.lineTo(x+w,y);
+		context.stroke();
+		// Description
+		y+=menuFontSize;
+		let text = ((playerLanded.faction==false)||(playerLanded.faction.name==playerLanded.initialFaction))?playerLanded.desc:playerLanded.faction.conquestText;
+		drawTextBlock(context,x,y,w-10,(2*h/3-menuFontSize*2),text,menuFontSize);
+	}
+
+	function displayBuyShip(context,x,w,y,h,c) {
+		// Ship name, image, description
+		context.strokeStyle = context.fillStyle = c;
+		var o = menuOptions[menuPosition];
+		// Header
+		y+=menuFontSize;
+		context.fillText(o.text,x+10,y);
+		y+=5;
+		context.beginPath();
+		context.moveTo(x, y);
+		context.lineTo(x+w,y);
+		context.stroke();
+		// Image
+		if (isdef(o.ship)) {
+			var adj = [x+w/2,y+h/6];
+			context.moveTo(...o.ship.shape[0]);
+			context.beginPath();
+			o.ship.shape.forEach(p =>{
+				context.lineTo(...pt_add(p, adj));
+			});
+			context.stroke();
+			// Display weapon slots
+			o.ship.weaponSlots.forEach(s =>{
+				var loc = pt_add(s.location, adj);
+				context.strokeStyle = '#FF0000AA';
+				context.beginPath();
+				context.arc(loc[0],loc[1], (s.secondary)?5:2, 0, 2*Math.PI);
+				context.stroke();
+				context.beginPath();
+				context.arc(loc[0], loc[1], 10, s.angle - s.arc, s.angle + s.arc);
+				context.stroke();
+			});
+			context.strokeStyle = c;
+		}
+		y += h/3;
+		context.beginPath();
+		context.moveTo(x, y);
+		context.lineTo(x+w,y);
+		context.stroke();
+		// Description
+		y+=menuFontSize;
+		if (isdef(o.ship)) {
+			let statText = "HP: " + o.ship.maxHealth + " REGEN: " + o.ship.regen + " SPD: " + o.ship.max_vel + " ACC " + o.ship.acceleration + " AGI " + o.ship.turn_rate;
+			context.fillText(statText,x+10,y); // Wrapping must be done manually with measuretext.
+			y+=menuFontSize;
+			let text = (menuPosition==0)?"Your current ship.":o.ship.desc;
+			text = menuConfirm?"This will cost you " + o.cost + " reputation. Continue?":text;
+			drawTextBlock(context,x,y,w-10,(2*h/3-menuFontSize*2),text,menuFontSize);
+		}
+	}
+
+	function displaySelectSlot(context,x,w,y,h,c) {
+		// Ship name, image(with higlighted weapon slots), description
+		context.strokeStyle = context.fillStyle = c;
+		var o = menuOptions[menuPosition];
+		// Header
+		y+=menuFontSize;
+		context.fillText('Select Weapon Slot',x+10,y);
+		y+=5;
+		context.beginPath();
+		context.moveTo(x, y);
+		context.lineTo(x+w,y);
+		context.stroke();
+		// Image
+		var adj = [x+w/2,y+h/6];
+		context.moveTo(...player.shape[0]);
+		context.beginPath();
+		player.shape.forEach(p =>{
+			context.lineTo(...pt_add(p, adj));
+		});
+		context.stroke();
+		// Display weapon slots
+		player.weaponSlots.forEach(s =>{
+			var loc = pt_add(s.location, adj);
+			context.strokeStyle = (s.weapon==false)?'#FF000055':'#FF0000AA';
+			context.beginPath();
+			context.arc(loc[0],loc[1], (s.secondary)?5:2, 0, 2*Math.PI);
+			context.stroke();
+			context.beginPath();
+			context.arc(loc[0], loc[1], 10, s.angle - s.arc, s.angle + s.arc);
+			context.stroke();
+			if (s == o.slot) {
+				context.beginPath();
+				context.arc(loc[0],loc[1], 15, 0, 2*Math.PI);
+				context.stroke();
+			}
+		});
+		context.strokeStyle = c;
+		y += h/3;
+		context.beginPath();
+		context.moveTo(x, y);
+		context.lineTo(x+w,y);
+		context.stroke();
+		// Description
+		y+=menuFontSize;
+		if (isdef(o.slot)) {
+			let text = "ARC: " + Math.round(o.slot.arc*180/Math.PI) + " degrees ANGLE: " + Math.round(o.slot.angle*180/Math.PI) + " degrees TYPE: " + (o.slot.secondary?'secondary':'primary');
+			drawTextBlock(context,x,y,w-10,(2*h/3-menuFontSize*2),text,menuFontSize);
+		}
+	}
+
+	function displayBuyWeapon(context,x,w,y,h,c) {
+		// Ship name, image(with higlighted weapon slots), description
+		context.strokeStyle = context.fillStyle = c;
+		var o = menuOptions[menuPosition];
+		// Header
+		y+=menuFontSize;
+		context.fillText('Select Weapon Slot',x+10,y);
+		y+=5;
+		context.beginPath();
+		context.moveTo(x, y);
+		context.lineTo(x+w,y);
+		context.stroke();
+		// Something could go here in the future.
+		//
+		y += h/3;
+		context.moveTo(x, y);
+		context.lineTo(x+w,y);
+		context.stroke();
+		// Description
+		y+=menuFontSize;
+		if (isdef(o.wpn)) {
+			let text = menuConfirm?"Install "+o.wpn.name+"?":o.wpn.desc;
+			drawTextBlock(context,x,y,w-10,(2*h/3-menuFontSize*2),text,menuFontSize);
+		}
+	}
+
+	function handleLanded(context) {
+		// Display the menu background
+		context.fillStyle = menuBackgroundColor;
+		var color = (playerLanded.faction==false)?planetColor:playerLanded.faction.color;
+		context.strokeStyle = color;
+		var mx = screenWidth/2-menuWidth/2;
+		var my = screenHeight/2-menuHeight/2;
+		var sx = screenWidth/2+menuWidth/2-sidebarWidth;
+		context.fillRect(mx,my,menuWidth,menuHeight);
+		context.beginPath();
+		context.rect(mx,my,menuWidth,menuHeight);
+		context.moveTo(sx,my);
+		context.lineTo(sx,my+menuHeight);
+		context.stroke();
+		// Display the menu options
+		var sy = my+menuFontSize;
+		context.font = menuFont;
+		
+		// Display the player's reputation, first.
+		context.fillStyle = color;
+		var rt = playerLanded.faction==false?'Uninhabited':'Reputation: '+Math.floor(player.faction.getRelationship(playerLanded.faction));
+		context.fillText(rt, sx + (i==menuPosition?20:10), sy);
+		sy += 5;
+		context.moveTo(sx,sy);
+		context.lineTo(sx+sidebarWidth,sy);
+		context.stroke();
+		sy += menuFontSize;
+		//
+		for (var i=0; i<menuOptions.length; i++) {
+			context.fillStyle = color + (menuOptions[i].function==null?'55':'');
+			context.fillText((i==menuPosition?"< ":"")+menuOptions[i].text, sx + (i==menuPosition?20:10), sy);
+			sy += menuFontSize*1.1;
+		}
+		// 
+		switch (currentMenu) {
+			case MAIN_MENU: displayMainMenu(context, mx, menuWidth-sidebarWidth, my, menuHeight,color);
+			break;
+			case BUY_SHIP: displayBuyShip(context, mx, menuWidth-sidebarWidth, my, menuHeight,color);
+			break;
+			case SELECT_SLOT: displaySelectSlot(context, mx, menuWidth-sidebarWidth, my, menuHeight,color);
+			break;
+			case BUY_WEAPON: displayBuyWeapon(context, mx, menuWidth-sidebarWidth, my, menuHeight,color);
+			break;
+		}
+	}
+
+	function getEVar(n) {
+		// Get the selection within a given range
+		return (eventVar>=0)?(eventVar%n):((eventVar%n)+n)%n;
+	}
+
+	function startEvent(en) {
+		eventVar = 0;
+		event = objs.events[en];
+	}
+
+	function concludeEvent() {
+		if (event.special==true) {
+			switch (event.name) {
+				case "startEvent": 
+					let factions = [objs.factions['Grey Republic'], objs.factions['Golden Empire']];
+					let eVar = getEVar(factions.length);
+					setPlayerShip(factions[eVar].shipTable[0]);
+					factions[eVar].armShip(player);
+					startEvent(factions[eVar].shipTable[0].name + "Event");
+				break;
+			}
+		} else {
+			if (isdef(event.next)) {
+				startEvent(event.next);
+			} else {
+				event = false;
+			}
+		}
+	}
+
+	function displayStartingShipSelection(x, y, w, h, f, highlight, context) {
+		let s = f.shipTable[0];
+		context.strokeStyle=f.color;
+		context.beginPath();
+		context.rect(x,y,w,h);
+		context.stroke();
+		if (highlight) {
+			context.beginPath();
+			context.rect(x+5,y+5,w-10,h-10);
+			context.stroke();
+		}
+		// Draw the ship
+		let c = [x+w/2,y+h/2];
+		context.beginPath();
+		s.shape.forEach(p=>{
+			context.lineTo(...pt_add(p,c));
+		});
+		context.stroke();
+	}
+
+	function handleEvent(context) {
+		// Display the menu background
+		context.fillStyle = menuBackgroundColor;
+		context.font = menuFont;
+		var color = player.faction.color;
+		context.strokeStyle = color;
+		var mx = screenWidth/2-menuWidth/2;
+		var my = screenHeight/2-menuHeight/2;
+		context.fillRect(mx,my,menuWidth,menuHeight);
+		context.beginPath();
+		context.rect(mx,my,menuWidth,menuHeight);
+		context.stroke();
+		// 
+		if (event.special==true) {
+			switch (event.name) {
+				case "startEvent": 
+					let factions = [objs.factions['Grey Republic'], objs.factions['Golden Empire']];
+					let sx = mx;
+					let h = menuHeight - menuFontSize*2;
+					let ix = menuWidth/factions.length;
+					let i = 0;
+					let eVar = getEVar(factions.length);
+					// Add some text at the bottom.
+					let y = my+h;
+					context.strokeStyle = context.fillStyle = player.faction.color;
+					context.beginPath();
+					context.moveTo(mx, y);
+					context.lineTo(mx+menuWidth,y);
+					context.stroke();
+					y += menuFontSize*1.25;
+					let t = "Choose.";
+					context.fillText(t,mx+(menuWidth-context.measureText(t).width)/2,y);
+					// Illustrate the choices.
+					factions.forEach(f=>{
+						let sel = eVar==i;
+						displayStartingShipSelection(sx, my, ix, h, f, sel, context);
+						// Display arrows if this ship is selected
+						if (sel==true) {
+							context.fillStyle = f.color;
+							let tw = context.measureText('^').width;
+							context.fillText('^',sx+(ix-tw)/2,my+menuFontSize*2);
+							context.fillText('<',(sx+tw*2),my+h-menuFontSize*2);
+							context.fillText('>',(sx+ix-tw*2),my+h-menuFontSize*2);
+						}
+						//
+						sx += ix;
+						i += 1;
+					});
+					
+				break;
+			}
+		} else { // Display the relevant text
+			context.strokeStyle = context.fillStyle = player.faction.color;
+			let tw = context.measureText('^').width;
+			context.fillText('^',mx+(menuWidth-tw)/2,my+menuFontSize);
+			context.beginPath();
+			context.moveTo(mx, my+menuFontSize*1.5);
+			context.lineTo(mx+menuWidth, my+menuFontSize*1.5);
+			context.stroke();
+			drawTextBlock(context,mx+10,my+10+menuFontSize*2.5,menuWidth-20,menuHeight-20,event.text,menuFontSize)
+		} 
+	}
+
+	function loop_update() {
+		player.system.update(objs);
+		objs.ships.forEach(function(o) {
+			o.update(objs);
+		});
+		objs.projs.forEach(function(o) {
+			o.update(objs);
+		});
+		objs.fx.forEach(function(o) {
+			o.update(objs);
+		});
+	}
+
+	function loop() {
+		// Render the screen
+		context.fillStyle = '#111111';
+		// Neon FX
+		//*
+		context.lineWidth = Math.random()>.9?4:2;
+		context.fillStyle += '77';
+		//*/
+		context.fillRect(0,0,screenWidth,screenHeight);
+		// Render and update
+		camera = pt_add(player.location, [-screenWidth/2, -screenHeight/2]);
+		// Render a background grid
+		drawGrid(context, camera);
+		//
+		player.system.render(context, camera, objs);
+		objs.ships.forEach(function(o) {
+			o.render(context, camera);
+		});
+		objs.projs.forEach(function(o) {
+			o.render(context, camera);
+		});
+		objs.fx.forEach(function(o) {
+			o.render(context, camera);
+		});
+		// Render the system map
+		renderMap(objs, player, player.system, context);
+		// Render the minimap
+		renderMinimap(objs, player, player.system, context);
+		// Render the message console
+		renderMessages(context);
+		// Render the player's health and weapon status
+		renderPlayerHUD(context, player);
+		// If the player recently jumped, display a bright flash of light
+		if (player.jumpDelay > 0) {
+			context.fillStyle = '#FFFFFF'+toHex(Math.round(255*player.jumpDelay/MAXJUMPDELAY));
+			context.fillRect(0,0,screenWidth,screenHeight);
+		}
+		// Update the game state
+		if (playerLanded == false && event == false) {
+			loop_update();
+			// If the player is jumping, jump.
+			if (player.jumpTarget != false && keysDown.indexOf(E_KEY) != -1) {
+				if (player.jumpReady == true && player.jumpDelay==0) {
+					// Advance the universe one timestep.
+					updateUniverse(objs);
+					//
+					player.jumpTarget.enterSystem(objs, player);
+					player.jumpDelay = MAXJUMPDELAY;
+				}
+			}
+			// If the player is landing, land.
+			if (keysDown.indexOf(E_KEY) != -1 && player.altitude == 0 && player.landingTarget != false) {
+				// set 'landed' status
+				playerLanded = player.landingTarget;
+				addMsg('Landed on ' + player.landingTarget.name + '.');
+				planetMainMenu();
+			}
+		} else if (event != false) { // Menu 
+			handleEvent(context);
+		} else {
+			// 
+			handleLanded(context);
+		}
+		// Update the game state
+		getAnimationFrame(loop);
+	}
+
+	window.onresize = function() {
+		if(!canvas) return;
+
+		screenWidth = canvas.clientWidth;
+		screenHeight = canvas.clientHeight;
+
+		canvas.width = screenWidth;
+		canvas.height = screenHeight;
+	};
+
+	function initControls() {
+		window.onkeydown = function(e) {
+			if (keysDown.indexOf(e.keyCode) == -1) keysDown.push(e.keyCode);
+	    	e.preventDefault();
+		};
+
+		window.onkeyup = function(e) {
+			var ix = keysDown.indexOf(e.keyCode);
+			if ( ix != -1) {
+				keysDown.splice(ix, 1);
+				keyPress(e.keyCode);
+			}
+	    	e.preventDefault();
+		};
+
+		window.onmousedown = function(e) {
+			if (e.button == 0) {
+				leftMouseDown = true;
+			} else if (e.button == 2) {
+				rightMouseDown = true;
+			}
+			e.preventDefault();
+		}
+		window.onmouseup = function(e) {
+			if (e.button == 0) {
+				leftMouseDown = false;
+			} else if (e.button == 2) {
+				rightMouseDown = false;
+			}
+			e.preventDefault();
+		}
+		window.oncontextmenu = function(e) {
+			e.preventDefault();
+		}
+
+		window.onmousemove = function(e) {
+			mousePos = [e.clientX - screenWidth/2, e.clientY - screenHeight/2];
+			e.preventDefault();
+		}
+	}
+</script>
