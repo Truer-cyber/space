@@ -778,6 +778,7 @@
 			// Initialize core variables
 			this.location = [0,0];
 			this.altitude = 100;
+			this.tilt=0;
 		}
 		getRadius() {
 			var r = 0;
@@ -795,7 +796,12 @@
 			var a = this.angle;
 			var start = true;
 			var t = this;
+			let tiltAdj = 1;
+			if (t.tilt > 0) {
+				tiltAdj=Math.cos(t.tilt);
+			}
 			s.forEach(function(p) {
+				if (t.tilt > 0) { p = [p[0], p[1]*tiltAdj] }
 				p = pt_addAng(p, a);
 				if (t.altitude < 100) {p = pt_mul(p, t.altitude/100); }
 				p = pt_add(p, c);
@@ -848,6 +854,7 @@
 			this.angle = ang;
 			this.velocity = vel;
 			this.angVel = (.025-.05*Math.random());
+			this.tiltVel = (.05*Math.random());
 			this.baseColor = color;
 			this.color = this.baseColor+'90';
 			this.life = this.maxLife = life;
@@ -860,6 +867,9 @@
 		}
 		update(objs) {
 			this.life--;
+			//
+			this.tilt+=this.tiltVel;
+			//
 			if (this.life<0) {
 				objs.fx.splice(objs.fx.indexOf(this),1);
 				objs.fx.push(new CircleEffect(this.location, [0,0], this.radius, this.radius/150, this.baseColor,150));
@@ -904,6 +914,8 @@
 			this.acceleration = sd.acceleration;
 			this.max_vel = sd.max_vel;
 			this.turn_rate = sd.turn_rate;
+			// 
+			this.maxTilt = this.turn_rate*10;
 			//
 			this.player = false;
 			this.faction = faction;
@@ -933,14 +945,17 @@
 		createWreckEffect(objs) {
 			if (Math.random() > .5) {
 				// Split the wreck at all points
+				let adj=(this.tilt==0)?1:Math.cos(this.tilt);
 				let prev = this.shape[this.shape.length-1];
 				for (let i=0; i<this.shape.length;i++) {
-					let cur = this.shape[i]
-					objs.fx.push(new WreckEffect([prev,cur], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.color, Math.random()*200));
+					let cur = this.shape[i];
+					objs.fx.push(new WreckEffect([[prev[0],prev[1]*adj],[cur[0],cur[1]*adj]], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.color, Math.random()*200));
 					prev=cur;
 				}
 			} else { // Intact wreck
-				objs.fx.push(new WreckEffect(this.shape.slice(), this.location, this.angle, this.velocity, this.color, Math.random()*200, Math.floor(Math.random()*15+5), true));
+				let w = new WreckEffect(this.shape.slice(), this.location, this.angle, this.velocity, this.color, Math.random()*200, Math.floor(Math.random()*15+5), true);
+				w.tilt=this.tilt;
+				objs.fx.push(w);
 			}
 			objs.fx.push(new CircleEffect(this.location, [0,0], this.radius, this.radius/150, this.color,150));
 		}
@@ -1020,18 +1035,14 @@
 		}
 
 		decelerate() {
-			var tt = ang_turnTowards(this.angle, get_ang(pt_sub([0,0], this.velocity)), this.turn_rate);
-			this.angle = tt[0];
-			if (tt[1] == true) {
-				return 1;
-			}
-			return 0;
+			return ang_turnTowards(this.angle, get_ang(pt_sub([0,0], this.velocity)), this.turn_rate);
 		}
 
 		run_AI(objs) {
-			var turn = 0;
-			var thrust = 0;
-			var t = this;
+			let AI_turn = false; // For the AI, if it reaches its desired angle, we act as if it's not turning.
+			let turn = 0;
+			let thrust = 0;
+			let t = this;
 			this.jumpReady = false;
 			// One AI for all NPCs.
 			if (this.player == false) {
@@ -1039,10 +1050,10 @@
 				let locMag = get_mag(this.location);
 				let sunDist = this.fleet.location.sunKillRadius+200+get_mag(this.velocity)/this.acceleration+Math.PI/this.turn_rate;
 				if (locMag > this.fleet.location.killRadius) {
-					this.angle = ang_turnTowards(this.angle, get_ang(pt_sub([0,0],this.location)), this.turn_rate)[0];
+					AI_turn = ang_turnTowards(this.angle, get_ang(pt_sub([0,0],this.location)), this.turn_rate)
 					thrust = 1;
 				} else if (locMag < sunDist) { // If we're too close to the sun, get away from it.
-					this.angle = ang_turnTowards(this.angle, get_ang(pt_sub(this.location,[0,0])), this.turn_rate)[0];
+					AI_turn = ang_turnTowards(this.angle, get_ang(pt_sub(this.location,[0,0])), this.turn_rate);
 					thrust = 1;
 				} else {
 					if (this.target == false || objs.ships.indexOf(this.target) == -1) {
@@ -1070,7 +1081,7 @@
 						var mag = get_mag(p);
 						// For now, just thrust towards the enemy, and fire every gun available at it.
 						// If resources permit, more complex AI behavior can be attempted.
-						this.angle = ang_turnTowards(this.angle, ang, this.turn_rate)[0];
+						AI_turn = ang_turnTowards(this.angle, ang, this.turn_rate);
 						thrust = 1;
 						// Fire on the target with every available weapon
 						this.weaponSlots.forEach(function(w){
@@ -1101,17 +1112,17 @@
 							ang = (ang+this.orbitDirection*Math.PI/2)%(2*Math.PI);
 							if (ang < 0) { ang+=2*Math.PI; }
 						}
-						this.angle = ang_turnTowards(this.angle, ang, this.turn_rate)[0];
+						AI_turn = ang_turnTowards(this.angle, ang, this.turn_rate);
 						thrust=1;
 					}
 				}
 			} else if (keysDown.indexOf(E_KEY) != -1 && this.jumpTarget != false) { // Jumping disables other controls
 				if (get_mag(this.velocity) < 1.1*this.acceleration) {
-					var tt = ang_turnTowards(this.angle, get_ang(pt_sub(this.jumpTarget.location, this.system.location)), this.turn_rate);
-					this.angle = tt[0];
-					this.jumpReady = tt[1];
+					AI_turn = ang_turnTowards(this.angle, get_ang(pt_sub(this.jumpTarget.location, this.system.location)), this.turn_rate);
+					this.jumpReady = AI_turn[1];
 				} else { // Decelerate if moving too fast
-					thrust = this.decelerate();
+					AI_turn = this.decelerate();
+					thrust = AI_turn[1];
 				}
 			} else {
 				var landing = false;
@@ -1123,7 +1134,8 @@
 						if (get_mag(this.velocity) < 1.1*this.acceleration) {
 							this.altitude = Math.max(0, this.altitude-1);
 						} else {
-							thrust = this.decelerate();
+							AI_turn = this.decelerate();
+							thrust = AI_turn[1];
 						}
 					} 
 					
@@ -1134,7 +1146,8 @@
 					}
 				if (!landing) {
 					if ((keysDown.indexOf(DOWN_KEY) != -1 || keysDown.indexOf(S_KEY) != -1) && (get_mag(this.velocity)>this.acceleration)) {
-						thrust = this.decelerate();
+						AI_turn = this.decelerate();
+						thrust = AI_turn[1];
 					} else {
 						if (keysDown.indexOf(LEFT_KEY) != -1 || keysDown.indexOf(A_KEY) != -1) {
 							turn = -1;
@@ -1171,6 +1184,15 @@
 					}
 				}
 			}
+			// Turning
+			let goalTilt;
+			if (AI_turn) {
+				this.angle=AI_turn[0];
+				goalTilt=(AI_turn[1])?0:this.maxTilt;
+			} else {
+				goalTilt=(turn==0)?0:this.maxTilt;
+			}
+			this.tilt = .95*this.tilt+.05*goalTilt;
 			// Thrust control
 			if (thrust == 1) {
 				this.thrust(objs);
@@ -1184,8 +1206,11 @@
 			this.applyForce(this.angle, this.acceleration);
 			let smokeAng = (this.angle+(.95+.1*Math.random())*Math.PI)%(2*Math.PI);
 			if (Math.random() > .5) {
+				let adj = (this.tilt==0)?1:Math.cos(this.tilt);
 				this.engines.forEach(e=>{
-					objs.fx.push(new CircleEffect(pt_add(pt_addAng(e,this.angle),this.location), pt_add(this.velocity, pt(this.max_vel,smokeAng)), 2, .5, this.color,30));
+					let loc = e;
+					loc = [loc[0],loc[1]*adj];
+					objs.fx.push(new CircleEffect(pt_add(pt_addAng(loc,this.angle),this.location), pt_add(this.velocity, pt(this.max_vel,smokeAng)), 2, .5, this.color,30));
 				});
 			}
 		}
@@ -1244,7 +1269,11 @@
 		}
 
 		getTrueLocation() {
-			return pt_add(this.ship.location, pt_addAng(this.location, this.ship.angle));
+			if (this.ship.tilt==0) {
+				return pt_add(this.ship.location, pt_addAng(this.location, this.ship.angle));
+			} else {
+				return pt_add(this.ship.location, pt_addAng([this.location[0],this.location[1]*Math.cos(this.ship.tilt)], this.ship.angle));
+			}
 		}
 
 		getTrueAngle() {
@@ -1787,15 +1816,19 @@
 
 		handleBattles(objs) {
 			// Handles invasions before movement is processed.
-			if (this.checkHostileSystem(this.location)) {
-				this.invadeSystem(objs);
+			let shipCount = this.transports;
+			this.shipCounts.forEach(c => {shipCount+=c;});
+			if (shipCount != 0) {
+				if (this.checkHostileSystem(this.location)) {
+					this.invadeSystem(objs);
+				}
 			}
 		}
 
 		// Handle movement after restocking
 		update(objs) {
 			this.prevSystem = this.location; // Allows us to place the fleet in a suitable in-system position.
-			var shipCount = this.transports;
+			let shipCount = this.transports;
 			this.shipCounts.forEach(c => {shipCount+=c;});
 			if (shipCount == 0) {
 				if (this.location!=this.homeSystem) {
@@ -1914,7 +1947,7 @@
 
 		generateDesc(p, s) {
 			let heat = (p.orbit < s.sunRadius*3);
-			let cold = (p.orbit > s.sunRadius*10);
+			let cold = (p.orbit > s.sunRadius*5);
 			if (heat) {
 				p.desc=p.name + ' is an unremarkable world, its features long since melted away by the searing heat of the local star.';
 			} else if (cold) {
@@ -1926,7 +1959,7 @@
 
 		generateMoonDesc(m,p,s) {
 			let heat = (p.orbit < s.sunRadius*3);
-			let cold = (p.orbit > s.sunRadius*10);
+			let cold = (p.orbit > s.sunRadius*5);
 			if (heat) {
 				m.desc=m.name + ' shields ' + p.name + ' from some of ' + s.name + "'s intense heat, but not enough to make it remotely livable.";
 			} else if (cold) {
@@ -1945,7 +1978,7 @@
 				pr = .7;
 				let r = 10 + Math.random()*100;
 				let ms = [];
-				while (Math.random() > 0.3) {
+				while (Math.random() < 0.3) {
 					let mr = Math.max(10, r/2*Math.random());
 					ms.push({
 						radius: mr,
@@ -2681,6 +2714,13 @@
 		// Jump indicator
 		if (player.jumpDelay==0&&player.jumpTarget) {
 			let t = "HOLD 'E' TO JUMP TO " + player.jumpTarget.name.toUpperCase();
+			context.fillStyle = '#FFFFFF55';
+			context.fillText(t,ix-context.measureText(t).width/2,iy);
+			iy += menuFontSize;
+		}
+		// Land indicator
+		if (player.landingTarget && (!playerLanded)) {
+			let t = "HOLD 'E' TO LAND ON " + player.landingTarget.name.toUpperCase();
 			context.fillStyle = '#FFFFFF55';
 			context.fillText(t,ix-context.measureText(t).width/2,iy);
 			iy += menuFontSize;
