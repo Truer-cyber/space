@@ -3927,7 +3927,7 @@
 			if (keysDown.indexOf(E_KEY) != -1 && player.altitude == 0 && player.landingTarget != false) {
 				// set 'landed' status
 				playerLanded = player.landingTarget;
-				if (playerLanded.faction.getRelationship(player.faction)>0) {player.health=player.maxHealth;}
+				if (playerLanded.faction && playerLanded.faction.getRelationship(player.faction)>0) {player.health=player.maxHealth;}
 				addMsg('Landed on ' + player.landingTarget.name + '.');
 				planetMainMenu();
 			}
