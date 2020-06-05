@@ -127,11 +127,14 @@
 				{
 					name: "Leviathan",
 					desc: "The design of the X-5 Leviathan gunship has seen countless revisions and adaptations over its decades of service. While several attempts have been made to replace it, the costs of reorganizing the Republic's military around a new main attack craft have thus far outweighed the potential benefits, especially given the Leviathan's inarguable effectiveness against even the most novel threats.",
-					maxHealth: 175,
+					maxHealth: 230,
 					regen: .2,
 					max_vel: 4,
-					acceleration: .07,
+					acceleration: .12,
 					turn_rate: .05,
+					strafe: .5,
+					strafeFuel: 40,
+					strafeReload: 25,
 					shape: [[10,-5],[11.0625,-6.25],[11.1875,-9],[10.3125,-11],[8.8125,-13.5],[7.6875,-13.625],[7.6875,-18.5],[8.9375,-25],[8.9375,-32.5],[8.0625,-36.125],[7.8125,-38.875],[6.9375,-40.25],[4.8125,-39.875],[2.8125,-37.375],[0.8125,-36.625],[-0.4375,-34.5],[-1.5625,-21.375],[-3.6875,-7],[-3.1875,-5],[-2.0625,-3.625],[-0.0625,-3.75],[-0.4375,-2.5],[-0.4375,-0.625],[0.0625,-0.625],[0,0],[0,0],[0.0625,0.625],[-0.4375,0.625],[-0.4375,2.5],[-0.0625,3.75],[-2.0625,3.625],[-3.1875,5],[-3.6875,7],[-1.5625,21.375],[-0.4375,34.5],[0.8125,36.625],[2.8125,37.375],[4.8125,39.875],[6.9375,40.25],[7.8125,38.875],[8.0625,36.125],[8.9375,32.5],[8.9375,25],[7.6875,18.5],[7.6875,13.625],[8.8125,13.5],[10.3125,11],[11.1875,9],[11.0625,6.25],[10,5],[10,-5],[10,-5]],
 					engines: [
 						[.5,0]
@@ -189,19 +192,19 @@
 				primary: [
 					{
 						name: "Missile Launcher",
-						desc: "The ME-3 missile launcher is resource-efficient to assemble and deploy in large numbers. For that reason, automated drones and  make heavy use of them.",
+						desc: "The ME-3 missile launcher is resource-efficient to assemble and deploy in large numbers. For that reason, automated drones and low-priority task forces make heavy use of it.",
 						cost: 0,
 						projectileCount: 1,
 						accuracy: .1,
-						rof: 25,
+						rof: 120,
 						projectile: { 
 							damage: 40,
 							damageVar: 5,
 							AoE: 25, 
 							lockingAngle: 1/3*Math.PI, // Weapon will lock onto the enemy with the lowest angular dist.
-							trackingRate: .02, // Weapon will track the locked target at this rate.
+							trackingRate: .01, // Weapon will track the locked target at this rate.
 							range: 700,
-							speed: 8
+							speed: 6
 						}
 					},
 					{
@@ -211,13 +214,14 @@
 						projectileCount: 1,
 						accuracy: .1, // Max potential deviation from the firing angle
 						rof: 5, // Frames between shots
+						recoil: .2,
 						// Ammunition and reloading
-						clipSize: 30, // defaults to 1
+						clipSize: 40, // defaults to 1
 						reloadRate: 200, // defaults to rof
 						incReload: false, // defaults to false
 						firingResets: true, // defaults to true
 						projectile: { // Unused traits are left undefined
-							damage: 5,
+							damage: 8,
 							damageVar: 2, // Max potential deviation from base damage
 							range: 700,
 							speed: 10
@@ -230,13 +234,14 @@
 						projectileCount: 3,
 						accuracy: .3, // Max potential deviation from the firing angle
 						rof: 8, // Frames between shots
+						recoil: .5,
 						// Ammunition and reloading
 						clipSize: 50, // defaults to 1
 						reloadRate: 20, // defaults to rof
 						incReload: true, // defaults to false
 						firingResets: true, // defaults to true
 						projectile: { // Unused traits are left undefined
-							damage: 3,
+							damage: 8,
 							damageVar: 1, // Max potential deviation from base damage
 							range: 700,
 							speed: 10
@@ -272,7 +277,8 @@
 						projectileCount: 2,
 						accuracy: .1,
 						rof: 7, 
-						clipSize: 25,
+						recoil: .3,
+						clipSize: 10,
 						reloadRate: 150,
 						incReload: false,
 						firingResets: true,
@@ -298,7 +304,7 @@
 					relationships: {
 						'Player': -100,
 						'Grey Republic': -100,
-						'Golden Empire': -10
+						'Golden Empire': -100
 					},
 					//
 					growthRate: .5,
@@ -334,7 +340,7 @@
 					{
 							location: [97.5,0],
 							angle: 0,
-							arc: Math.PI * 6/7,
+							arc: Math.PI * 4/7,
 							secondary: true
 						}
 				]
@@ -343,11 +349,11 @@
 				{
 					name: "Ossuary",
 					unmanned: true,
-					maxHealth: 50,
+					maxHealth: 40,
 					regen: .3,
 					max_vel: 6.7,
 					acceleration: .3,
-					turn_rate: .05,
+					turn_rate: .08,
 					shape: [[18.75,0],[16.21875,0.9375],[3.09375,3],[6.46875,7.5],[6.46875,14.25],[-8.34375,6.75],[-8.15625,3.9375],[-3.75,3.75],[-3.75,0],[-3.75,0],[-3.75,-3.75],[-8.15625,-3.9375],[-8.34375,-6.75],[6.46875,-14.25],[6.46875,-7.5],[3.09375,-3],[16.21875,-0.9375],[18.75,0],[18.75,0]],
 					engines: [[-3.75,0]],
 					weaponSlots: [{
@@ -360,11 +366,15 @@
 				{
 					name: "Vedette",
 					desc: "The Vedette was the workhorse of the Imperial people, before the scarlet revolution. Nowadays, the vast stocks of these vessels are slowly running dry.",
-					maxHealth: 75,
+					maxHealth: 150,
 					regen: .1,
 					max_vel: 5,
 					acceleration: .2,
 					turn_rate: .15,
+					turn_rate: .05,
+					strafe: .5,
+					strafeFuel: 40,
+					strafeReload: 20,
 					shape: [[14.375,0],[9.375,6.25],[3.125,3.75],[2.59375,6.1875],[1.34375,4],[0.625,3.75],[-0.28125,16.625],[-1.65625,16.875],[-3.125,8.75],[-4,10],[-6,10],[-6.78125,6.6875],[-6.875,2.5],[-5.96875,1.375],[-6,0],[-6,0],[-5.96875,-1.375],[-6.875,-2.5],[-6.78125,-6.6875],[-6,-10],[-4,-10],[-3.125,-8.75],[-1.65625,-16.875],[-0.28125,-16.625],[0.625,-3.75],[1.34375,-4],[2.59375,-6.1875],[3.125,-3.75],[9.375,-6.25],[14.375,0],[14.375,0]],
 					engines: [
 						[-6.5,0]
@@ -432,10 +442,11 @@
 						accuracy: .07,
 						rof: 12, 
 						projectile: { 
-							damage: 10,
+							damage: 20,
 							damageVar: 2,
 							range: 700,
 							speed: 6,
+							AoE: 10,
 							detonateOnTimeout: true,
 							fragments: {
 								count: 4,
@@ -443,7 +454,7 @@
 								projectile: {
 									damage: 7,
 									damageVar: 2,
-									range: 400,
+									range: 600,
 									speed: 6
 								}
 							}
@@ -474,8 +485,9 @@
 						projectileCount: 1,
 						accuracy: 0,
 						rof: 30, 
+						recoil: 1,
 						projectile: { 
-							damage: 25,
+							damage: 20,
 							damageVar: 5,
 							range: 900,
 							speed: 15,
@@ -489,6 +501,7 @@
 						projectileCount: 1,
 						accuracy: .3,
 						rof: 400, 
+						recoil: 10,
 						projectile: { 
 							damage: 150,
 							damageVar: 50,
@@ -504,9 +517,9 @@
 					name: 'Bronze Warlords',
 					color: '#AA7722',
 					relationships: {
-						'Player': -10,
+						'Player': 0,
 						'Golden Empire': -100,
-						'Grey Republic': -10
+						'Grey Republic': -100
 					},
 					//
 					growthRate: .3,
@@ -576,7 +589,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [2, 0, 0]
+							shipCapacities: [2, 1, 0]
 						},
 						{
 							// Not defining a trait (defensive, aggressive, transports) --> 0
@@ -596,20 +609,20 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [2, 1, 1,0]
+							shipCapacities: [2, 1, 1, 0]
 						},
 						{
 							defensive: 0,
 							aggressive: 1,
-							shipCapacities: [2, 0, 0]
+							shipCapacities: [4, 0, 0]
 						},
 						{
 							defensive: 0,
 							transports: 1,
-							shipCapacities: [4, 0, 0]
+							shipCapacities: [2, 0, 0]
 						},
 						{
-							shipCapacities: [2,0,0]
+							shipCapacities: [0,1,0]
 						}
 					]
 				}
@@ -633,7 +646,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [3, 1, 0]
+							shipCapacities: [1, 2, 0]
 						}
 					]
 				},
@@ -676,7 +689,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [2, 0, 0]
+							shipCapacities: [1, 0, 0]
 						}
 					]
 				},
@@ -698,7 +711,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [3, 0, 0]
+							shipCapacities: [1, 1, 0]
 						}
 					]
 				}
@@ -727,7 +740,7 @@
 						{	// Aggressive fleets will build to capacity, then move to invade the nearest hostile system
 							defensive: 0,
 							aggressive: 1,
-							shipCapacities: [3, 1, 0]
+							shipCapacities: [3, 1, 1]
 						},
 						{
 							shipCapacities: [1,1,0]
@@ -773,10 +786,10 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [2, 0, 0]
+							shipCapacities: [1, 0, 0]
 						},
 						{
-							shipCapacities: [2,0,0]
+							shipCapacities: [0,2,0]
 						}
 					]
 				}
@@ -799,11 +812,11 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [3, 0, 0]
+							shipCapacities: [0, 2, 0]
 						},
 						{
 							transports: 1,
-							shipCapacities: [2,1,0]
+							shipCapacities: [2,0,1]
 						}
 					]
 				},
@@ -877,6 +890,9 @@
 			ang -= 2 * Math.PI;
 		}
 		return [ang, false,dir];
+	}
+	function normAng(a) {
+		return (a>=0)?(a%(2*Math.PI)):(a+2*Math.PI);
 	}
 </script>
 
@@ -959,7 +975,7 @@
 	}
 	// Visual effects involving polygons
 	class WreckEffect extends Obj {
-		constructor(shape, loc, ang, vel, color, life, maxTiltVel, smoke=false, explodes=false) {
+		constructor(shape, loc, ang, vel, tilt, color, life, initialTilt, smoke=false, explodes=false) {
 			super();
 			this.shape=shape;
 			this.getRadius();
@@ -967,7 +983,8 @@
 			this.angle = ang;
 			this.velocity = vel;
 			this.angVel = (.025-.05*Math.random());
-			this.tiltVel = (maxTiltVel*Math.random());
+			this.tilt = initialTilt;
+			this.tiltVel = (.05*Math.random());
 			this.baseColor = color;
 			this.color = this.baseColor+'90';
 			this.life = this.maxLife = life;
@@ -975,13 +992,12 @@
 			this.explodes=explodes;
 		}
 		render(ctx, c_loc) {
-			//this.color = this.baseColor+Math.floor(10+this.life/this.maxLife*89);
 			super.render(ctx,c_loc);
 		}
 		update(objs) {
 			this.life--;
 			//
-			this.tilt+=this.tiltVel;
+			this.tilt=normAng(this.tilt+this.tiltVel);
 			//
 			if (this.life<0) {
 				objs.fx.splice(objs.fx.indexOf(this),1);
@@ -991,7 +1007,7 @@
 					let expMag = get_mag(this.velocity)/3;
 					for (let i=0; i<this.shape.length;i++) {
 						let cur = this.shape[i]
-						objs.fx.push(new WreckEffect([prev,cur], this.location, this.angle, pt_add(pt(expMag,Math.random()*2*Math.PI),this.velocity), this.baseColor, Math.random()*200));
+						objs.fx.push(new WreckEffect([prev,cur], this.location, this.angle, pt_add(pt(expMag,Math.random()*2*Math.PI),this.velocity), this.tilt, this.baseColor, Math.random()*200,this.tiltVel*2));
 						prev=cur;
 					}
 				}
@@ -1028,6 +1044,14 @@
 			this.acceleration = sd.acceleration;
 			this.max_vel = sd.max_vel;
 			this.turn_rate = sd.turn_rate;
+			if (sd.strafe) {
+				this.strafe = sd.strafe;
+				this.strafeFuel = this.maxStrafeFuel = sd.strafeFuel;
+				this.strafeCharge = this.strafeReload = sd.strafeReload;
+			} else {
+				this.strafe = 0;
+			}
+			this.deceleration_constant=.99;
 			// 
 			this.maxTilt = 1;//this.turn_rate*10;
 			//
@@ -1063,11 +1087,11 @@
 				let prev = this.shape[this.shape.length-1];
 				for (let i=0; i<this.shape.length;i++) {
 					let cur = this.shape[i];
-					objs.fx.push(new WreckEffect([[prev[0],prev[1]*adj],[cur[0],cur[1]*adj]], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.color, Math.random()*200, this.maxTilt/20));
+					objs.fx.push(new WreckEffect([[prev[0],prev[1]*adj],[cur[0],cur[1]*adj]], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.tilt, this.color, Math.random()*200, this.maxTilt/20));
 					prev=cur;
 				}
 			} else { // Intact wreck
-				let w = new WreckEffect(this.shape.slice(), this.location, this.angle, this.velocity, this.color, Math.random()*200, this.maxTilt/20, Math.floor(Math.random()*15+5), true);
+				let w = new WreckEffect(this.shape.slice(), this.location, this.angle, this.velocity, this.tilt, this.color, Math.random()*200, this.maxTilt/20, Math.floor(Math.random()*15+5), true);
 				w.tilt=this.tilt;
 				objs.fx.push(w);
 			}
@@ -1088,13 +1112,21 @@
 					}
 				}
 				// Add a wreck effect
+				console.log('ship destroyed');
 				this.createWreckEffect(objs);
 			}
 			this.health = Math.min(this.maxHealth, this.health + this.regen);
+			if (this.strafeFuel!=this.maxStrafeFuel) {
+				this.strafeCharge = Math.min(this.strafeCharge+1, this.strafeReload);
+				if (this.strafeCharge==this.strafeReload) {
+					this.strafeFuel=this.maxStrafeFuel;
+					this.strafeCharge=0;
+				}
+			}
 			this.weaponSlots.forEach(function(w){
 				w.update();
 			});
-			this.run_AI(objs);
+			this.runAI(objs);
 			this.location = pt_add(this.location, this.velocity);
 			// Handle RKVs
 			this.handle_rkvs();
@@ -1152,9 +1184,9 @@
 			return ang_turnTowards(this.angle, get_ang(pt_sub([0,0], this.velocity)), this.turn_rate);
 		}
 
-		thrust(objs) {
-			this.applyForce(this.angle, this.acceleration);
-			let smokeAng = (this.angle+(.95+.1*Math.random())*Math.PI)%(2*Math.PI);
+		thrust(objs, direction=this.angle, power=this.acceleration) {
+			this.applyForce(direction, power);
+			let smokeAng = (direction+(.95+.1*Math.random())*Math.PI)%(2*Math.PI);
 			if (Math.random() > .5) {
 				let adj = (this.tilt==0)?1:Math.cos(this.tilt);
 				let altAdj = (this.tilt==0)?1:Math.sin(this.tilt);
@@ -1164,7 +1196,7 @@
 					// constructor(loc, velocity, radius, deltaRad, color,life,altitude=100)
 					let rad = 4;
 					let life = 30;
-					objs.fx.push(new CircleEffect(pt_add(pt_addAng(loc,this.angle),this.location), pt_add(this.velocity, pt(this.max_vel,smokeAng)), rad, -rad/life, this.color,life,100-e[1]*altAdj));
+					objs.fx.push(new CircleEffect(pt_add(pt_addAng(loc,direction),this.location), pt_add(this.velocity, pt(this.max_vel,smokeAng)), rad, -rad/life, this.color,life,100-e[1]*altAdj));
 				});
 			}
 		}
@@ -1195,29 +1227,32 @@
 			}
 		}
 
-		run_AI(objs) {
+		runAI(objs) {
 			let AI_turn = false; // For the AI, if it reaches its desired angle, we act as if it's not turning.
 			let turn = 0;
 			let thrust = 0;
+			let strafe = 0;
 			let t = this;
 			this.jumpReady = false;
 			// One AI for all NPCs.
 			if (this.player == false) {
-
 				let locMag = get_mag(this.location);
 				let sunDist = this.fleet.location.sunKillRadius+200+get_mag(this.velocity)/this.acceleration+Math.PI/this.turn_rate;
 				if (locMag > this.fleet.location.killRadius) {
 					AI_turn = ang_turnTowards(this.angle, get_ang(pt_sub([0,0],this.location)), this.turn_rate)
 					thrust = 1;
 				} else if (locMag < sunDist) { // If we're too close to the sun, get away from it.
-					AI_turn = ang_turnTowards(this.angle, get_ang(pt_sub(this.location,[0,0])), this.turn_rate);
-					thrust = 1;
+					let sunAng = get_ang(pt_sub(this.location,[0,0]));
+					AI_turn = ang_turnTowards(this.angle, sunAng, this.turn_rate);
+					//
+					thrust = (angDist(this.angle,sunAng)<Math.PI/2)?1:0;
+					//thrust = 1;
 				} else {
 					if (this.target == false || objs.ships.indexOf(this.target) == -1) {
 						// Find the nearest hostile ship
 						this.target = false;
 						var dist = Infinity;
-						objs.ships.forEach(function(s) {
+						objs.ships.forEach(function(s){
 							if (s.faction.getRelationship(t.faction) < 0) {
 								var dist2 = get_mag(pt_sub(s.location, t.location));
 								if (dist2 < dist) {
@@ -1238,11 +1273,13 @@
 						var mag = get_mag(p);
 						// For now, just thrust towards the enemy, and fire every gun available at it.
 						// If resources permit, more complex AI behavior can be attempted.
-						AI_turn = ang_turnTowards(this.angle, ang, this.turn_rate);
 						thrust = 1;
 						// Fire on the target with every available weapon
+						let wpnRdy = false;
 						this.weaponSlots.forEach(function(w){
-							if (w.canFire() && w.weapon.projectile.range+t.radius+t.target.radius > mag) {
+							let cf = w.canFire();
+							wpnRdy = wpnRdy || cf;
+							if (cf && w.weapon.projectile.range+t.radius+t.target.radius > mag) {
 								// Get a firing solution
 								var fs = w.getFiringSolution(t.target.velocity, t.target.location);
 								if (fs != false) {
@@ -1250,6 +1287,8 @@
 								}
 							}
 						});
+						if (!wpnRdy) { ang = normAng(ang+Math.PI); } // If no weapons are ready, retreat.
+						AI_turn = ang_turnTowards(this.angle, ang, this.turn_rate);
 					} else { // We have no target.
 						// If we're in our home system, orbit our home planet. Otherwise, orbit the sun.
 						let orbitDistance = this.orbitDistance;
@@ -1266,7 +1305,7 @@
 						if (dist <= orbitDistance-100) { // If we're too close, move away
 							ang = (ang+Math.PI)%(2*Math.PI);
 						} else if (dist < orbitDistance+100) { // If we're in the right distance range, orbit.
-							ang = (ang+this.orbitDirection*Math.PI/2)%(2*Math.PI);
+							ang = normAng(ang+this.orbitDirection*Math.PI/2);
 							if (ang < 0) { ang+=2*Math.PI; }
 						}
 						AI_turn = ang_turnTowards(this.angle, ang, this.turn_rate);
@@ -1279,6 +1318,7 @@
 				AI_turn=temp[0];
 				turn = temp[1];
 				thrust=temp[2];
+				strafe=temp[3];
 			}
 			// Turning
 			let goalTilt;
@@ -1290,18 +1330,25 @@
 			}
 			this.tilt = .95*this.tilt+.05*goalTilt;
 			// Thrust control
-			if (thrust == 1) {
+			// Strafing
+			if (this.strafe && strafe && this.strafeFuel>=1) {
+				this.thrust(objs, normAng(this.angle+Math.PI/2*strafe), this.strafe);
+				this.strafeFuel-=1;
+				this.strafeCharge=0;
+			} else if (thrust == 1) { // Forward thrust
 				this.thrust(objs);
 			} else if (get_mag(this.velocity) > this.max_vel/2) {
 				// If we aren't actively accelerating, slow down. This helps simulate space combat without the velocity cap, since an accelerating object will catch a non-accelerating object.
-				this.velocity = pt_mul(this.velocity, 0.99);
+				this.velocity = pt_mul(this.velocity, this.deceleration_constant);
 			}
+			
 		}
 
 		handlePlayerControls() {
 			let AI_turn=false;
 			let thrust=0;
 			let turn=0;
+			let strafe=0;
 			if (keysDown.indexOf(E_KEY) != -1 && this.jumpTarget != false) { // Jumping disables other controls
 				if (get_mag(this.velocity) < 1.1*this.acceleration) {
 					AI_turn = ang_turnTowards(this.angle, get_ang(pt_sub(this.jumpTarget.location, this.system.location)), this.turn_rate);
@@ -1335,12 +1382,14 @@
 						AI_turn = this.decelerate();
 						thrust = AI_turn[1];
 					} else {
-						// Keyboard turning
-						/*if (keysDown.indexOf(LEFT_KEY) != -1 || keysDown.indexOf(A_KEY) != -1) {
-							turn = -1;
+						// Keyboard turning/strafing
+						if (keysDown.indexOf(LEFT_KEY) != -1 || keysDown.indexOf(A_KEY) != -1) {
+							//turn = -1;
+							strafe=-1;
 						} else if (keysDown.indexOf(RIGHT_KEY) != -1 || keysDown.indexOf(D_KEY) != -1) {
-							turn = 1;
-						} */
+							//turn = 1;
+							strafe=1;
+						} 
 						// Mouse turning
 						AI_turn = ang_turnTowards(this.angle, get_ang(mousePos), this.turn_rate);
 						//
@@ -1375,7 +1424,15 @@
 					}
 				}
 			}
-			return [AI_turn, turn, thrust]
+			if (strafe==0) { 
+				this.strafeLockKey=0; 
+			} else if (this.strafeLockKey!=0 && this.strafeLockKey==strafe) { 
+				strafe = this.strafeLockRes;
+			} else { 
+				this.strafeLockKey=this.strafeLockRes=strafe;
+				if (player.angle<Math.PI) { this.strafeLockRes*=-1; }
+			}
+			return [AI_turn, turn, thrust, strafe];
 		}
 	}
 	/*
@@ -1443,6 +1500,7 @@
 
 		getFiringSolution(targetVel, targetLoc) {
 			if (this.weapon == false) { return false; }
+			if (this.weapon.projectile.lockingAngle) { return targetLoc; } // No need to lead tracking weapons.
 			var tv = pt_sub(targetVel,this.ship.velocity);
 			var tp = pt_sub(targetLoc,this.getTrueLocation());
 			var s = this.weapon.projectile.speed;
@@ -1467,12 +1525,13 @@
 				var pd = pt_sub(targetLoc, this.getTrueLocation());
 				var tt = ang_turnTowards(this.getTrueAngle(), get_ang(pd), this.arc);
 				if (tt[1] || !onlyValid) {
-					this.weapon.handleFire();
 					for (var i = 0; i < this.weapon.projectileCount; i++) {
 						var angle = tt[0];
 						angle += this.weapon.accuracy * (.5-Math.random());
 						objs.projs.push(new Proj(objs, this.getTrueLocation(), angle, this.ship, this.weapon.projectile));
+						if (this.weapon.recoil) {this.ship.applyForce(normAng(angle+Math.PI),this.weapon.recoil * 20 / this.ship.radius);}
 					}
+					this.weapon.handleFire();
 					return true;
 				}
 			}
@@ -1494,6 +1553,8 @@
 			this.projectile=wd.projectile;
 			//
 			this.projectileCount = isdef(wd.projectileCount)?wd.projectileCount:1;
+			//
+			this.recoil=wd.recoil||0;
 			//
 			this.clipSize = isdef(wd.clipSize)?wd.clipSize:1;
 			this.reloadRate = isdef(wd.reloadRate)?wd.reloadRate:this.rof;
@@ -1601,10 +1662,11 @@
 		fragment(objs, hit=false) {
 			let f = this.fragments;
 			for (let i=0;i<f.count;i++) {
-				let ang = get_ang(this.velocity) + (.5-1*Math.random())*f.spread;
+				let ang = this.angle + (.5-1*Math.random())*f.spread;
 				ang = (ang>=0)?(ang<2*Math.PI?ang:ang-2*Math.PI):ang+2*Math.PI;
 				let proj = new Proj(objs, this.location, ang, this.source, f.projectile);
 				proj.IFF = this.IFF; // IFF comes from the projectile, not the source ship.
+				proj.color = this.color;
 				if (hit) {proj.pierced.push(hit);} // Ignore the ship we've already hit.
 				objs.projs.push(proj);
 			}
@@ -1617,7 +1679,7 @@
 				if (objs.ships.indexOf(this.target)==-1) {
 					this.target = false;
 				} else {
-					let newAng = ang_turnTowards(this.angle,get_ang(pt_sub(this.target.location,this.location)), this.trackingRate)[0]
+					let newAng = ang_turnTowards(this.angle,get_ang(pt_sub(this.target.location,this.location)), this.trackingRate)[0];
 					let vMag = get_mag(this.velocity);
 					this.velocity = pt(vMag, newAng);
 					this.angle = newAng;
@@ -1860,11 +1922,13 @@
 			this.defensive = fd.defensive || 0;
 			this.transportCapacity = fd.transports || 0;
 			this.transports = 0;
-			this.shipCapacities = fd.shipCapacities.slice();
 			// Defensive fleets start out full, other fleets start out empty.
-			this.shipCounts = (this.defensive?this.shipCapacities.slice():new Array(this.shipCapacities.length).fill(0));
+			this.shipCapacities = fd.shipCapacities.slice();
+			this.shipCounts = (this.defensive?this.shipCapacities.slice():new Array(shipCosts.length).fill(0));
 			if (this.shipCounts.length<shipCosts.length) {
-				this.shipCounts = this.shipCounts.concat(new Array(shipCosts.length-this.shipCounts.length).fill(0));
+				let x = shipCosts.length-this.shipCapacities.length;
+				this.shipCapacities = this.shipCapacities.concat(new Array(x).fill(0));
+				this.shipCounts = this.shipCounts.concat(new Array(x).fill(0));
 			} // Pad the ship count array to allow backwards compatablity.
 			// Determine the fleet's name.
 			this.name = homeWorld.name;
@@ -2039,6 +2103,7 @@
 			if (shipCount != 0) {
 				if (this.faction.checkHostileSystem(this.location)) {
 					this.invadeSystem(objs);
+					this.fought=true; // Can't take any actions this turn if we've spent it fighting.
 				}
 			}
 		}
@@ -2257,7 +2322,8 @@
 					nsd.planets.push(p);
 				}
 			});
-			
+			// The jump radius should be at least 500 more than the farthest planet's orbits
+			if (ps.length>0){ nsd.jumpRadius = Math.max(nsd.jumpRadius, ps[ps.length-1].orbit+500); }
 		}
 
 		getSuffix(n,names) {
@@ -2463,14 +2529,15 @@
 		// Enter the system
 		// Initialize planet and ship locations
 		enterSystem(objs, player) {
+			// Set the player's previous location.
+			player.prevSystem = player.location;
 			//
 			addMsg("Welcome to " + this.name + ".");
 			// New system; clear everything but the player.
 			player.location = pt(this.jumpRadius + 250 * Math.random(), get_ang(pt_sub(player.system.location, this.location)));
 			player.system = this;
-			 
+			 //
 			this.buildSystem(objs, player);
-			
 		}
 
 		// Find a path towards the nearest system, if any, that meets the specified criteria
@@ -2511,6 +2578,7 @@
 
 		// For refreshing a system the player is already in.
 		reloadSystem(objs, player) {
+			player.prevSystem = this;
 			this.buildSystem(objs, player, false);
 		}
 
@@ -2649,6 +2717,10 @@
 	// Event variables
 	var event;
 	var eventVar=0;
+
+	// Interception variables
+	var interceptionSystem; // The pseudo-system in which interceptions are handled
+	var interceptionFleets; // The fleets that are (along with the player) in the interception system.
 
 	// Menu variables
 	var currentMenu;
@@ -2859,14 +2931,63 @@
 		});
 	}
 
+	function handleFleetActions(objs) {
+		//
+		let pst = (player.prevSystem)?[player.system.name, player.prevSystem.name].sort().join():'';
+		//
+		objs.globalFleets.forEach(f => { f.fought=false; f.prevSystem=f.location; });
+		// Resolve battles before handling movement
+		objs.globalFleets.forEach(f => { f.handleBattles(objs); });
+		// Get the starting system of each fleet.
+		let startingSystems = {};
+		objs.globalFleets.forEach(f => {
+			let n = f.location.name;
+			if (isdef(startingSystems[n])) {
+				startingSystems[n].push(f);
+			} else {
+				startingSystems[n] = [f];
+			}
+		});
+		// Move fleets
+		objs.globalFleets.forEach(f => { if (!f.fought) { f.update(objs); } });
+		//  Resolve ending systems
+		let systemTransitions = {};
+		Object.keys(startingSystems).forEach(ss => {
+			startingSystems[ss].forEach(f=>{ // For each fleet originating from this system
+				let n = f.location.name;
+				let st = [n, ss].sort().join();
+				if (isdef(systemTransitions[st])) {
+					if (st != pst) { // If the player isn't traveling the same route, auto-resolve.
+						systemTransitions[st].forEach(of=>{
+							if (f.faction.getRelationship(of.faction)<0) { // Intercept hostile fleet
+								f.attackFleet(of);
+							}
+						});
+					}
+					systemTransitions[st].push(f);
+				} else {
+					systemTransitions[st] = [f];
+				}
+			});
+		});
+		// Handle player system transitions
+		// For now, simply prevent hostile fleets from leapfrogging the player.
+		if (isdef(systemTransitions[pst])) {
+			systemTransitions[pst].forEach(f=>{
+				if (f.faction.getRelationship(player.faction)<0) {
+					f.location = f.prevSystem;
+				}
+			});
+		}
+	}
+
+
 	function updateUniverse(objs) {
 		// 
 		date += 1;
 		addMsg('-~= DAY ' + date + ' =~-');
-		// Resolve battles before handling movement
-		objs.globalFleets.forEach(f => { f.handleBattles(objs); });
-		// Move fleets
-		objs.globalFleets.forEach(f => { f.update(objs); });
+		//
+		handleFleetActions(objs);
 		//
 		for (var n in objs.systems) {
 			var s = objs.systems[n];
@@ -3039,6 +3160,7 @@
 		let wdh = 50; // Weapon display height
 		let wds = 5; // Weapon display spacing
 		let hbh = 5;
+		let sfw = 5;
 		//
 		let base = [screenWidth-offsetX, offsetY];
 		let temp = 0;
@@ -3068,6 +3190,16 @@
 		// Health bar is as wide as the weapon display
 		context.fillRect(base[0]-temp, base[1]+wdh+wds, temp+wdw, hbh);
 		context.fillRect(base[0]-temp, base[1]+wdh+wds, (temp+wdw)*player.health/player.maxHealth, hbh);
+		// Strafe fuel indicator
+		if (player.strafe) {
+			temp += (wds+sfw);
+			let sfh = wds+hbh+wdh;
+			context.fillRect(base[0]+wdw+wds, base[1], sfw, sfh);
+			context.fillRect(base[0]+wdw+wds, base[1]+sfh*(1-player.strafeFuel/player.maxStrafeFuel), sfw, sfh*(player.strafeFuel/player.maxStrafeFuel));
+			if (player.strafeCharge!=player.strafeReload) {
+				context.fillRect(base[0]+wdw+wds, base[1]+sfh*(1-player.strafeCharge/player.strafeReload), sfw, sfh*(player.strafeCharge/player.strafeReload));
+			}
+		}
 		// Indicators
 		let ix = screenWidth/2;
 		let iy = screenHeight/2-200;
@@ -3795,6 +3927,7 @@
 			if (keysDown.indexOf(E_KEY) != -1 && player.altitude == 0 && player.landingTarget != false) {
 				// set 'landed' status
 				playerLanded = player.landingTarget;
+				if (playerLanded.faction.getRelationship(player.faction)>0) {player.health=player.maxHealth;}
 				addMsg('Landed on ' + player.landingTarget.name + '.');
 				planetMainMenu();
 			}
