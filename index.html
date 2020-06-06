@@ -162,6 +162,9 @@
 					max_vel: 3.9,
 					acceleration: .05,
 					turn_rate: .05,
+					strafe: .5,
+					strafeFuel: 15,
+					strafeReload: 25,
 					shape: [[19.375,0],[10,7.5],[10,13.125],[4.375,11.25],[-8.75,18.75],[-10.625,18.75],[-10.625,5.625],[-6.875,1.875],[-6.875,0],[-6.875,0],[-6.875,-1.875],[-10.625,-5.625],[-10.625,-18.75],[-8.75,-18.75],[4.375,-11.25],[10,-13.125],[10,-7.5],[19.375,0],[19.375,0]],
 					engines: [
 						[-7.5,0]
@@ -371,7 +374,6 @@
 					max_vel: 5,
 					acceleration: .2,
 					turn_rate: .15,
-					turn_rate: .05,
 					strafe: .5,
 					strafeFuel: 40,
 					strafeReload: 20,
@@ -396,6 +398,9 @@
 					max_vel: 2.5,
 					acceleration: .1,
 					turn_rate: .05,
+					strafe: .2,
+					strafeFuel: 100,
+					strafeReload: 40,
 					shape: [[30.9375,0],[27.3515625,1.8984375],[9.7734375,4.1484375],[12.3046875,8.9296875],[8.4375,8.4375],[0,8.4375],[-4.4296875,10.8984375],[-2.8125,14.0625],[5.8359375,15.6796875],[14.2734375,14.8359375],[25.2421875,15.6796875],[16.6640625,19.6171875],[6.3984375,19.1953125],[1.0546875,21.4453125],[-6.3984375,19.7578125],[-12.1640625,20.6015625],[-16.875,16.875],[-19.6875,8.4375],[-22.5,5.625],[-21.1640625,3.0234375],[-20.0390625,1.7578125],[-19.6875,0],[-19.6875,0],[-20.0390625,-1.7578125],[-21.1640625,-3.0234375],[-22.5,-5.625],[-19.6875,-8.4375],[-16.875,-16.875],[-12.1640625,-20.6015625],[-6.3984375,-19.7578125],[1.0546875,-21.4453125],[6.3984375,-19.1953125],[16.6640625,-19.6171875],[25.2421875,-15.6796875],[14.2734375,-14.8359375],[5.8359375,-15.6796875],[-2.8125,-14.0625],[-4.4296875,-10.8984375],[0,-8.4375],[8.4375,-8.4375],[12.3046875,-8.9296875],[9.7734375,-4.1484375],[27.3515625,-1.8984375],[30.9375,0],[30.9375,0]],
 					engines: [
 						[-20.5,0]
@@ -871,7 +876,11 @@
 		let ad = Math.abs(a1-a2);
 		return (ad>Math.PI)?Math.PI*2-ad:ad;
 	}
-	function ang_turnTowards(a1, a2, amt) {
+	function angDir(a1, a2) {
+		let ad = a1-a2;
+		return (Math.abs(ad)>Math.PI?Math.sign(ad)*-1:Math.sign(ad));
+	}
+	function ang_turnTowards(a1, a2, amt) { // returns angle, met, direction
 		if (angDist(a1,a2)<=amt) { return [a2,true, 0]; }
 		let at = a2 - a1;
 		let dir = 0; // Direction, if the angle is not met.
@@ -1143,7 +1152,7 @@
 			}
 			// Show health
 			if (this.health < this.maxHealth) {
-				var l = pt_sub(this.location, c_loc);;
+				var l = pt_sub(this.location, c_loc);
 				context.strokeStyle = this.color + '22';
 				context.beginPath();
 				context.arc(l[0], l[1], this.radius+5, 0, 2*Math.PI);
@@ -1153,20 +1162,19 @@
 				context.arc(l[0], l[1], this.radius+5, Math.PI*(1-this.health/this.maxHealth)+Math.PI*3/2, Math.PI*(this.health/this.maxHealth)+Math.PI*5/2);
 				context.stroke();
 			}
-			// Show RKV lock
-			if (this.rkv_time != this.rkv_max) {
-				var l = pt_sub(this.location, c_loc);;
-				context.strokeStyle = (get_mag(this.location) > this.system.killRadius)?'#FF0000':'#FF000055';
+			// Show RKVs
+			if (this.rkv_angle > 0) {
+				let l = pt_sub(this.location, c_loc);
+				context.strokeStyle = '#FF0000';
+				let temp = context.lineWidth;
 				context.beginPath();
-				if (this.rkv_angle < 0) {
-					context.arc(l[0], l[1], this.rkv_time/this.rkv_max * (screenWidth+screenHeight), 0, 2*Math.PI);
-				} else {
-					var rkvA = pt(screenWidth+screenHeight, this.rkv_angle);
-					context.moveTo(...pt_add(l,rkvA));
-					context.lineTo(...pt_sub(l,rkvA));
-				}
+				context.lineWidth = 5;
+				var rkvA = pt(screenWidth+screenHeight, this.rkv_angle);
+				context.moveTo(...pt_add(l,rkvA));
+				context.lineTo(...pt_sub(l,rkvA));
 				context.stroke();
-			}
+				context.lineWidth = temp;
+			}	
 		}
 
 		respondToHit(objs, proj) {
@@ -1275,10 +1283,10 @@
 						// If resources permit, more complex AI behavior can be attempted.
 						thrust = 1;
 						// Fire on the target with every available weapon
-						let wpnRdy = false;
+						let readyIn = Infinity;
 						this.weaponSlots.forEach(function(w){
 							let cf = w.canFire();
-							wpnRdy = wpnRdy || cf;
+							readyIn = Math.min(w.weapon.readyIn(), readyIn);
 							if (cf && w.weapon.projectile.range+t.radius+t.target.radius > mag) {
 								// Get a firing solution
 								var fs = w.getFiringSolution(t.target.velocity, t.target.location);
@@ -1287,8 +1295,16 @@
 								}
 							}
 						});
-						if (!wpnRdy) { ang = normAng(ang+Math.PI); } // If no weapons are ready, retreat.
+						if (readyIn>Math.PI/this.turn_rate) { ang = normAng(ang+Math.PI); } // If no weapons are ready, retreat.
 						AI_turn = ang_turnTowards(this.angle, ang, this.turn_rate);
+						// AI strafes out of target's gunsights
+						if (this.strafe && this.strafeFuel>1) {
+							let angTo = get_ang(pt_sub(this.location, this.target.location));
+							if (angDist(this.target.angle, angTo)<.3
+								&& angDist(this.angle, normAng(Math.PI+angTo))<.6) {
+								strafe = angDir(this.target.angle, angTo);
+							}
+						}
 					} else { // We have no target.
 						// If we're in our home system, orbit our home planet. Otherwise, orbit the sun.
 						let orbitDistance = this.orbitDistance;
@@ -1328,7 +1344,7 @@
 			} else {
 				goalTilt=(turn==0)?0:this.maxTilt*turn;
 			}
-			this.tilt = .95*this.tilt+.05*goalTilt;
+			this.tilt = .90*this.tilt+.10*goalTilt;
 			// Thrust control
 			// Strafing
 			if (this.strafe && strafe && this.strafeFuel>=1) {
@@ -1573,6 +1589,10 @@
 				this.clipAmmo = this.incReload?Math.min(this.clipAmmo+1,this.clipSize):this.clipSize;
 				this.reloadProg = 0;
 			}
+		}
+
+		readyIn() {
+			return (this.clipAmmo==0)?this.reloadRate-this.reloadProg:this.rof-this.lastFired;
 		}
 
 		canFire() {
@@ -3232,6 +3252,18 @@
 			context.fillStyle = '#FF000055';
 			context.fillText(t,ix-context.measureText(t).width/2,iy);
 			iy += menuFontSize;
+		}
+		// Show RKV lock
+		if (player.rkv_time != player.rkv_max) {
+			var l = [screenWidth/2,screenHeight/2];
+			context.strokeStyle = (get_mag(player.location) > player.system.killRadius)?'#FF0000':'#FF000055';
+			let temp = context.lineWidth;
+			context.beginPath();
+			if (player.rkv_angle < 0) {
+				context.arc(l[0], l[1], player.rkv_time/player.rkv_max * (screenWidth+screenHeight), 0, 2*Math.PI);
+			}
+			context.stroke();
+			context.lineWidth = temp;
 		}
 	}
 
