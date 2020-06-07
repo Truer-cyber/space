@@ -379,12 +379,12 @@
 				{
 					name: "Vedette",
 					desc: "The Vedette was the workhorse of the Imperial people, before the scarlet revolution. Nowadays, the vast stocks of these vessels are slowly running dry.",
-					maxHealth: 80,
+					maxHealth: 120,
 					regen: .1,
 					max_vel: 5,
 					acceleration: .2,
-					turn_rate: .15,
-					maxTilt: 1.5,
+					turn_rate: .07,
+					maxTilt: 1.2,
 					strafe: .5,
 					strafeFuel: 40,
 					strafeReload: 20,
@@ -2841,6 +2841,7 @@
 			factionChanges: {}// Stored as alphabetical pairings mapped to the signs of the initial and final relationships. "FactionA and FactionB": [1, -1]
 		}
 	};
+	var starfield;
 
 	// Event variables
 	var event;
@@ -3391,7 +3392,33 @@
 		}
 	}
 
+	const sfSize=2000;
+	function generateStarfield() {
+		starfield = [];
+		for (let i=0; i<200; i++) {
+			starfield.push([Math.random()*sfSize, Math.random()*sfSize, Math.random()]);
+		}
+	}
+
+	function drawStars(context, cm, par) {
+		if (!starfield) {generateStarfield();}
+		// For now, a wrapping starfield with no depth.
+		context.fillStyle = '#888888';
+		starfield.forEach(s=>{
+			let x = (s[0]-(cm[0]*s[2])%sfSize)%sfSize;
+			let y = (s[1]-(cm[1]*s[2])%sfSize)%sfSize;
+			if (x<0) {x+=sfSize;}
+			if (y<0) {y+=sfSize;}
+			context.beginPath();
+			context.arc(x,y,1,0,2*Math.PI);
+			context.fill();
+		});
+	}
+
 	function drawGrid(context, cm) {
+		drawStars(context,cm);
+		drawStars(context,cm);
+		//*
 		var grid_size = 100;
 		var parallax = 0.5
 		context.strokeStyle = '#222222';
@@ -3407,6 +3434,7 @@
 			context.lineTo(screenWidth,gp);
 			context.stroke();
 		}
+		//*/
 	}
 
 	function drawCRT(context) {
