@@ -2878,8 +2878,8 @@
 	const msgFontSize = 10; 
 	const msgFont = msgFontSize + 'px consolas'
 	const msgBufSize = 10;
-	const minimapOpacityPhysical = '55';
-	const minimapOpacityVirtual = '25';
+	const minimapOpacityPhysical = 85;
+	const minimapOpacityVirtual = 37;
 	const minimapScale = 40;
 	const starmapScale = 2;
 	const gridParallax = .5;
@@ -3239,8 +3239,8 @@
 		let scale = 1/minimapScale;
 		let size = sys.jumpRadius*scale;
 		let offset = 100;
-		let opacity = minimapOpacityPhysical;
-		let opacity2 = minimapOpacityVirtual;
+		let opacity = toHex(minimapOpacityPhysical);
+		let opacity2 = toHex(minimapOpacityVirtual);
 		// Display:
 		let base = [offset+size/2, offset+size/2];
 		// Planets
@@ -3281,8 +3281,8 @@
 
 	function renderPlayerHUD(context, player) {
 		let offsetX = 100;
-		let offsetY = 25;
-		let opacity = minimapOpacityVirtual;
+		let offsetY = 50;
+		let opacity = toHex(minimapOpacityVirtual);
 		let wdw = 10; // Weapon display width
 		let wdh = 50; // Weapon display height
 		let wds = 5; // Weapon display spacing
@@ -3292,14 +3292,27 @@
 		let base = [screenWidth-offsetX, offsetY];
 		let temp = 0;
 		let pm = get_mag(player.location);
-		context.fillStyle = ((pm>player.system.killRadius||pm<player.system.sunKillRadius+100) && Math.random()>0.5)?'#FF0000'+opacity:player.faction.color + opacity;
+		let c = ((pm>player.system.killRadius||pm<player.system.sunKillRadius+100) && Math.random()>0.5)?'#FF0000':player.faction.color;
+		context.fillStyle = c+opacity;
 		// Weapon displays
 		player.weaponSlots.forEach(s=>{
 			if (s.weapon) {
 				let w = s.weapon;
-				context.fillRect(base[0]-temp,base[1],wdw,wdh); // Background
 				let f = w.clipAmmo/w.clipSize;
-				context.fillRect(base[0]-temp,base[1]+wdh*(1-f),wdw,wdh*f); // Ammo loaded
+				if (w.clipSize==1 || w.clipSize > wdh/2) {
+					context.fillRect(base[0]-temp,base[1],wdw,wdh); // Background
+					context.fillRect(base[0]-temp,base[1]+wdh*(1-f),wdw,wdh*f); // Ammo loaded
+				} else {
+					let h = (wdh-w.clipSize)/w.clipSize;
+					let o = 0;
+					for (let i=0; i<w.clipSize; i++) {
+						if (i>=w.clipSize-w.clipAmmo) { context.fillStyle=c+toHex(minimapOpacityVirtual*2); }
+						context.fillRect(base[0]-temp,base[1]+o,wdw,h);
+						
+						o+=h+1;
+					}
+					context.fillStyle = c+opacity;
+				}
 				if (w.incReload) {
 					f = Math.min(1, f+((w.reloadProg/w.reloadRate)/w.clipSize));
 				} else {
