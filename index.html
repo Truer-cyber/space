@@ -85,6 +85,7 @@
 				max_vel: .5,
 				acceleration: .1,
 				turn_rate: .025,
+				maxTilt: .5,
 				shape: [[105,0],[109.875,1.5],[109.875,5.25],[105.375,16.5],[97.125,21],[95.625,27.75],[67.125,33.75],[58.875,30.75],[52.875,25.5],[47.625,27],[71.625,67.5],[69.375,72.75],[41.625,24.75],[41.625,83.25],[37.875,79.5],[36.375,24.75],[29.625,25.5],[27.375,32.25],[10.875,81.75],[5.625,81],[21.375,35.25],[22.125,32.25],[13.875,32.25],[-0.375,27],[-12.375,27.75],[-20.625,33],[-27.375,35.25],[-22.125,84.75],[-27.375,87.75],[-34.125,36],[-40.875,36],[-43.125,33.75],[-46.125,26.25],[-55.125,33],[-76.125,33.75],[-85.125,50.25],[-88.125,47.25],[-79.875,30.75],[-82.125,24.75],[-93.375,30.75],[-101.625,29.25],[-102.375,26.25],[-100.875,22.5],[-100.875,15],[-101.625,12.75],[-102.375,8.25],[-99.375,3.75],[-99.375,0.75],[-99.375,-0.75],[-99.375,-3.75],[-102.375,-8.25],[-101.625,-12.75],[-100.875,-15],[-100.875,-22.5],[-102.375,-26.25],[-101.625,-29.25],[-93.375,-30.75],[-82.125,-24.75],[-79.875,-30.75],[-88.125,-47.25],[-85.125,-50.25],[-76.125,-33.75],[-55.125,-33],[-46.125,-26.25],[-43.125,-33.75],[-40.875,-36],[-34.125,-36],[-27.375,-87.75],[-22.125,-84.75],[-27.375,-35.25],[-20.625,-33],[-12.375,-27.75],[-0.375,-27],[13.875,-32.25],[22.125,-32.25],[21.375,-35.25],[5.625,-81],[10.875,-81.75],[27.375,-32.25],[29.625,-25.5],[36.375,-24.75],[37.875,-79.5],[41.625,-83.25],[41.625,-24.75],[69.375,-72.75],[71.625,-67.5],[47.625,-27],[52.875,-25.5],[58.875,-30.75],[67.125,-33.75],[95.625,-27.75],[97.125,-21],[105.375,-16.5],[109.875,-5.25],[109.875,-1.5],[105,0],[105,0]],
 				engines: [
 					[-100.875,-18.75],
@@ -115,6 +116,7 @@
 					max_vel: 5.5,
 					acceleration: .05,
 					turn_rate: .05,
+					maxTilt: 1.5,
 					shape: [[15.1875,0],[15.035625000000001,2.12625],[18.073125,2.73375],[15.1875,6.075],[9.1125,6.075],[-1.215,19.44],[-11.694375,13.668750000000001],[-15.643125000000001,4.2525],[-8.960625,2.12625],[-9.1125,0],[-9.1125,0],[-8.960625,-2.12625],[-15.643125000000001,-4.2525],[-11.694375,-13.668750000000001],[-1.215,-19.44],[9.1125,-6.075],[15.1875,-6.075],[18.073125,-2.73375],[15.035625000000001,-2.12625],[15.1875,0],[15.1875,0]],
 					engines: [[-8.9,0]],
 					weaponSlots: [{
@@ -132,6 +134,7 @@
 					max_vel: 4,
 					acceleration: .12,
 					turn_rate: .05,
+					maxTilt: 1.2,
 					strafe: .5,
 					strafeFuel: 40,
 					strafeReload: 25,
@@ -162,6 +165,7 @@
 					max_vel: 3.9,
 					acceleration: .05,
 					turn_rate: .05,
+					maxTilt: 1.0,
 					strafe: .5,
 					strafeFuel: 15,
 					strafeReload: 25,
@@ -201,13 +205,13 @@
 						accuracy: .1,
 						rof: 120,
 						projectile: { 
-							damage: 40,
+							damage: 70,
 							damageVar: 5,
 							AoE: 25, 
 							lockingAngle: 1/3*Math.PI, // Weapon will lock onto the enemy with the lowest angular dist.
-							trackingRate: .01, // Weapon will track the locked target at this rate.
+							trackingRate: .02, // Weapon will track the locked target at this rate.
 							range: 700,
-							speed: 6
+							speed: 8
 						}
 					},
 					{
@@ -224,7 +228,7 @@
 						incReload: false, // defaults to false
 						firingResets: true, // defaults to true
 						projectile: { // Unused traits are left undefined
-							damage: 8,
+							damage: 22,
 							damageVar: 2, // Max potential deviation from base damage
 							range: 700,
 							speed: 10
@@ -244,7 +248,7 @@
 						incReload: true, // defaults to false
 						firingResets: true, // defaults to true
 						projectile: { // Unused traits are left undefined
-							damage: 8,
+							damage: 27,
 							damageVar: 1, // Max potential deviation from base damage
 							range: 700,
 							speed: 10
@@ -286,7 +290,7 @@
 						incReload: false,
 						firingResets: true,
 						projectile: { 
-							damage: 7,
+							damage: 30,
 							damageVar: 5,
 							AoE: 20, // AOE applies damage to all enemies in the blast radius.
 							range: 900,
@@ -334,6 +338,7 @@
 				max_vel: 1.2,
 				acceleration: .05,
 				turn_rate:.005,
+				maxTilt: .5,
 				shape: [[97.5,0],[79.125,9.75],[57.375,12.75],[37.875,12.75],[30.375,22.5],[25.125,18.75],[18.375,19.5],[13.125,23.25],[7.875,23.25],[4.875,18],[-3.375,17.25],[-13.125,21.75],[-20.625,27.75],[-10.875,31.5],[5.625,33],[28.125,35.25],[43.875,42.75],[73.875,39.75],[85.125,35.25],[81.375,45],[71.625,51],[61.125,53.25],[47.625,52.5],[28.125,52.5],[19.125,51],[10.125,50.25],[-4.875,51.75],[-18.375,58.5],[-29.625,59.25],[-15.375,47.25],[-26.625,41.25],[-46.125,37.5],[-54.375,30.75],[-46.125,28.5],[-49.125,23.25],[-61.125,18],[-70.875,5.25],[-68.625,2.25],[-68.625,0],[-68.625,0],[-68.625,-2.25],[-70.875,-5.25],[-61.125,-18],[-49.125,-23.25],[-46.125,-28.5],[-54.375,-30.75],[-46.125,-37.5],[-26.625,-41.25],[-15.375,-47.25],[-29.625,-59.25],[-18.375,-58.5],[-4.875,-51.75],[10.125,-50.25],[19.125,-51],[28.125,-52.5],[47.625,-52.5],[61.125,-53.25],[71.625,-51],[81.375,-45],[85.125,-35.25],[73.875,-39.75],[43.875,-42.75],[28.125,-35.25],[5.625,-33],[-10.875,-31.5],[-20.625,-27.75],[-13.125,-21.75],[-3.375,-17.25],[4.875,-18],[7.875,-23.25],[13.125,-23.25],[18.375,-19.5],[25.125,-18.75],[30.375,-22.5],[37.875,-12.75],[57.375,-12.75],[79.125,-9.75],[97.5,0],[97.5,0]],
 				engines: [
 					[-54.375,-30.75],
@@ -352,11 +357,12 @@
 				{
 					name: "Ossuary",
 					unmanned: true,
-					maxHealth: 40,
+					maxHealth: 120,
 					regen: .3,
 					max_vel: 6.7,
 					acceleration: .3,
 					turn_rate: .08,
+					maxTilt: 1.5,
 					shape: [[18.75,0],[16.21875,0.9375],[3.09375,3],[6.46875,7.5],[6.46875,14.25],[-8.34375,6.75],[-8.15625,3.9375],[-3.75,3.75],[-3.75,0],[-3.75,0],[-3.75,-3.75],[-8.15625,-3.9375],[-8.34375,-6.75],[6.46875,-14.25],[6.46875,-7.5],[3.09375,-3],[16.21875,-0.9375],[18.75,0],[18.75,0]],
 					engines: [[-3.75,0]],
 					weaponSlots: [{
@@ -369,11 +375,12 @@
 				{
 					name: "Vedette",
 					desc: "The Vedette was the workhorse of the Imperial people, before the scarlet revolution. Nowadays, the vast stocks of these vessels are slowly running dry.",
-					maxHealth: 150,
+					maxHealth: 80,
 					regen: .1,
 					max_vel: 5,
 					acceleration: .2,
 					turn_rate: .15,
+					maxTilt: 1.5,
 					strafe: .5,
 					strafeFuel: 40,
 					strafeReload: 20,
@@ -385,7 +392,7 @@
 						{
 							location: [14.375,0],
 							angle: 0,
-							arc: 1.7,
+							arc: 1,
 							secondary: false
 						}
 					]
@@ -398,6 +405,7 @@
 					max_vel: 2.5,
 					acceleration: .1,
 					turn_rate: .05,
+					maxTilt: .9,
 					strafe: .2,
 					strafeFuel: 100,
 					strafeReload: 40,
@@ -410,12 +418,78 @@
 							location: [25.2421875, -15.6796875],
 							angle: 0,
 							arc: .55,
-							secondary: true
+							secondary: false
 						},
 						{
 							location: [25.2421875, 15.6796875],
 							angle: 0,
 							arc: .55,
+							secondary: true
+						}
+					]
+				},
+				{
+					name: "Antiquarian",
+					desc: "Each of these enormous ships is, in a figurative sense, irreplacable. One of the last enduring symbols of the hope and prosperity that the empire once held, Antiquarians are only deployed in defense of worlds that bear even greater significance.",
+					maxHealth: 2500,
+					regen: .4,
+					max_vel: 2.5,
+					acceleration: .1,
+					turn_rate: .01,
+					maxTilt: .5,
+					strafe: .6,
+					strafeFuel: 150,
+					strafeReload: 200,
+					shape: [[-135,0],[-129.375,7.5],[-120.375,20.25],[-120,30],[-95.625,35.25],[-82.875,45],[-76.125,46.5],[-59.625,31.5],[-44.625,26.25],[-34.125,32.25],[-37.875,45],[-49.125,49.5],[-23.625,91.5],[26.625,73.5],[27.375,79.5],[-8.625,91.5],[-0.375,105],[23.625,98.25],[25.875,105],[5.625,113.25],[9.375,122.25],[33.375,120],[50.625,93],[46.875,72],[63.375,40.5],[62.625,28.5],[75.375,25.5],[85.125,36],[90.375,34.5],[126.375,96],[131.625,89.25],[106.125,34.5],[126.375,43.5],[127.875,37.5],[164.625,63],[163.125,52.5],[135.375,30.75],[148.875,27.75],[154.875,18.75],[175.125,6],[180,0],[180,0],[175.125,-6],[154.875,-18.75],[148.875,-27.75],[135.375,-30.75],[163.125,-52.5],[164.625,-63],[127.875,-37.5],[126.375,-43.5],[106.125,-34.5],[131.625,-89.25],[126.375,-96],[90.375,-34.5],[85.125,-36],[75.375,-25.5],[62.625,-28.5],[63.375,-40.5],[46.875,-72],[50.625,-93],[33.375,-120],[9.375,-122.25],[5.625,-113.25],[25.875,-105],[23.625,-98.25],[-0.375,-105],[-8.625,-91.5],[27.375,-79.5],[26.625,-73.5],[-23.625,-91.5],[-49.125,-49.5],[-37.875,-45],[-34.125,-32.25],[-44.625,-26.25],[-59.625,-31.5],[-76.125,-46.5],[-82.875,-45],[-95.625,-35.25],[-120,-30],[-120.375,-20.25],[-129.375,-7.5],[-135,0],[-135,0]],
+					engines: [
+						[-120.1875,25.125],
+						[-120.1875,-25.125]
+					],
+					strafeEngines: [
+						[
+							[-79.5, 45.75]
+						],
+						[
+							[-79.5, -45.75]
+						]
+					],
+					weaponSlots: [
+						{ // Side mounts
+							location: [33.375, 120],
+							angle: 0,
+							arc: Math.PI*2,
+							secondary: false
+						},
+						{
+							location: [33.375, -120],
+							angle: 0,
+							arc: Math.PI*2,
+							secondary: false
+						},
+
+						{ // Front, second row
+							location: [129, 92.625],
+							angle: .5,
+							arc: Math.PI*3/7,
+							secondary: true
+						},
+						{
+							location: [129, -92.625],
+							angle: -.5,
+							arc: Math.PI*3/7,
+							secondary: true
+						},
+
+						{ // Front, first row
+							location: [163.875, 57.75],
+							angle: -0.25,
+							arc: Math.PI*3/7,
+							secondary: true
+						},
+						{
+							location: [163.875, -57.75],
+							angle: 0.25,
+							arc: Math.PI*3/7,
 							secondary: true
 						}
 					]
@@ -477,8 +551,8 @@
 							damageVar: 2,
 							range: 700,
 							speed: 12,
-							lockingAngle: .5,
-							trackingRate: .1
+							lockingAngle: .3,
+							trackingRate: .05
 						}
 					}
 				],
@@ -512,7 +586,8 @@
 							damageVar: 50,
 							range: 900,
 							speed: 6,
-							AoE: 100
+							AoE: 100,
+							detonateOnTimeout: true
 						}
 					}
 				]
@@ -984,22 +1059,40 @@
 	}
 	// Visual effects involving polygons
 	class WreckEffect extends Obj {
-		constructor(shape, loc, ang, vel, tilt, color, life, initialTilt, smoke=false, explodes=false) {
+		constructor(shape, loc, ang, vel, tilt, color, life, maxTiltVel, smoke=false, explodes=false) {
 			super();
 			this.shape=shape;
-			this.getRadius();
 			this.location = loc;
 			this.angle = ang;
 			this.velocity = vel;
 			this.angVel = (.025-.05*Math.random());
-			this.tilt = initialTilt;
-			this.tiltVel = (.05*Math.random());
+			this.tilt = tilt;
+			this.tiltVel = (maxTiltVel*Math.random());
 			this.baseColor = color;
 			this.color = this.baseColor+'90';
 			this.life = this.maxLife = life;
 			this.smokeTimer = this.smoke = smoke;
 			this.explodes=explodes;
+			this.processShape();
+			this.getRadius();
 		}
+
+		processShape() {
+			if (this.shape.length != 2) {return;}
+			let base = [0,0];
+			let s0 = this.shape[0];
+			let s1 = this.shape[1];
+			if (Math.sign(s0[0])==Math.sign(s1[0])) {
+				base[0] = Math.sign(s0[0]) * Math.min(Math.abs(s0[0]), Math.abs(s1[0]))
+			}
+			if (Math.sign(s0[1])==Math.sign(s1[1])) {
+				base[1] = Math.sign(s0[1]) * Math.min(Math.abs(s0[1]), Math.abs(s1[1]))
+			}
+			this.shape = [pt_sub(s0, base), pt_sub(s1, base)];
+			this.location = pt_add(base, this.location);
+			this.velocity = pt_add(this.velocity, pt_mul(base, .01));
+		}
+
 		render(ctx, c_loc) {
 			super.render(ctx,c_loc);
 		}
@@ -1010,7 +1103,8 @@
 			//
 			if (this.life<0) {
 				objs.fx.splice(objs.fx.indexOf(this),1);
-				objs.fx.push(new CircleEffect(this.location, [0,0], this.radius, this.radius/150, this.baseColor,150));
+				let r = (.5+Math.random()*1)*this.radius;
+				objs.fx.push(new CircleEffect(this.location, [0,0], r, r/20, this.baseColor,100));
 				if (this.explodes==true) {
 					let prev = this.shape[this.shape.length-1];
 					let expMag = get_mag(this.velocity)/3;
@@ -1057,12 +1151,13 @@
 				this.strafe = sd.strafe;
 				this.strafeFuel = this.maxStrafeFuel = sd.strafeFuel;
 				this.strafeCharge = this.strafeReload = sd.strafeReload;
+				this.strafeEngines = sd.strafeEngines || [this.engines,this.engines];
 			} else {
 				this.strafe = 0;
 			}
 			this.deceleration_constant=.99;
 			// 
-			this.maxTilt = 1;//this.turn_rate*10;
+			this.maxTilt = sd.maxTilt || Math.min(1, this.turn_rate*20);
 			//
 			this.player = false;
 			this.faction = faction;
@@ -1096,11 +1191,11 @@
 				let prev = this.shape[this.shape.length-1];
 				for (let i=0; i<this.shape.length;i++) {
 					let cur = this.shape[i];
-					objs.fx.push(new WreckEffect([[prev[0],prev[1]*adj],[cur[0],cur[1]*adj]], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.tilt, this.color, Math.random()*200, this.maxTilt/20));
+					objs.fx.push(new WreckEffect([[prev[0],prev[1]*adj],[cur[0],cur[1]*adj]], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.tilt, this.color, Math.random()*200, this.maxTilt/40));
 					prev=cur;
 				}
 			} else { // Intact wreck
-				let w = new WreckEffect(this.shape.slice(), this.location, this.angle, this.velocity, this.tilt, this.color, Math.random()*200, this.maxTilt/20, Math.floor(Math.random()*15+5), true);
+				let w = new WreckEffect(this.shape.slice(), this.location, this.angle, this.velocity, this.tilt, this.color, Math.random()*200, this.maxTilt/40, Math.floor(Math.random()*15+5), true);
 				w.tilt=this.tilt;
 				objs.fx.push(w);
 			}
@@ -1192,19 +1287,20 @@
 			return ang_turnTowards(this.angle, get_ang(pt_sub([0,0], this.velocity)), this.turn_rate);
 		}
 
-		thrust(objs, direction=this.angle, power=this.acceleration) {
+		thrust(objs, direction=this.angle, power=this.acceleration, engines=this.engines) {
 			this.applyForce(direction, power);
 			let smokeAng = (direction+(.95+.1*Math.random())*Math.PI)%(2*Math.PI);
 			if (Math.random() > .5) {
 				let adj = (this.tilt==0)?1:Math.cos(this.tilt);
 				let altAdj = (this.tilt==0)?1:Math.sin(this.tilt);
-				this.engines.forEach(e=>{
+				engines.forEach(e=>{
 					let loc = e;
 					loc = [loc[0],loc[1]*adj];
 					// constructor(loc, velocity, radius, deltaRad, color,life,altitude=100)
 					let rad = 4;
 					let life = 30;
-					objs.fx.push(new CircleEffect(pt_add(pt_addAng(loc,direction),this.location), pt_add(this.velocity, pt(this.max_vel,smokeAng)), rad, -rad/life, this.color,life,100-e[1]*altAdj));
+					let eLoc = pt_add(pt_addAng(loc,this.angle),this.location);
+					objs.fx.push(new CircleEffect(eLoc, pt_add(this.velocity, pt(this.max_vel,smokeAng)), rad, -rad/life, this.color,life,100-e[1]*altAdj));
 				});
 			}
 		}
@@ -1344,11 +1440,12 @@
 			} else {
 				goalTilt=(turn==0)?0:this.maxTilt*turn;
 			}
-			this.tilt = .90*this.tilt+.10*goalTilt;
+			this.tilt = .96*this.tilt+.04*goalTilt;
 			// Thrust control
 			// Strafing
 			if (this.strafe && strafe && this.strafeFuel>=1) {
-				this.thrust(objs, normAng(this.angle+Math.PI/2*strafe), this.strafe);
+				//this.thrust(objs, normAng(this.angle+Math.PI/2*strafe), this.strafe);
+				this.thrust(objs, normAng(this.angle+Math.PI/2*strafe), this.strafe, this.strafeEngines[(strafe==1)?1:0]);
 				this.strafeFuel-=1;
 				this.strafeCharge=0;
 			} else if (thrust == 1) { // Forward thrust
@@ -1541,13 +1638,17 @@
 				var pd = pt_sub(targetLoc, this.getTrueLocation());
 				var tt = ang_turnTowards(this.getTrueAngle(), get_ang(pd), this.arc);
 				if (tt[1] || !onlyValid) {
+					let loc = this.getTrueLocation();
 					for (var i = 0; i < this.weapon.projectileCount; i++) {
 						var angle = tt[0];
 						angle += this.weapon.accuracy * (.5-Math.random());
-						objs.projs.push(new Proj(objs, this.getTrueLocation(), angle, this.ship, this.weapon.projectile));
+						objs.projs.push(new Proj(objs, loc.slice(), angle, this.ship, this.weapon.projectile));
 						if (this.weapon.recoil) {this.ship.applyForce(normAng(angle+Math.PI),this.weapon.recoil * 20 / this.ship.radius);}
 					}
 					this.weapon.handleFire();
+					/*for (let i=0; i<3; i++) {
+						objs.fx.push(new CircleEffect(loc.slice(),pt(this.ship.max_vel + Math.random()*4, normAng(this.ship.angle + (.5-Math.random())*1)), 1, -1/51, this.ship.color, 50)); 
+					}*/
 					return true;
 				}
 			}
@@ -1782,8 +1883,8 @@
 					sf.shipTable = fd.shipTable;
 					sf.transportShip = fd.transportShip;
 					sf.weaponTable = { // Subfactions don't get the heavy weapons
-						primary: fd.weaponTable.primary.slice(0,2),
-						secondary: fd.weaponTable.secondary.slice(0,2)
+						primary: fd.weaponTable.primary.slice(0,1),
+						secondary: fd.weaponTable.secondary.slice(0,1)
 					};
 					let newSF = new SubFaction(sf,objs);
 					subfactions.push(sf.name);
@@ -1944,7 +2045,7 @@
 			this.transports = 0;
 			// Defensive fleets start out full, other fleets start out empty.
 			this.shipCapacities = fd.shipCapacities.slice();
-			this.shipCounts = (this.defensive?this.shipCapacities.slice():new Array(shipCosts.length).fill(0));
+			this.shipCounts = (this.defensive?this.shipCapacities.slice():new Array(this.shipCapacities.length).fill(0));
 			if (this.shipCounts.length<shipCosts.length) {
 				let x = shipCosts.length-this.shipCapacities.length;
 				this.shipCapacities = this.shipCapacities.concat(new Array(x).fill(0));
@@ -2006,6 +2107,13 @@
 			}
 		}
 
+		hasShips() {
+			if (this.transports>0) { return true; }
+			let out = false;
+			this.shipCounts.forEach(c=> {if (c>0) { out=true; }});
+			return out;
+		}
+
 		attackFleet(fleet) {
 			/*
 				Ships perform well against the next rank, evenly against each other, poorly against 
@@ -2017,10 +2125,7 @@
 			console.log(tsc);
 			console.log(fsc);
 			// Sweep down the list to determine whether a message should be sent after the battle concludes.
-			let notable = false;
-			for (let i = 0; i < fsc.length; i++){
-				if (fsc[i]>0) {notable=true;}
-			}
+			let notable = fleet.hasShips() && this.hasShips();
 			// Initial skirmishes. Attack your own tier, then the next tier up.
 			for (var i = 0; i<tsc.length; i++) {
 				let cas = Math.min(tsc[i],fsc[i]);
@@ -2074,6 +2179,7 @@
 		}
 
 		invadeSystem(objs) {
+			if (!this.hasShips()) { return; }
 			// Fight each hostile fleet until we are dead or no hostile fleets remain.
 			var fleets = objs.globalFleets.filter(f => f.location == this.location);
 			var i = 0;
@@ -2118,9 +2224,7 @@
 
 		handleBattles(objs) {
 			// Handles invasions before movement is processed.
-			let shipCount = this.transports;
-			this.shipCounts.forEach(c => {shipCount+=c;});
-			if (shipCount != 0) {
+			if (this.hasShips()) {
 				if (this.faction.checkHostileSystem(this.location)) {
 					this.invadeSystem(objs);
 					this.fought=true; // Can't take any actions this turn if we've spent it fighting.
@@ -2133,7 +2237,7 @@
 			this.prevSystem = this.location; // Allows us to place the fleet in a suitable in-system position.
 			let shipCount = this.transports;
 			this.shipCounts.forEach(c => {shipCount+=c;});
-			if (shipCount == 0) {
+			if (!this.hasShips()) {
 				if (this.location!=this.homeSystem) {
 					this.moveToSystem(this.homeSystem); // Destroyed fleets return to their home systems to restock.
 				}
@@ -2976,10 +3080,12 @@
 			startingSystems[ss].forEach(f=>{ // For each fleet originating from this system
 				let n = f.location.name;
 				let st = [n, ss].sort().join();
-				if (isdef(systemTransitions[st])) {
+				if ((n == ss) || (!f.hasShips())) {
+					// Ignore fleets that did not move or are empty.
+				} else if (isdef(systemTransitions[st])) {
 					if (st != pst) { // If the player isn't traveling the same route, auto-resolve.
 						systemTransitions[st].forEach(of=>{
-							if (f.faction.getRelationship(of.faction)<0) { // Intercept hostile fleet
+							if ((f.faction.getRelationship(of.faction)<0) && (f.hasShips())) { // Intercept hostile fleet
 								f.attackFleet(of);
 							}
 						});
@@ -2993,6 +3099,7 @@
 		// Handle player system transitions
 		// For now, simply prevent hostile fleets from leapfrogging the player.
 		if (isdef(systemTransitions[pst])) {
+			console.log('Blocked: ' + ststemTransitions[pst]);
 			systemTransitions[pst].forEach(f=>{
 				if (f.faction.getRelationship(player.faction)<0) {
 					f.location = f.prevSystem;
