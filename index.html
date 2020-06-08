@@ -556,7 +556,7 @@
 							range: 700,
 							speed: 12,
 							lockingAngle: .3,
-							trackingRate: .05
+							trackingRate: .025
 						}
 					}
 				],
@@ -1130,6 +1130,33 @@
 			}
 		}
 	}
+	// Sparks, which gradually fade out
+	class SparkEffect {
+		constructor(loc, mag, ang, life) {
+			this.life=this.maxLife=life;
+			this.mag=this.maxMag=mag;
+			this.ang=ang;
+			this.location = loc.slice();
+			this.color = '#ffffff';
+		} 
+		render(ctx, cm) {
+			let c = pt_sub(this.location, cm);
+			ctx.strokeStyle = this.color + toHex(Math.round(255*this.life/this.maxLife));
+			let p0 = pt_add(c, pt(this.mag/2, this.ang));
+			let p1 = pt_add(c, pt(this.mag/2, normAng(this.ang+Math.PI)));
+			ctx.beginPath();
+			ctx.moveTo(...p0);
+			ctx.lineTo(...p1);
+			ctx.stroke();
+		}
+		update(objs) {
+			this.mag = this.maxMag*(this.life/this.maxLife);
+			this.location = pt_add(this.location, pt(this.mag, this.ang));
+			if (--this.life < 0) {
+				objs.fx.splice(objs.fx.indexOf(this),1);
+			}
+		}
+	}
 	// Ship
 	class Ship extends Obj {
 		constructor(sd, faction, fleet) {
@@ -1650,9 +1677,11 @@
 						if (this.weapon.recoil) {this.ship.applyForce(normAng(angle+Math.PI),this.weapon.recoil * 20 / this.ship.radius);}
 					}
 					this.weapon.handleFire();
-					/*for (let i=0; i<3; i++) {
-						objs.fx.push(new CircleEffect(loc.slice(),pt(this.ship.max_vel + Math.random()*4, normAng(this.ship.angle + (.5-Math.random())*1)), 1, -1/51, this.ship.color, 50)); 
-					}*/
+					for (let i=0; i<2; i++) {
+						//objs.fx.push(new CircleEffect(loc.slice(),pt(this.ship.max_vel + Math.random()*4, normAng(this.ship.angle + (.5-Math.random())*1)), 1, -1/51, this.ship.color, 50)); 
+						// (loc, mag, ang, life)
+						objs.fx.push(new SparkEffect(loc.slice(), get_mag(this.ship.velocity)+this.weapon.projectile.speed*Math.random(), normAng(this.ship.angle + this.weapon.accuracy*5*(.5-Math.random())), 20+Math.random()*50)); 
+					}
 					return true;
 				}
 			}
@@ -1839,6 +1868,12 @@
 							// The weapon's base damage
 							s.health -= t.damage;
 							s.respondToHit(objs, t);
+							// Impact FX
+							for (let i=0; i<5; i++) {
+								// (loc, mag, ang, life)
+								objs.fx.push(new SparkEffect(t.location.slice(), get_mag(t.velocity)*(Math.random()), Math.random()*2*Math.PI, 20+Math.random()*50)); 
+							}
+							//
 							if (t.pierce!=false && t.pierce>Math.random()) {
 								t.pierced.push(s);
 							} else {
