@@ -1680,7 +1680,7 @@
 					for (let i=0; i<2; i++) {
 						//objs.fx.push(new CircleEffect(loc.slice(),pt(this.ship.max_vel + Math.random()*4, normAng(this.ship.angle + (.5-Math.random())*1)), 1, -1/51, this.ship.color, 50)); 
 						// (loc, mag, ang, life)
-						objs.fx.push(new SparkEffect(loc.slice(), get_mag(this.ship.velocity)+this.weapon.projectile.speed*Math.random(), normAng(this.ship.angle + this.weapon.accuracy*5*(.5-Math.random())), 20+Math.random()*50)); 
+						objs.fx.push(new SparkEffect(loc.slice(), get_mag(this.ship.velocity)+this.weapon.projectile.speed*Math.random(), normAng(tt[0] + this.weapon.accuracy*5*(.5-Math.random())), 20+Math.random()*50)); 
 					}
 					return true;
 				}
