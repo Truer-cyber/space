@@ -61,7 +61,7 @@
 		},
 		{
 			name: 'TutorialEvent',
-			text: "You implicitly understand that you can strafe from side to side with the A and D keys, thrust forwards with the W key, and brake with the S key. Furthermore, you know that the E key can be used to interact with planets, or to trigger a jump when you are sufficiently far from the center of a system, and that the mouse, its left button, and its right button can be used to aim your ship and its weapons, fire its primary weapons, and fire its secondary weapons respectively. Finally, it comes naturally to you that the spacebar can be held to disable the IFF settings on your weaponry, which prevent it from targeting those that are not hostile to you."
+			text: "You implicitly understand that you can strafe from side to side with the A and D keys, thrust forwards with the W key, and brake with the S key. Furthermore, you know that the E key can be used to interact with planets, or to trigger a jump when you are sufficiently far from the center of a system, and that the mouse, its left button, and its right button can be used to aim your ship and its weapons, fire its primary weapons, and fire its secondary weapons respectively. Finally, it comes naturally to you that the spacebar can be held to disable the IFF settings on your weaponry, which prevent it from targeting those that are not hostile to you, and that the M key can be used to view a complete map of the known universe."
 		}
 	];
 	// Factions, ships, and weapons
@@ -111,7 +111,7 @@
 				],
 
 			},
-			shipTable: [ // 3 ships. Drone; Fighter; Bomber; Capship.
+			shipTable: [ // Drone, Fighter, Bomber, Capital, Station
 				{
 					name: "Claymore",
 					unmanned: true,
@@ -130,6 +130,7 @@
 						secondary: false
 					}]
 				},
+
 				{
 					name: "Leviathan",
 					desc: "The design of the X-5 Leviathan gunship has seen countless revisions and adaptations over its decades of service. While several attempts have been made to replace it, the costs of reorganizing the Republic's military around a new main attack craft have thus far outweighed the potential benefits, especially given the Leviathan's inarguable effectiveness against even the most novel threats.",
@@ -205,6 +206,123 @@
 							secondary: true
 						}
 					]
+				},
+				{
+					name: "Pine",
+					desc: "The Pine-Class Cruiser has seen far more revisions than a typical Republic weapons platform, and this is, perhaps, the clearest evidence of its importance to them. As the Citadel's last line of defense, it cannot afford any amount of distance from the bleeding edge.",
+					maxHealth: 1000,
+					regen: .8,
+					max_vel: 2.1,
+					acceleration: .025,
+					turnRate: .01,
+					maxTilt: .7,
+					strafe: .25,
+					strafeFuel: 55,
+					strafeReload: 30,
+					shape: [[121.5,0],[117.85500000000002,6.48],[102.465,12.96],[93.555,16.2],[90.31500000000001,18.63],[89.50500000000001,22.68],[78.97500000000001,25.110000000000003],[66.01500000000001,23.490000000000002],[54.675000000000004,22.68],[45.765,26.73],[26.325,29.16],[10.935,27.540000000000003],[8.505,32.4],[13.365,42.120000000000005],[40.095000000000006,44.550000000000004],[44.955000000000005,39.690000000000005],[64.395,40.5],[72.495,42.120000000000005],[77.355,46.17],[75.73500000000001,51.03],[69.25500000000001,51.84],[53.865,51.84],[21.465000000000003,68.85000000000001],[15.795000000000002,70.47],[15.795000000000002,89.10000000000001],[20.655,92.34],[33.615,145.8],[28.755,164.43],[15.795000000000002,156.33],[8.505,134.46],[-1.215,98.82],[-13.365,76.95],[-35.235,71.28],[-54.675000000000004,69.66000000000001],[-71.685,72.9],[-77.355,68.04],[-79.78500000000001,62.37],[-76.545,57.51],[-60.345,58.32],[-33.615,63.18000000000001],[-19.845000000000002,61.56000000000001],[-12.555000000000001,55.080000000000005],[-23.085,47.79],[-20.655,29.970000000000006],[-31.995000000000005,26.73],[-38.475,30.780000000000005],[-52.245000000000005,32.4],[-60.345,26.73],[-84.645,39.690000000000005],[-99.22500000000001,38.88],[-107.325,32.4],[-106.51500000000001,20.25],[-110.56500000000001,17.82],[-110.56500000000001,5.67],[-105.705,3.24],[-105.3,0],[-105.3,0],[-105.705,-3.24],[-110.56500000000001,-5.67],[-110.56500000000001,-17.82],[-106.51500000000001,-20.25],[-107.325,-32.4],[-99.22500000000001,-38.88],[-84.645,-39.690000000000005],[-60.345,-26.73],[-52.245000000000005,-32.4],[-38.475,-30.780000000000005],[-31.995000000000005,-26.73],[-20.655,-29.970000000000006],[-23.085,-47.79],[-12.555000000000001,-55.080000000000005],[-19.845000000000002,-61.56000000000001],[-33.615,-63.18000000000001],[-60.345,-58.32],[-76.545,-57.51],[-79.78500000000001,-62.37],[-77.355,-68.04],[-71.685,-72.9],[-54.675000000000004,-69.66000000000001],[-35.235,-71.28],[-13.365,-76.95],[-1.215,-98.82],[8.505,-134.46],[15.795000000000002,-156.33],[28.755,-164.43],[33.615,-145.8],[20.655,-92.34],[15.795000000000002,-89.10000000000001],[15.795000000000002,-70.47],[21.465000000000003,-68.85000000000001],[53.865,-51.84],[69.25500000000001,-51.84],[75.73500000000001,-51.03],[77.355,-46.17],[72.495,-42.120000000000005],[64.395,-40.5],[44.955000000000005,-39.690000000000005],[40.095000000000006,-44.550000000000004],[13.365,-42.120000000000005],[8.505,-32.4],[10.935,-27.540000000000003],[26.325,-29.16],[45.765,-26.73],[54.675000000000004,-22.68],[66.01500000000001,-23.490000000000002],[78.97500000000001,-25.110000000000003],[89.50500000000001,-22.68],[90.31500000000001,-18.63],[93.555,-16.2],[102.465,-12.96],[117.85500000000002,-6.48],[121.5,0],[121.5,0]],
+					engines: [
+						/*[-107,-26],
+						[-105.3, 0],
+						[-107,26],*/
+						[-79.785, -62.37],
+						[-110.57,-11.75],
+						[-110.57,11.75],
+						[-79.785,62.37]
+					],
+					strafeEngines: [
+						[
+							[-63, 71.5]
+						],
+						[
+							[-63, -71.5]
+						]
+					],
+					weaponSlots: [
+						{
+							location: [28.755,-164.43],
+							angle: -1.15,
+							arc: 2.1,
+							secondary: false
+						},
+						{
+							location: [28.755,164.43],
+							angle: 1.15,
+							arc: 2.1,
+							secondary: false
+						},
+
+						{
+							location: [77.355,-46.17],
+							angle: 0,
+							arc: .8,
+							secondary: false
+						},
+						{
+							location: [77.355,46.17],
+							angle: 0,
+							arc: .8,
+							secondary: false
+						},
+
+						{
+							location: [121.5,0],
+							angle: 0,
+							arc: 1.4,
+							secondary: true
+						}
+					],
+					droneBays: [
+						{
+							droneCapacity: 2,
+							constructionRate: 250,
+							deployRate: 50,
+							droneFaction: 'Grey Republic',
+							location: [10, -80]
+						},
+						{
+							droneCapacity: 2,
+							constructionRate: 250,
+							deployRate: 50,
+							droneFaction: 'Grey Republic',
+							location: [10, 80]
+						}
+					]
+				},
+				{
+					name: "Defense Station",
+					station: true,
+					desc: "",
+					maxHealth: 1000,
+					regen: .8,
+					max_vel: 0,
+					acceleration: 0,
+					turnRate: 0,
+					maxTilt: 0,
+					strafe: 0,
+					strafeFuel: 0,
+					strafeReload: 0,
+					shape: [[25,0],[4.75,24.75],[-5,20],[-5,10],[-11.75,4.75],[-23.25,5.25],[-23.25,-5.25],[-11.75,-4.75],[-5,-10],[-5,-20],[4.75,-24.75],[25,0],[25,0]],
+					engines: [],
+					weaponSlots: [
+						{
+							location: [4.75,-24.75],
+							angle: -1.43,
+							arc: 1.9,
+							secondary: false
+						},
+						{
+							location: [10,0],
+							angle: 0,
+							arc: 2*Math.PI,
+							secondary: true
+						},
+						{
+							location: [4.75,24.75],
+							angle: 1.43,
+							arc: 1.9,
+							secondary: false
+						}
+					]
 				}
 			],
 			weaponTable: {
@@ -215,13 +333,13 @@
 						cost: 0,
 						projectileCount: 1,
 						accuracy: .1,
-						rof: 120,
+						rof: 150,
 						projectile: { 
 							damage: 70,
-							damageVar: 5,
+							damageVar: 25,
 							AoE: 25, 
 							lockingAngle: 1/3*Math.PI, // Weapon will lock onto the enemy with the lowest angular dist.
-							trackingRate: .05, // Weapon will track the locked target at this rate.
+							trackingRate: .020, // Weapon will track the locked target at this rate.
 							smartTracking: false,
 							range: 700,
 							speed: 8
@@ -255,18 +373,41 @@
 						projectileCount: 3,
 						accuracy: .3, // Max potential deviation from the firing angle
 						rof: 8, // Frames between shots
-						recoil: .5,
+						recoil: .1,
 						// Ammunition and reloading
 						clipSize: 50, // defaults to 1
 						reloadRate: 20, // defaults to rof
 						incReload: true, // defaults to false
 						firingResets: true, // defaults to true
 						projectile: { // Unused traits are left undefined
-							damage: 27,
+							damage: 17,
 							damageVar: 1, // Max potential deviation from base damage
 							range: 700,
 							speed: 10,
 							rangeVar: 200
+						}
+					},
+					{
+						name: "Cannon",
+						desc: "The C-8 autocannon is the heaviest weapon fielded by the Republic's frontier colonies. It is designed to allow smaller craft to pose a credible threat to heavily armored targets, such as capital ships.",
+						cost: 25, // Cost to equip this weapon
+						projectileCount: 1,
+						accuracy: .05, // Max potential deviation from the firing angle
+						rof: 8, // Frames between shots
+						recoil: .4,
+						// Ammunition and reloading
+						clipSize: 10, // defaults to 1
+						reloadRate: 50, // defaults to rof
+						incReload: false, // defaults to false
+						firingResets: true, // defaults to true
+						projectile: { // Unused traits are left undefined
+							damage: 50,
+							damageVar: 1, // Max potential deviation from base damage
+							range: 700,
+							speed: 12,
+							rangeVar: 30,
+							AoE: 25,
+							pierce: .1
 						}
 					}
 				],
@@ -372,7 +513,7 @@
 				{
 					name: "Ossuary",
 					unmanned: true,
-					maxHealth: 120,
+					maxHealth: 80,
 					regen: .3,
 					max_vel: 6.7,
 					acceleration: .3,
@@ -415,7 +556,7 @@
 				{
 					name: "Avant-Courier",
 					desc: "Until recently, the formidable, agile Avant-Courier made up the core of the Imperial Remnant fleets. While a few core facilities are still believed to have the means to produce them, the conflict with the Federation had already stretched them thin by the time some of the last complete Avant-Courier squadrons were deployed in a futile attempt to stem the bleeding brought on by one warlord's ill-considered invasion of the Republic.",
-					maxHealth: 500,
+					maxHealth: 800,
 					regen: .25,
 					max_vel: 2.5,
 					acceleration: .1,
@@ -448,7 +589,7 @@
 					desc: "Each of these enormous ships is, in a figurative sense, irreplacable. One of the last enduring symbols of the hope and prosperity that the empire once held, Antiquarians are only deployed in defense of worlds that bear even greater significance.",
 					maxHealth: 2500,
 					regen: .4,
-					max_vel: 2.5,
+					max_vel: 2.3,
 					acceleration: .1,
 					turnRate: .01,
 					maxTilt: .5,
@@ -517,6 +658,30 @@
 							location: [40, 0]
 						}
 					]
+				},
+				{
+					name: "Defense Station",
+					station: true,
+					desc: "",
+					maxHealth: 1500,
+					regen: .8,
+					max_vel: 0,
+					acceleration: 0,
+					turnRate: 0,
+					maxTilt: 0,
+					strafe: 0,
+					strafeFuel: 0,
+					strafeReload: 0,
+					shape: [[6.5,0.5],[9.5,8.5],[4.75,24.75],[-5,20],[-5,10],[-11.75,4.75],[-43.5,0.5],[-43.5,-0.5],[-11.75,-4.75],[-5,-10],[-5,-20],[4.75,-24.75],[9.5,-8.5],[6.5,-0.5],[6.5,0.5]],
+					engines: [],
+					weaponSlots: [
+						{
+							location: [6,0],
+							angle: 0,
+							arc: 2*Math.PI,
+							secondary: true
+						}
+					]
 				}
 			],
 			weaponTable: {
@@ -555,7 +720,7 @@
 								count: 4,
 								spread: .6,
 								projectile: {
-									damage: 7,
+									damage: 12,
 									damageVar: 2,
 									range: 500,
 									speed: 6,
@@ -581,6 +746,24 @@
 							trackingRate: .025,
 							rangeVar: 300
 						}
+					},
+					{
+						name: "Shock Device",
+						desc: "The shock device's damage potential is directly dependant on its stored energy.",
+						cost: 30,
+						projectileCount: 2,
+						accuracy: .5,
+						rof: 0, 
+						reloadRate: 50,
+						incReload: true,
+						clipSize: 10,
+						projectile: { 
+							damage: 20,
+							damageVar: 5,
+							range: 700,
+							speed: 15,
+							rangeVar: 600
+						}
 					}
 				],
 				secondary: [
@@ -593,7 +776,7 @@
 						rof: 30, 
 						recoil: 1,
 						projectile: { 
-							damage: 20,
+							damage: 40,
 							damageVar: 5,
 							range: 900,
 							speed: 15,
@@ -605,9 +788,9 @@
 						name: "Linked-Fusion Gun",
 						desc: "The terrifying potential of the Linked-Fusion Gun lies in its relative simplicity. An as-of-yet impenetrable interplay between cold and hot fusion mechanisms allows for raw explosive potential that dwarfs even that of the atomic missiles used by the Republic for planetary defense.",
 						cost: 100,
-						projectileCount: 3,
+						projectileCount: 5,
 						accuracy: .15,
-						rof: 400, 
+						rof: 200, 
 						recoil: 10,
 						projectile: { 
 							damage: 50,
@@ -638,6 +821,300 @@
 					temperateDesc: 'Amidst the peaks and valleys of this barren world, you are able to locate a rogue warlord base.',
 					coldDesc: 'Buried beneath several meters of ice, you notice a secret enclave belonging to a rogue warlord.'
 
+				}
+			]
+		},
+		{
+			name: 'Cyan Federation',
+			color: '#22FFFF',
+			relationships: {
+				'Grey Republic': -100,
+				'Golden Empire': -100,
+				'Bronze Warlords': -100
+			},
+			conquestText: 'TODO: CF conquest text',
+			transportShip: {
+				tier: -1,
+				maxHealth: 1500,
+				regen: .03,
+				max_vel: 1.2,
+				acceleration: .05,
+				turnRate:.005,
+				maxTilt: .5,
+				shape: [[180,0],[159.5,26],[128.5,28],[108.5,25],[88.5,19],[61.5,19],[50.5,26],[20.5,30],[3.5,22],[-7.5,22],[-14.5,33],[-29.5,39],[-32.5,49],[-19.5,55],[-12.5,70],[17.5,70],[53.5,64],[111.5,60],[141.5,64],[153.5,76],[153.5,98],[137.5,120],[100.5,130],[55.5,136],[5.5,136],[-44.5,139],[-69.5,139],[-114.5,129],[-137.5,125],[-143.5,115],[-155.5,109],[-166.5,93],[-166.5,84],[-163.5,76],[-155.5,71],[-134.5,68],[-97.5,63],[-90.5,52],[-97.5,39],[-104.5,29],[-117.5,25],[-121.5,15],[-117.5,10],[-117.5,1],[-117.5,-1],[-117.5,-10],[-121.5,-15],[-117.5,-25],[-104.5,-29],[-97.5,-39],[-90.5,-52],[-97.5,-63],[-134.5,-68],[-155.5,-71],[-163.5,-76],[-166.5,-84],[-166.5,-93],[-155.5,-109],[-143.5,-115],[-137.5,-125],[-114.5,-129],[-69.5,-139],[-44.5,-139],[5.5,-136],[55.5,-136],[100.5,-130],[137.5,-120],[153.5,-98],[153.5,-76],[141.5,-64],[111.5,-60],[53.5,-64],[17.5,-70],[-12.5,-70],[-19.5,-55],[-32.5,-49],[-29.5,-39],[-14.5,-33],[-7.5,-22],[3.5,-22],[20.5,-30],[50.5,-26],[61.5,-19],[88.5,-19],[108.5,-25],[128.5,-28],[159.5,-26],[180,0],[180,0]],
+				engines: [
+					[-117.5,0]
+				],
+				weaponSlots: [
+					{
+						location: [159.5,-26],
+						angle: 0,
+						arc: .4,
+						secondary: false
+					},
+					{
+						location: [159.5,26],
+						angle: 0,
+						arc: .4,
+						secondary: false
+					}
+				]
+			},
+			shipTable: [ // 3 ships. Fighter; Bomber; Capship.
+				{
+					name: "Drone",
+					unmanned: true,
+					maxHealth: 170,
+					regen: .1,
+					max_vel: 6.5,
+					acceleration: .2,
+					turnRate: .12,
+					maxTilt: 1.3,
+					shape: [[20,0],[17.25,4.75],[10.25,6.75],[3.75,11.25],[-2.25,13.75],[-6.25,11.25],[-8.75,9.75],[-7.75,7.25],[-9.75,4.25],[-10,0],[-10,0],[-9.75,-4.25],[-7.75,-7.25],[-8.75,-9.75],[-6.25,-11.25],[-2.25,-13.75],[3.75,-11.25],[10.25,-6.75],[17.25,-4.75],[20,0],[20,0]],
+					engines: [
+						[-10,0]
+					],
+					weaponSlots: [{
+						location: [20,0],
+						angle: 0,
+						arc: .2,
+						secondary: false
+					}]
+				},
+				{
+					name: "Corvette",
+					desc: "A fast, light, and flexible vessel that excels at force projection, the Federation makes use of the Corvette to maintain harmony within its vast borders.",
+					maxHealth: 100,
+					regen: .3,
+					max_vel: 5.4,
+					acceleration: .3,
+					turnRate: .06,
+					maxTilt: 1.2,
+					strafe: .3,
+					strafeFuel: 30,
+					strafeReload: 30,
+					shape: [
+						[17.5,0],[-1.0625,6.5],[-7.8125,14.75],[-8.3125,3.625],[-9.3125,1.5],[-9.3125,0],[-9.3125,0],[-9.3125,-1.5],[-8.3125,-3.625],[-7.8125,-14.75],[-1.0625,-6.5],[17.5,0],[17.5,0]
+					],
+					engines: [
+						[-9.3, 0]
+					],
+					strafeEngines: [
+						[[-9.3, 0]],
+						[[-9.3, 0]]
+					],
+					weaponSlots: [
+						{
+							location: [17.5,0],
+							angle: 0,
+							arc: .3,
+							secondary: false
+						}
+					]
+				},
+				{
+					name: "Juggernaut",
+					desc: "When a show of force is necessary, the Juggernaut is brought to bear. Equipped with a heavy weapon mount and advanced armor plating, it excels at dispatching bad actors, removing uncooperative regimes, and de-escalating internal conflicts.",
+					maxHealth: 900,
+					regen: .3,
+					max_vel: 3.5,
+					acceleration: .3,
+					turnRate: .04,
+					maxTilt: 1.0,
+					strafe: .4,
+					strafeFuel: 30,
+					strafeReload: 30,
+					shape: [[25,0],[25,5],[31.875,7.125],[31.875,16.625],[23.125,22.625],[1.625,23.125],[-4.625,35.375],[-24.875,39.375],[-24.625,37.125],[-22.875,34.875],[-20.625,27.875],[-22.875,26.875],[-28.625,26.875],[-28.875,24.625],[-27.375,21.875],[-20.125,21.125],[-20.375,19.625],[-21.375,18.125],[-21.625,13.875],[-24.375,11.875],[-24.625,0.125],[-24.625,-0.125],[-24.375,-11.875],[-21.625,-13.875],[-21.375,-18.125],[-20.375,-19.625],[-20.125,-21.125],[-27.375,-21.875],[-28.875,-24.625],[-28.625,-26.875],[-22.875,-26.875],[-20.625,-27.875],[-22.875,-34.875],[-24.625,-37.125],[-24.875,-39.375],[-4.625,-35.375],[1.625,-23.125],[23.125,-22.625],[31.875,-16.625],[31.875,-7.125],[25,-5],[25,0],[25,0]],
+					engines: [
+						[-28.875,-24.625],
+						[-28.875,24.625]
+					],
+					strafeEngines: [
+						[[-28.625,26.875]],
+						[[-28.625,-26.875]]
+					],
+					weaponSlots: [
+						{
+							location: [25,0],
+							angle: 0,
+							arc: .3,
+							secondary: true
+						}
+					]
+				},
+				{
+					name: "Peacekeeper",
+					desc: "The Peacekeeper-class cruiser is a symbol of the Federation's vast reach and unmatched military budget. The arrival of a Peacekeeper task force has, historically, been a sign that a war is rapidly approaching its end.",
+					maxHealth: 1300,
+					regen: .4,
+					max_vel: 2.4,
+					acceleration: .1,
+					turnRate: .015,
+					maxTilt: .5,
+					strafe: .6,
+					strafeFuel: 150,
+					strafeReload: 200,
+					shape: [[85,0],[78.25,7.25],[74.25,6.75],[62.75,18.75],[62.75,23.75],[55.25,33.75],[36.75,37.75],[31.25,34.75],[10.75,34.75],[5.75,37.75],[-12.25,41.75],[-14.75,39.25],[-16.75,40.25],[-15.25,43.25],[-42.75,71.75],[-41.25,74.75],[-46.25,79.75],[-47.75,74.75],[-45.75,71.75],[-51.75,64.75],[-51.75,60.75],[-57.75,49.75],[-61.25,48.75],[-65.25,40.75],[-65.25,37.25],[-55.25,30.25],[-55.75,27.25],[-52.75,24.25],[-52.75,20.75],[-55.75,18.75],[-54.75,10.75],[-51.25,7.25],[-50.75,0.25],[-50.75,-0.25],[-51.25,-7.25],[-54.75,-10.75],[-55.75,-18.75],[-52.75,-20.75],[-52.75,-24.25],[-55.75,-27.25],[-55.25,-30.25],[-65.25,-37.25],[-65.25,-40.75],[-61.25,-48.75],[-57.75,-49.75],[-51.75,-60.75],[-51.75,-64.75],[-45.75,-71.75],[-47.75,-74.75],[-46.25,-79.75],[-41.25,-74.75],[-42.75,-71.75],[-15.25,-43.25],[-16.75,-40.25],[-14.75,-39.25],[-12.25,-41.75],[5.75,-37.75],[10.75,-34.75],[31.25,-34.75],[36.75,-37.75],[55.25,-33.75],[62.75,-23.75],[62.75,-18.75],[74.25,-6.75],[78.25,-7.25],[85,0],[85,0]],
+					engines: [
+						[-52.75,-22.5],
+						[-52.75, 22.5],
+						[-50.75, 0]
+					],
+					strafeEngines: [
+						[[-46.25,79.25]],
+						[[-46.25,-79.25]]
+					],
+					weaponSlots: [
+						{
+							location: [55.25,-33.75],
+							angle: -0.9,
+							arc: 1.7,
+							secondary: true
+						},
+						{
+							location: [55.25,33.75],
+							angle: 0.9,
+							arc: 1.7,
+							secondary: true
+						},
+						{
+							location: [78.25,-7.25],
+							angle: -0.4,
+							arc: 1.,
+							secondary: false
+						},
+						{
+							location: [78.25,7.25],
+							angle: 0.4,
+							arc: 1.,
+							secondary: false
+						}
+					],
+					droneBays: [
+						{
+							droneCapacity: 1,
+							constructionRate: 60,
+							deployRate: 40,
+							droneFaction: 'Cyan Federation',
+							location: [0, 0]
+						}
+					]
+				},
+				{
+					name: "Defense Station",
+					station: true,
+					desc: "",
+					maxHealth: 2000,
+					regen: .8,
+					max_vel: 0,
+					acceleration: 0,
+					turnRate: 0,
+					maxTilt: 0,
+					strafe: 0,
+					strafeFuel: 0,
+					strafeReload: 0,
+					shape: [[20,0],[20.5,10.5],[40.5,14.5],[38.5,22.5],[18.5,26.5],[8.5,29.5],[-3.5,28.5],[-26.5,22.5],[-29.5,15.5],[-10.5,11.5],[-10.5,0.5],[-10.5,-0.5],[-10.5,-11.5],[-29.5,-15.5],[-26.5,-22.5],[-3.5,-28.5],[8.5,-29.5],[18.5,-26.5],[38.5,-22.5],[40.5,-14.5],[20.5,-10.5],[20,0],[20,0]],
+					engines: [],
+					weaponSlots: [
+						{
+							location: [0,0],
+							angle: 0,
+							arc: 2*Math.PI,
+							secondary: false
+						}
+					]
+				}
+			],
+			weaponTable: {
+				primary: [
+					{
+						name: "Blaster",
+						desc: "The Federation blaster is an easy to use weapon designed to be effective in the hands of recruits from a wide variety of cultures. A secondary criterion involved ensuring that it would be effective *against* nearly any culture, as well.",
+						cost: 0,
+						projectileCount: 1,
+						accuracy: .07,
+						rof: 12, 
+						projectile: { 
+							damage: 20,
+							damageVar: 2,
+							range: 700,
+							speed: 8,
+							rangeVar: 25
+						}
+					},
+					{
+						name: "Heavy Blaster",
+						desc: "The Heavy Blaster has a higher-grade capacitor than its basic counterpart, meaning it can achieve a significantly higher damage output by spending additional time charging up before firing.",
+						cost: 15,
+						projectileCount: 1,
+						accuracy: .17,
+						rof: 20, 
+						projectile: { 
+							damage: 50,
+							damageVar: 10,
+							range: 700,
+							speed: 9,
+							rangeVar: 60
+						}
+					}
+				],
+				secondary: [
+					{
+						name: "MMLS",
+						desc: "The Multi-Missile Launch System's chief advantage is its versatility. While it is  capable of independently targeting and destroying multiple gunships within a squadron, it can also be used to devestate a single capital ship from multiple vectors.",
+						cost: 0,
+						projectileCount: 5,
+						accuracy: .5,
+						rof: 200, 
+						projectile: { 
+							damage: 20,
+							damageVar: 2,
+							range: 900,
+							speed: 6,
+							rangeVar: 100,
+							lockingAngle: .3,
+							trackingRate: .012,
+							AoE: 80
+						}
+					}
+				]
+			},
+			subfactions: [
+				{
+					name: 'Beige Marauders',
+					color: '#8E4700',
+					relationships: {
+						'Player': -9999,
+						'Golden Empire': -100,
+						'Grey Republic': -100,
+						'Cyan Federation': -50
+					},
+					//
+					growthRate: .6,
+					decayRate: .1,
+					baseIndustry: 4,
+					baseProductivity: .5,
+					hotDesc: 'In a Federation Relief - branded environmental shelter, you notice an archetypical Marauder outpost. It is a testament to the prefabricated shelter\'s quality that the complete lack of maintanence hasn\'t caused it to fail under the extreme conditions.',
+					temperateDesc: 'At the bottom of a shallow crater, you notice the uncivilized totems and markings associated with a Marauder colony. With garishly decorated respirators lazily placed over their mouths, the marauders outside shriek, dance, and holler into the night.'
+				},
+				{
+					name: 'Scarlet Tribe',
+					color: '#FF0000',
+					relationships: {
+						'Player': -9999,
+						'Golden Empire': -100,
+						'Grey Republic': -100,
+						'Cyan Federation': 100,
+						'Bronze Warlords': -100
+					},
+					//
+					growthRate: .1,
+					decayRate: .02,
+					baseIndustry: 10,
+					baseProductivity: 1,
+					hotDesc: 'Deep underground, the Scarlet Tribe has constructed a refuge for their diaspora. It takes your sensors several hours to locate it, and several more to locate the ventilation ducts which would cause its population to be cooked alive if destroyed.',
+					temperateDesc: 'While the radio broadcasts of anguished screaming picked up by your transmitter would seem to go against the Scarlet Tribe\'s charactaristic paranoia, the truth is quite the opposite. They must continually reassure themselves that they have power over others, even when it exposes them.',
+					coldDesc: 'Hidden in a deep, dark cavern, you notice an outpost belonging to the Scarlet Tribe. Automated drones based there continually probe at the edges of your sensors, never quite daring enough to enter gun range.'
 				}
 			]
 		}
@@ -718,7 +1195,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [2, 1, 1, 0]
+							shipCapacities: [0, 1, 0, 1, 3]
 						},
 						{
 							defensive: 0,
@@ -755,7 +1232,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [1, 2, 0]
+							shipCapacities: [1, 2, 1, 0, 1]
 						}
 					]
 				},
@@ -809,7 +1286,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [2, 1, 0]
+							shipCapacities: [2, 1, 0, 0, 2]
 						}
 					]
 				},
@@ -832,7 +1309,7 @@
 			name: "Resolution",
 			sunColor: '#CC5522',
 			sunRadius: 500,
-			location: [490, 820],
+			location: [530, 820],
 			connections: [["Daylight",0]],
 			jumpRadius: 4000,
 			planets: [
@@ -844,7 +1321,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [2, 2, 2, 0]
+							shipCapacities: [2, 2, 2, 0, 2]
 						},
 						{	// Aggressive fleets will build to capacity, then move to invade the nearest hostile system
 							defensive: 0,
@@ -881,7 +1358,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [1, 1, 0]
+							shipCapacities: [1, 1, 0, 1, 1]
 						},
 						{
 							shipCapacities: [1,1]
@@ -921,7 +1398,7 @@
 					fleets: [
 						{
 							defensive: 1,
-							shipCapacities: [0, 2, 0]
+							shipCapacities: [0, 2, 0, 0, 1]
 						},
 						{
 							transports: 1,
@@ -934,7 +1411,258 @@
 					desc: "Daylight II was intended as a secondary colony in the system, supported by the settlement on Daylight I, and built up to support further outward exploration. The war with the Imperial Remnant routed resources and personnel away from expansion efforts, and the half-built settlements on this world now sit uninhabited."
 				}
 			]
+		},
+		// Legacy
+		// Capital of the Republic, home of the Citadel
+		{
+			name: "Legacy",
+			sunColor: '#FFFFFF',
+			sunRadius: 877,
+			location: [440, 780],
+			connections: [['Resolution', 0]],
+			jumpRadius: 3000,
+			planets: [
+				{
+					name: "Legacy I", radius: 50, orbit: 1550,
+					desc: "Legacy I was the second world to be colonized by the Republic. It is responsible for many of the patrols that guard the Republic's borders, and is home to some of its best-known explorers, scientists, and commanders. Since the onset of the wars with the Federation and Imperial Remnant, it has also become host to many of the soldiers they have rendered invalid, still working to serve their homeland in non-combat roles.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: .4,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [0, 0, 1, 0, 1]
+						},
+						{
+							shipCapacities: [1,0,1]
+						}
+					], 
+					moons: [
+						{
+							name: "Legacy Ia", radius: 25, orbit: 80,
+							desc: "While not inhabited, Legacy Ia is home to a number of automated sensor arrays and gun batteries, designed to be operated from a control center on the planet's surface. Advances in space-based weaponry have rendered these systems largely obsolete, but they could likely buy the Citadel a handful of precious hours in the event of an invasion."
+						},
+						{
+							name: "Legacy Ib", radius: 10, orbit: 150,
+							desc: "Legacy Ib is a small, rocky moon devoid of notable features. Traces of past Republic expeditions can rarely be found, but, even in their capital system, the Republic prefers to speak quietly and cover its footprints."
+						}
+					]
+				},
+				{
+					name: "Citadel", radius: 150, orbit: 2300,
+					desc: "The Citadel is the seat of power for the Republic, in both a figurative and literal sense. The planet's surface is covered almost entirely in an enormous bunker complex, with anti-satellite missile batteries and long-range scanners serving as the main above-ground features. The central fortress goes down for miles, and the cadences of thousands of soldiers seem to come from every direction at once.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 2,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 0, 0, 1, 5]
+						},
+						{
+							aggressive: 1,
+							shipCapacities: [2,2,1]
+						},
+						{
+							shipCapacities: [0,2]
+						},
+						{
+							shipCapacities: [0,2]
+						}
+					]
+				}
+			]
+		},
+		// Sacrifice
+		// The other core military system
+		{
+			name: "Sacrifice",
+			sunColor: '#FF0022',
+			sunRadius: 200,
+			location: [350, 820],
+			connections: [['Legacy', 1]],
+			jumpRadius: 1900,
+			planets: [
+				{
+					name: "Sacrifice I", radius: 90, orbit: 800,
+					desc: "The Sacrifice system was built up as a bulwark against threats to the Republic's capital. Once the Federation was first discovered, Sacrifice I's personnel were charged with preparing defenses, and ensuring that the Horizon's Call incident would not be repeated. When the inevitable happened, Sacrifice was ready.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 1,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 4, 0, 0, 2]
+						},
+						{
+							shipCapacities: [2,0,1]
+						},
+						{
+							aggressive: 1,
+							shipCapacities: [1, 1, 2]
+						},
+						{
+							transports: 1,
+							shipCapacities: [3]
+						}
+					]
+				}
+			]
+		},
+		// Opportunity
+		// Agricultural center, now an industrial base for the war with the Federation
+		{
+			name: "Opportunity",
+			sunColor: '#2277AA',
+			sunRadius: 200,
+			location: [400, 740],
+			connections: [['Sacrifice', 0]],
+			jumpRadius: 1680,
+			planets: [
+				{
+					name: "Opportunity I", radius: 90, orbit: 700,
+					desc: "Opportunity I was left with only a handful of personnel when the system was first settled - its sister planet was a much more suitable site for the farming colony that the colonists intended to create. When long-range scouts first reported contact with the Federation, this world underwent a rapid industrial buildup.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: .7,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 1, 0, 0, 0]
+						}
+					],
+					moons: [
+						{
+							name: "Opportunity Ia", radius: 25, orbit: 130,
+							desc: "Opportunity Ia houses a mid-sized facility tasked with information gathering and early response. Many of the soldiers living here are veterans of the Imperial Front, reallocated in hopes that they could end the threat posed by the Federation quickly.",
+							initialFaction: "Grey Republic",
+							industrialCapacity: .1,
+							fleets: [
+								{
+									defensive: 1,
+									shipCapacities: [1, 0, 0, 0, 0]
+								}
+							]
+						}
+					]
+				},
+				{
+					name: "Opportunity II", radius: 90, orbit: 1200,
+					desc: "Opportunity II is a needle in a cosmic haystack. While filters are necessary to breathe its atmosphere, the temperature and geological stability of the world allowed the Republic to forego many of their typical procedures when settling it. The colonists here seem to love their planet in kind, taking what measures they can to ensure that, even as the war effort takes its ecological toll, the planet will be able to recover once it concludes.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: .7,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [0, 0, 1, 0, 1]
+						}
+					],
+					moons: [
+						{
+							name: "Opportunity IIa", radius: 20, orbit: 135,
+							desc: "Opportunity IIa's vast oceans and constant storms have made it non-viable for Republic settlement. Still, explorers say that one can occasionally catch glimpses of strange atmospheric craft, far in the distance."
+						}
+					]
+				}
+			]
+		},
+		// Watchfire
+		// A system quickly settled by the Republic upon discovering the Federation.
+		{
+			name: "Watchfire",
+			sunColor: '#FFAA33',
+			sunRadius: 110,
+			location: [410, 630],
+			connections: [['Opportunity', 3], ['Vagrant', 0]],
+			jumpRadius: 1200,
+			planets: [
+				{
+					name: "Watchfire I", radius: 50, orbit: 380,
+					desc: "Watchfire I's dense, opaque atmosphere makes flying by instrument a necessity. A faint red glow from the direction of the sun is the only thing visible amidst a sea of grey.",
+					moons: [
+						{
+							name: "Watchfire Ia", radius: 17, orbit: 80,
+							desc: "From Watchfire Ia, the gleaming red star at the system's center looks almost sinister. Catching a glimpse of it from behind one of the moon's numerous mountains, you feel a strong sense of being watched."
+						}
+					]
+				},
+				{
+					name: "Watchfire II", radius: 90, orbit: 600,
+					desc: "The settlement of Watchfire was one of the Republic's finest moments. With an ongoing war on one front and Federation harassment rapidly turning into a second one, Republic scouts evaded detection and built up a secret enclave on the system's second planet, cutting Federation supply lines that did not officially exist. Many of the heroes responsible for this effort remain on Watchfire II, and the soldiers stationed here have a quiet sense of pride about them.",
+					initialFaction: "Grey Republic",
+					industrialCapacity: 2/3,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [1, 2, 0, 0, 2]
+						},
+						{
+							shipCapacities: [2,1]
+						}
+					]
+				},
+				{
+					name: "Watchfire III", radius: 140, orbit: 1000,
+					desc: "Watchfire III is a large, rocky world with a sulfuric atmosphere. Notable for its severe, frequent earthquakes, it's unlikely that this planet would see significant human activity, even if it weren't for the war."
+				}
+			]
+		},
+		/*
+
+			TODO: Federation systems
+			Tertiary, secondary, capital
+		*/
+		// 
+		{
+			name: "Venture",
+			sunColor: '#FFAAAC',
+			sunRadius: 500,
+			location: [130, 480],
+			connections: [['Watchfire', 3]],
+			jumpRadius: 2900,
+			planets: [
+				{
+					name: "Venture I", radius: 60, orbit: 1000,
+					desc: "The common knowledge about Venture I is its status as a backwater, and a quick flight around the port is enough to confirm it. Settled shortly before Venture's integration into the Federation, it was once a symbol of how far the system's inhabitants had come, and a new home for men that sought to take charge of their future.",
+					initialFaction: "Cyan Federation",
+					industrialCapacity: 1/3,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [1, 1, 0, 0, 0]
+						}
+					]
+				},
+				{
+					name: "Venture II", radius: 80, orbit: 1300,
+					desc: "The cities of Venture II are flush with wealth that never came. Massive, gaudy skyscrapers, each a uniquely Venturian take on the Federation's utilitarian aesthetic, sit largely empty, as the luminescent billboards extending outwards from them light up the streets below. A disproportionate number of these signs are displaying military recruitment ads.",
+					initialFaction: "Cyan Federation",
+					industrialCapacity: 1,
+					fleets: [
+						{
+							defensive: 1,
+							shipCapacities: [2, 2, 1, 0, 0]
+						}
+					],
+					moons: [
+						{
+							name: "Venture IIa", radius: 20, orbit: 130,
+							desc: "The original settlement on Venture IIa is now a museum. Even before the war, attendance was sparse, and the staff is largely made up of pre-Federation pensioners.",
+							initialFaction: "Cyan Federation",
+							industrialCapacity: 1/8,
+							fleets: [
+								{
+									defensive: 1,
+									shipCapacities: [1]
+								}
+							]
+						}
+					]
+				},
+				{
+					name: "Venture III", radius: 50, orbit: 1700,
+					desc: "Venture III is a deep red world, freezing cold beneath its thick atmosphere. While the vast mountain ranges and cave structures could be explored for months on end, the sole manmade points of interest are a small handful of unmanned exploration vehicles, each in a state of total disrepair."
+				}
+			]
 		}
+		// Venture
+		//
 	];
 </script>
 
@@ -1117,8 +1845,11 @@
 			if (Math.sign(s0[1])==Math.sign(s1[1])) {
 				base[1] = Math.sign(s0[1]) * Math.min(Math.abs(s0[1]), Math.abs(s1[1]))
 			}
+			// Future builds could store this tilt as a second value, with a second tilt velocity.
 			this.shape = [pt_sub(s0, base), pt_sub(s1, base)];
-			this.location = pt_add(base, this.location);
+			// Adjust the base coordinates based on the tilt
+			base[1] = base[1] * Math.cos(this.tilt);
+			this.location = pt_add(pt_addAng(base, this.angle), this.location);
 			this.velocity = pt_add(this.velocity, pt_mul(base, .01));
 		}
 
@@ -1157,12 +1888,12 @@
 	}
 	// Sparks, which gradually fade out
 	class SparkEffect {
-		constructor(loc, mag, ang, life) {
+		constructor(loc, mag, ang, life, color='#ffffff') {
 			this.life=this.maxLife=life;
 			this.mag=this.maxMag=mag;
 			this.ang=ang;
 			this.location = loc.slice();
-			this.color = '#ffffff';
+			this.color = color;
 		} 
 		render(ctx, cm) {
 			let c = pt_sub(this.location, cm);
@@ -1247,16 +1978,19 @@
 			this.orbitDirection = Math.sign(Math.random()-.5);
 			// For faction purposes, track the last enemy to damage us.
 			this.lastHit = false;
+			// Ships take some time to spawn in from other systems
+			this.spawnTimer = ((this.fleet) && (this.fleet.prevSystem) && (this.fleet.prevSystem != this.fleet.location))?this.radius*2*(1+Math.random()):0;
+			//
+			this.station = (sd.station==true);
 		}
 
 		createWreckEffect(objs) {
 			if (Math.random() > .5) {
 				// Split the wreck at all points
-				let adj=(this.tilt==0)?1:Math.cos(this.tilt);
 				let prev = this.shape[this.shape.length-1];
 				for (let i=0; i<this.shape.length;i++) {
 					let cur = this.shape[i];
-					objs.fx.push(new WreckEffect([[prev[0],prev[1]*adj],[cur[0],cur[1]*adj]], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.tilt, this.color, Math.random()*200, this.maxTilt/40));
+					objs.fx.push(new WreckEffect([[prev[0],prev[1]],[cur[0],cur[1]]], this.location, this.angle, pt_add(pt(this.max_vel/3,Math.random()*2*Math.PI),this.velocity), this.tilt, this.color, Math.random()*200, this.maxTilt/40));
 					prev=cur;
 				}
 			} else { // Intact wreck
@@ -1266,7 +2000,12 @@
 			}
 			objs.fx.push(new CircleEffect(this.location, [0,0], this.radius, this.radius/150, this.color,150, this.altitude));
 		}
+
 		update(objs) {
+			if (this.spawnTimer) {
+				this.spawnTimer = Math.max(this.spawnTimer-1, 0);
+				return;
+			}
 			if (this.hostDroneBay && this.hostDroneBay.ship.health<0) {
 				this.health=-1; // Drones without a master self-destruct.
 			}
@@ -1311,6 +2050,14 @@
 		}
 
 		render(context, c_loc) {
+			if (this.spawnTimer) {
+				let l = pt_sub(this.location, c_loc);
+				context.strokeStyle = this.color + '88';
+				context.beginPath();
+				context.arc(l[0], l[1], this.radius+this.spawnTimer, 0, 2*Math.PI);
+				context.stroke();
+				return;
+			}
 			super.render(context, c_loc);
 			if (this.altitude == 100) {
 				this.weaponSlots.forEach(function(w){
@@ -1319,7 +2066,7 @@
 			}
 			// Show health
 			if (this.health < this.maxHealth) {
-				var l = pt_sub(this.location, c_loc);
+				let l = pt_sub(this.location, c_loc);
 				context.strokeStyle = this.color + '22';
 				context.beginPath();
 				context.arc(l[0], l[1], this.radius+5, 0, 2*Math.PI);
@@ -1364,7 +2111,7 @@
 		thrust(objs, direction=this.angle, power=this.acceleration, engines=this.engines) {
 			this.applyForce(direction, power);
 			let smokeAng = (direction+(.95+.1*Math.random())*Math.PI)%(2*Math.PI);
-			if (Math.random() > .5) {
+			if (Math.random() > .7) {
 				let adj = (this.tilt==0)?1:Math.cos(this.tilt);
 				let altAdj = (this.tilt==0)?1:Math.sin(this.tilt);
 				engines.forEach(e=>{
@@ -1395,6 +2142,12 @@
 					this.health -= 50+Math.random()*200;
 					this.rkv_time = (.5+.5*Math.random())*this.rkv_max*.97**this.rkv_count; // Subsequent RKVs lock on faster.
 					this.rkv_count += 1;
+					// Add some sparks
+					let sparkCount = 10 + Math.random()*20;
+					for (let i=0; i<sparkCount; i++) {
+						objs.fx.push(new SparkEffect(this.location.slice(), 5+5*Math.random(), normAng(this.rkv_angle + Math.PI*(1+.5-Math.random())), 20+Math.random()*50)); 
+					}
+
 				} else {
 					this.rkv_angle = -1;
 				}
@@ -1412,8 +2165,35 @@
 			let strafe = 0;
 			let t = this;
 			this.jumpReady = false;
-			// One AI for all NPCs.
-			if (this.player == false) {
+			if (this.station) { // Stations just shoot at the nearest enemy.
+				this.target = false;
+				var dist = Infinity;
+				objs.ships.forEach(function(s){
+					if ((!s.spawnTimer) && 
+						(s.faction.getRelationship(t.faction) < 0)) {
+						var dist2 = get_mag(pt_sub(s.location, t.location));
+						if (dist2 < dist) {
+							dist = dist2;
+							t.target = s;
+						}
+					}
+				});
+				//
+				if (this.target) {
+					this.weaponSlots.forEach(function(w){
+						if (w.weapon) {
+							let cf = w.canFire();
+							if (cf && w.weapon.projectile.range+t.radius+t.target.radius > get_mag(pt_sub(t.location, t.target.location))) {
+								// Get a firing solution
+								let fs = w.getFiringSolution(t.target.velocity, t.target.location);
+								if (fs != false) {
+									w.fire(fs, objs, true);
+								}
+							}
+						}
+					});
+				}
+			} else if (this.player == false) { // Enemy ship AI
 				let locMag = get_mag(this.location);
 				let sunDist = this.system.sunKillRadius+200+get_mag(this.velocity)/this.acceleration+Math.PI/this.turnRate;
 				if (locMag > this.system.killRadius) {
@@ -1431,7 +2211,8 @@
 						this.target = false;
 						var dist = Infinity;
 						objs.ships.forEach(function(s){
-							if (s.faction.getRelationship(t.faction) < 0) {
+							if ((!s.spawnTimer) && 
+								(s.faction.getRelationship(t.faction) < 0)) {
 								var dist2 = get_mag(pt_sub(s.location, t.location));
 								if (dist2 < dist) {
 									dist = dist2;
@@ -1470,7 +2251,7 @@
 						if (readyIn>Math.PI/this.turnRate) { ang = normAng(ang+Math.PI); } // If no weapons are ready, retreat.
 						AI_turn = ang_turnTowards(this.angle, ang, this.turnRate);
 						// AI strafes out of target's gunsights
-						if (this.strafe && this.strafeFuel>1) {
+						if (!this.target.station && this.strafe && this.strafeFuel>1) {
 							let angTo = get_ang(pt_sub(this.location, this.target.location));
 							if (angDist(this.target.angle, angTo)<.3
 								&& angDist(this.angle, normAng(Math.PI+angTo))<.6) {
@@ -1483,7 +2264,10 @@
 						let p;
 						if (this.hostDroneBay) {
 							// Return to the drone bay.
-							let temp = pt_sub(this.hostDroneBay.ship.location, this.location);
+							let t1 = pt_addAng(this.hostDroneBay.location, this.hostDroneBay.ship.angle);
+							let temp = pt_sub(
+								pt_add(t1, this.hostDroneBay.ship.location), 
+								this.location);
 							if (get_mag(temp) < this.radius) {
 								// Ships with drone bays should also decelerate when they don't have a target but do have active drones.
 								/*if (get_mag(this.velocity) > 1.1*this.acceleration) {
@@ -1804,21 +2588,24 @@
 
 		fire(targetLoc, objs, onlyValid) {
 			if (this.canFire()) {
-				var pd = pt_sub(targetLoc, this.getTrueLocation());
-				var tt = ang_turnTowards(this.getTrueAngle(), get_ang(pd), this.arc);
+				let pd = pt_sub(targetLoc, this.getTrueLocation());
+				let tt = ang_turnTowards(this.getTrueAngle(), get_ang(pd), this.arc);
 				if (tt[1] || !onlyValid) {
 					let loc = this.getTrueLocation();
+					let recoilList = [];
 					for (var i = 0; i < this.weapon.projectileCount; i++) {
-						var angle = tt[0];
+						let angle = tt[0];
 						angle += this.weapon.accuracy * (.5-Math.random());
 						objs.projs.push(new Proj(objs, loc.slice(), angle, this.ship, this.weapon.projectile));
-						if (this.weapon.recoil) {this.ship.applyForce(normAng(angle+Math.PI),this.weapon.recoil * 20 / this.ship.radius);}
+						if (this.weapon.recoil) {recoilList.push(normAng(angle+Math.PI));}
+					}
+					for (let i in recoilList) {
+						let angle = recoilList[i];
+						this.ship.applyForce(normAng(angle), this.weapon.recoil * 20 / this.ship.radius);
 					}
 					this.weapon.handleFire();
 					for (let i=0; i<2; i++) {
-						//objs.fx.push(new CircleEffect(loc.slice(),pt(this.ship.max_vel + Math.random()*4, normAng(this.ship.angle + (.5-Math.random())*1)), 1, -1/51, this.ship.color, 50)); 
-						// (loc, mag, ang, life)
-						objs.fx.push(new SparkEffect(loc.slice(), get_mag(this.ship.velocity)+this.weapon.projectile.speed*Math.random(), normAng(tt[0] + this.weapon.accuracy*5*(.5-Math.random())), 20+Math.random()*50)); 
+						objs.fx.push(new SparkEffect(loc.slice(), get_mag(this.ship.velocity)+this.weapon.projectile.speed*Math.random(), normAng(tt[0] + this.weapon.accuracy*5*(.5-Math.random())), 20+Math.random()*50, this.ship.color)); 
 					}
 					return true;
 				}
@@ -1899,8 +2686,6 @@
 			//
 			this.angle = angle;
 			this.location = pt_add(location, pt(this.radius, this.angle));
-			this.velocity = pt_add(this.source.velocity, pt(pd.speed, angle));
-			this.speed = pd.speed;
 			// 
 			this.damage = pd.damage+pd.damageVar*(.5-Math.random());
 			// Special
@@ -1931,14 +2716,18 @@
 			this.detonateOnTimeout = (pd.detonateOnTimeout==true);
 			// Range
 			let range = pd.range;
-			if (isdef(pd.rangeVar)) {range-=pd.rangeVar*Math.random();}
+			let speed = pd.speed;
+			if (isdef(pd.rangeVar)) { speed *= (range-pd.rangeVar*Math.random())/range; } // Vary speed, not range. Better visuals.
 			if (this.detonateOnTimeout) {
 				let sub = (this.AoE)?this.AoE:0;
 				sub = (this.fragments)?this.fragments.projectile.range+sub:sub;
-				this.life = (range-sub)/pd.speed;
+				this.life = (range-sub)/speed;
 			} else {
-				this.life = range/pd.speed;
+				this.life = range/speed;
 			}
+			// Speed/velocity
+			this.velocity = pt_add(this.source.velocity, pt(speed, angle));
+			this.speed = speed;
 		}
 
 		applyAoE(objs, hit=false) { // Apply AOE, ignoring the original target.
@@ -2037,7 +2826,8 @@
 				let dead = false;
 				objs.ships.forEach(function(s){
 					if (dead == false) {
-						if ((t.source != s) && 
+						if ((t.source != s) &&
+							(!s.spawnTimer) && 
 							(t.pierced.indexOf(s)==-1) && // Handle pierce
 							(t.source.faction.getRelationship(s.faction) < 0 || t.IFF == false) && // IFF
 							(get_mag(pt_sub(t.location, s.location)) < t.radius + s.radius*(s.altitude/100)) // For now, check by radius
@@ -2080,7 +2870,7 @@
 			// 
 			this.name = fd.name;
 			this.relationships = {};
-			for (var f in fd.relationships) {
+			for (let f in fd.relationships) {
 				this.relationships[f] = [fd.relationships[f]];
 			}
 			this.color = fd.color;
@@ -2092,7 +2882,7 @@
 			this.weaponTable = fd.weaponTable;
 			// Text displayed in place of the description of conquered planets.
 			this.conquestText = fd.conquestText;
-			// This.subfactions = 
+			// Subfactions
 			let subfactions = [];
 			if (isdef(fd.subfactions)) {
 				fd.subfactions.forEach(sf => {
@@ -2109,6 +2899,16 @@
 			this.subfactions = subfactions;
 			//
 			objs.factions[this.name]=this;
+			// Ensure that relationships are two-way.
+			for (let f in objs.factions) {
+				let fa = objs.factions[f];
+				let tn = this.name;
+				if (this.relationships[f]) {
+					fa.relationships[tn] = this.relationships[f];
+				} else if (fa.relationships[tn]) {
+					this.relationships[f] = fa.relationships[tn];
+				}
+			}
 		}
 
 		setRelationship(faction, value) {
@@ -2127,7 +2927,6 @@
 			}
 			//
 			this.relationships[faction.name] = fRel;
-			
 		}
 
 		getRelationship(faction) {
@@ -2175,16 +2974,31 @@
 						hateValues.push(-r);
 					} else if (r > 0) {
 						totalSympathy += r;
-						allies.push(objs.factions[k]);
-						sympathyValues.push(r);
+						if (cur < r || this.subfactions.indexOf(k)!=-1 || objs.factions[k].subfactions.indexOf(this.name)!=-1) { // Factions play favorites. If a faction likes the killer more than the victim, it will avoid turning against the former, as long as it isn't a subfaction of the victim or vice verso.
+							allies.push(objs.factions[k]);
+							sympathyValues.push(r);
+						}
 					}
 				}
 			}
 			// Factions like it when you destroy their enemies' assets.
 			// I suppose I could use softmax or something, but linear weighting works fine.
-			for (var i=0; i<enemies.length;i++) {
+			for (var i=enemies.length-1; i>=0; i--) {
 				let repGain = Math.round(killValue * 5 * hateValues[i]/totalHate);
-				killerFaction.adjRelationship(objs, enemies[i], repGain);
+				// Rep gain with hostile factions is reduced by half.
+				let kRel = killerFaction.getRelationship(enemies[i]);
+				if (kRel < 0) { 
+					repGain = repGain/2;
+					// Rep gain with 'greater enemies' is negated entirely.
+					if (kRel < this.getRelationship(enemies[i])) {
+						repGain = 0;
+					}
+				}
+				if (repGain!=0) {
+					enemies[i].adjRelationship(objs, killerFaction, repGain);
+				} else {
+					enemies.splice(i, 1);
+				}
 			}
 			if (killerFaction.name=='Player' && enemies.length>0) {
 				addMsg('Gained reputation with ' + enemies.map(x=>x.name).join(', ') + '.');
@@ -2395,6 +3209,38 @@
 			return win;
 		}
 
+		conquerPlanet(p, fleets, objs) {
+			let t = this;
+			if (p.initialFaction != false) { // uninhabited worlds remain empty.
+				// Take control of all defensive fleets in the conquered system
+				fleets.forEach(f=>{
+					if (f.defensive) {
+						f.faction = this.faction;
+					}
+				});
+				p.faction = this.faction;
+				p.storedIndustry=0;
+				addMsg(p.name + ' is now held by the ' + t.faction.name + '.');
+				t.location.faction = t.faction;
+			} else if (p.faction != false) {
+				// Destroy hostile fleets
+				fleets.forEach(f=>{
+					if (f.defensive && (f.homeWorld == p)) {
+						objs.globalFleets.splice(objs.globalFleets.indexOf(f),1);
+					}
+				});
+				// Destroy hostile colonies
+				addMsg('The ' + p.faction.name + ' presence on ' + p.name + ' has been destroyed by the ' + this.faction.name + '.');
+				p.faction.colonies--;
+				p.faction = false;
+				p.storedIndustry=0;
+				p.industrialCapacity=0;
+			}
+			p.moons.forEach(m => {
+				t.conquerPlanet(m, fleets, objs);
+			});
+		}
+
 		invadeSystem(objs) {
 			if (!this.hasShips()) { return; }
 			// Fight each hostile fleet until we are dead or no hostile fleets remain.
@@ -2409,33 +3255,10 @@
 				i += 1;
 			}
 			if (win) {
+				let t = this;
 				this.location.planets.forEach(p => {
-					if (p.initialFaction != false) { // uninhabited worlds remain empty.
-						// Take control of all defensive fleets in the conquered system
-						fleets.forEach(f=>{
-							if (f.defensive) {
-								f.faction = this.faction;
-							}
-						});
-						p.faction = this.faction;
-						p.storedIndustry=0;
-						addMsg(p.name + ' is now held by the ' + this.faction.name + '.');
-					} else if (p.faction != false) {
-						// Destroy hostile fleets
-						fleets.forEach(f=>{
-							if (f.defensive) {
-								objs.globalFleets.splice(objs.globalFleets.indexOf(f),1);
-							}
-						});
-						// Destroy hostile colonies
-						addMsg('The ' + p.faction.name + ' presence on ' + p.name + ' has been destroyed by the ' + this.faction.name + '.');
-						p.faction.colonies--;
-						p.faction = false;
-						p.storedIndustry=0;
-						p.industrialCapacity=0;
-					}
+					t.conquerPlanet(p, fleets, objs);
 				});
-				
 			}
 		}
 
@@ -2457,6 +3280,7 @@
 			if (!this.hasShips()) {
 				if (this.location!=this.homeSystem) {
 					this.moveToSystem(this.homeSystem); // Destroyed fleets return to their home systems to restock.
+					this.prevSystem = this.homeSystem; // The fleet is being rebuilt, not jumping in.
 				}
 			} else if (this.faction.checkHostileSystem(this.location)) { // If we start in a hostile system, simulate a battle.
 				// Invasions done in handleBattles
@@ -2474,11 +3298,20 @@
 								proceed = false;
 							}
 						}
+						proceed = proceed && (this.transportCapacity == this.transports);
 					}
 					if (proceed == true) {
 						let t = this;
 						if (this.aggressive) { // Nearest hostile system
-							let ts = this.location.seekSystem(function(x) { return t.faction.checkHostileSystem(x); }, false);
+							let ts = this.location.seekSystem(function(x) { // Ignore subfaction settlements.
+								for (let i=0; i<x.planets.length; i++) {
+									let p = x.planets[i];
+									if ((p.initialFaction) && (p.faction.getRelationship(t.faction)<0)) {
+										return true;
+									}	
+								}
+								return false;
+							}, false);
 							if (ts) {this.moveToSystem(ts)};
 						} else if (this.transports > 0) { // Nearest system in need
 							let ts = this.location.seekSystem(function(x) { return t.checkTradeSystem(x); }, this.faction);
@@ -2501,6 +3334,11 @@
 			for (var i=0; i < this.shipCounts.length; i++) {
 				var cap = this.shipCapacities[i];
 				var cnt = this.shipCounts[i];
+				if (cnt == NaN) {
+					console.log(this);
+					console.log(this.location);
+					throw Exception();
+				}
 				if (cap != 0 && cnt != cap) {
 					var n = (cnt+1)/cap;
 					if (n <= need) {
@@ -2509,12 +3347,19 @@
 					}
 				}
 			}
-			if (tgt == -1 || value < shipCosts[tgt]) {
+			// Restock transports if nothing else is being built.
+			if ((tgt==-1) && (this.transports < this.transportCapacity)) {
+				if (value >= transportCost) {
+					this.transports++;
+					return [2, value-transportCost];
+				} else {
+					return [1, value];
+				}
+			} else if (tgt == -1 || value < shipCosts[tgt]) {
 				return [(tgt==-1?0:1), value];
 			} else {
-				value -= shipCosts[tgt];
 				this.shipCounts[tgt] += 1;
-				return [2, value];
+				return [2, value-shipCosts[tgt]];
 			} // 0: At capacity, 1: Can't afford target ship, 2: Purchased a ship
 		}
 
@@ -2524,10 +3369,6 @@
 				var res = this.buyShip(value);
 				status = res[0];
 				value = res[1];
-			}
-			// Merchant fleets restock their transports if they're at capacity at their homeworld.
-			if (status==0 && this.location == this.homeSystem) {
-				this.transports = this.transportCapacity;
 			}
 			//
 			return [value, (status==1)];
@@ -2557,6 +3398,7 @@
 			// 
 			this.location = sd.location; 
 			this.planets = sd.planets;
+			this.faction = false; // Faction controlling this system
 			var t = this;
 			this.planets.forEach(function(p) {
 				t.initPlanet(p, objs);
@@ -2574,7 +3416,7 @@
 
 		isHot(p, s=false) {
 			if (!s) {s=this;}
-			return (p.orbit < this.sunRadius*3);
+			return (p.orbit < s.sunRadius*3);
 		}
 
 		isCold(p, s=false) {
@@ -2735,6 +3577,7 @@
 		initPlanet(p, objs) {
 			if (!isdef(p.initialFaction)) { p.initialFaction = p.faction = false; p.storedIndustry=0; p.industrialCapacity=0;} else {
 				p.faction = objs.factions[p.initialFaction];
+				this.faction = p.faction;
 				p.storedIndustry = 0; // Stored industry
 			}
 			if (!isdef(p.moons)) { p.moons = []; }
@@ -2771,7 +3614,7 @@
 				for (let i=0; i<angles.length;i++) {
 					let a = angles[i];
 					let an = angles[(i+1)%angles.length];
-					let ap = angles[i!=0?i:angles.length-1];
+					let ap = angles[i!=0?i-1:angles.length-1];
 					let ax = ang_turnTowards(a.angle,an.angle,Math.PI);
 					let ad = angDist(a.angle,an.angle);
 					a.end = (ax[1])?a.angle+ad/2:a.angle+Math.PI/2;
@@ -2818,11 +3661,14 @@
 
 		buildFleetElement(objs, f, sd, count) {
 			let t = this;
+			let angleInc = 2*Math.PI/count;
+			let baseAngle = 2*Math.PI*Math.random();
+			let baseMag = f.homeWorld.radius+20+100*Math.random();
 			for (var i = 0; i < count; i++) {
 				//
 				var s = new Ship(sd, f.faction, f);
 				// Spawn defensive fleets around the planet
-				if (f.homeSystem == t) {
+				if ((f.homeSystem == t) && (f.prevSystem == t)) {
 					s.location = pt_add(f.homeWorld.location, pt((f.homeWorld.radius + 100) * Math.random(), 2 * Math.PI*Math.random()));
 				} else {
 					if (f.prevSystem != t) {
@@ -2836,11 +3682,18 @@
 				let tier = (sd.unmanned)?0:((sd.tier==-1)?0:-1);// Use T0 weapons to arm cargo ships and drones.
 				f.faction.armShip(s, tier); 
 				objs.ships.push(s);
+				// Stations have consistent angle and distance
+				if (sd.station) {
+					let ang = normAng(baseAngle + angleInc * i);
+					s.angle = ang;
+					s.location = pt_add(f.homeWorld.location, pt(baseMag+s.radius, ang));
+				}
 			}
 		}
 
 		// Build the system
 		buildSystem(objs, player, reloadLocs=true) {
+			player.droneBays.forEach(b=>{b.activeDrones=0;});
 			objs.ships = [];
 			objs.projs = [];
 			objs.fx = [];
@@ -2871,13 +3724,12 @@
 		// Initialize planet and ship locations
 		enterSystem(objs, player) {
 			// Set the player's previous location.
-			player.prevSystem = player.location;
+			player.prevSystem = player.system;
 			//
 			addMsg("Welcome to " + this.name + ".");
 			// New system; clear everything but the player.
 			player.location = pt(this.jumpRadius + 250 * Math.random(), get_ang(pt_sub(player.system.location, this.location)));
 			player.system = this;
-			player.droneBays.forEach(b=>{b.activeDrones=0;});
 			 //
 			this.buildSystem(objs, player);
 		}
@@ -3030,6 +3882,7 @@
 	const RIGHT_KEY = 39;
 	const E_KEY = 69;
 	const SPACE_KEY = 32;
+	const M_KEY = 77;
 
 	// System variables
 	var system = null;
@@ -3084,7 +3937,8 @@
 	const menuFont = menuFontSize + 'px consolas';
 
 	// Gameplay constants
-	const shipCosts = [.5,1,3,10]; // Industry costs for each ship type.
+	const shipCosts = [.5, 1, 3, 10, 2]; // Industry costs for each ship type.
+	const transportCost = 5;
 	const restrictPlayerFire = false;
 	const MAXJUMPDELAY = 150;
 	const MAX_INDUSTRY = 10;
@@ -3253,7 +4107,7 @@
 							targetPlanet.faction = sf;
 							targetPlanet.industrialCapacity = sf.baseProductivity;
 							// Build a defensive fleet
-							let f = { defensive: 1, shipCapacities: [0,0,0]}
+							let f = { defensive: 1, shipCapacities: new Array(shipCosts.length).fill(0)}
 							let budget = sf.baseIndustry;
 							while (budget>=shipCosts[0]) {
 								let options = []
@@ -3316,11 +4170,14 @@
 			});
 		});
 		// Handle player system transitions
-		// For now, simply prevent hostile fleets from leapfrogging the player.
+		// -Hostile fleets cannot make the same transition.- Now they can, but it takes a second for them to jump.
+		// ALL fleets are forbidden from leapfrogging the player.
+		console.log(pst);
 		if (isdef(systemTransitions[pst])) {
-			console.log('Blocked: ' + ststemTransitions[pst]);
+			console.log('Blocked: ' + systemTransitions[pst]);
 			systemTransitions[pst].forEach(f=>{
-				if (f.faction.getRelationship(player.faction)<0) {
+				//if (f.faction.getRelationship(player.faction)<0 || f.prevSystem != player.prevSystem) {
+				if (f.prevSystem != player.prevSystem) {
 					f.location = f.prevSystem;
 				}
 			});
@@ -3387,13 +4244,16 @@
 		let scale = starmapScale;
 		let offset = 100;
 		let inRange = get_mag(player.location) > sys.jumpRadius;
-		context.strokeStyle = inRange ? '#FFFFFF99' : '#FFFFFF55';
+		let c = sys.faction?sys.faction.color:'#FFFFFF';
+		context.strokeStyle = context.fillStyle = inRange ? c+'99' : c+'55';
 		// Scale down the galactic map and display it
 		let base = [screenWidth-offset-size/2, screenHeight-offset-size/2]
 		context.beginPath();
-		context.arc(base[0],base[1],3,0,2*Math.PI);
+		context.arc(base[0],base[1],5,0,2*Math.PI);
 		context.stroke();
 		sys.connections.forEach(function(s) {
+			let c = (s.faction)?s.faction.color:'#FFFFFF';
+			context.strokeStyle = inRange ? c+'99' : c+'55';
 			context.beginPath();
 			let loc = [s.location[0]-sys.location[0], s.location[1]-sys.location[1]];
 			context.arc(base[0]+loc[0]/scale,base[1]+loc[1]/scale,2,0,2*Math.PI);
@@ -3490,7 +4350,7 @@
 		context.stroke();	
 		// Ships
 		objs.ships.forEach(function(s) {
-			context.strokeStyle = s.color+opacity;
+			context.strokeStyle = s.color+(s.spawnTimer?opacity2:opacity);
 			context.beginPath();
 			l = pt_sub(s.location,pl);
 			context.arc(base[0]+l[0]*scale,base[1]+l[1]*scale,s.radius*scale,0,2*Math.PI);
@@ -3564,11 +4424,11 @@
 		if (player.droneBays) {
 			let temp = context.lineWidth;
 			context.lineWidth=1;
-			let doX = base[0]+wds;
 			let doY = base[1]+wds*2+hbh+wdh;
 			let dbW = 5;
 			let dbH = 10;
 			player.droneBays.forEach(b=>{
+				let doX = base[0]+wds;
 				let rem = b.droneCapacity-b.activeDrones-b.storedDrones;
 				for (let i=0; i<b.storedDrones; i++) {
 					drawTriangle(context,c+toHex(minimapOpacityVirtual*3), doX, doY, dbW, dbH);
@@ -3654,6 +4514,50 @@
 			c.lineTo(x+w-(1-p)*w/2,y+(1-p)*h);
 		}
 		c.stroke();
+	}
+
+	function renderGlobalMap(ctx, objs, player) {
+		ctx.font = msgFont;
+		let offsetX = (screenWidth - 1000)/2;
+		let offsetY = (screenHeight - 1000)/2;
+		Object.keys(objs.systems).forEach(n=>{
+			let s = objs.systems[n];
+			// Background
+			ctx.fillStyle = '#00000055';
+			let w = ctx.measureText(n).width;
+			let x = s.location[0]+offsetX+10;
+			let y = s.location[1]+offsetY+10;
+			ctx.fillRect(x, y-msgFontSize+2, w, msgFontSize);
+			//
+			let c = s.faction?(s.faction.color):'#FFFFFF';
+			ctx.strokeStyle = ctx.fillStyle = c+'55';
+			ctx.beginPath();
+			ctx.arc(s.location[0]+offsetX, s.location[1]+offsetY, 2, 0, 2*Math.PI);
+			ctx.stroke();
+			if (s.faction) {
+				ctx.beginPath();
+				ctx.arc(s.location[0]+offsetX, s.location[1]+offsetY, 5, 0, 2*Math.PI);
+				ctx.stroke();
+			}
+			
+			ctx.fillText(n,x,y);
+		});
+		ctx.strokeStyle = ctx.fillStyle = '#FFFFFF88';
+		s = player.system;
+		ctx.beginPath();
+		ctx.arc(s.location[0]+offsetX, s.location[1]+offsetY, 7, 0, 2*Math.PI);
+		ctx.stroke();
+		ctx.fillText(s.name,s.location[0]+offsetX+10,s.location[1]+offsetY+10);
+		// Show reputations
+		let repOffset = 0;
+		Object.keys(player.faction.relationships).forEach(fn=>{
+			let v = player.faction.relationships[fn];
+			if (v > 0) {
+				ctx.fillStyle = objs.factions[fn].color + '55';
+				ctx.fillText(fn + ': ' + Math.floor(v), offsetX+1000, screenHeight/2+repOffset);
+				repOffset += msgFontSize + 5;
+			}
+		});
 	}
 
 	const sfSize=2000;
@@ -3851,7 +4755,9 @@
 		// Options: Current ship, all faction ships in faction table, exit 
 		var rel = player.faction.getRelationship(playerLanded.faction);
 		for (let i=0;i<tf.length;i++) {	
-			if (tf[i] > 0 && (!playerLanded.faction.shipTable[i].unmanned)) {
+			if (tf[i] > 0 && 
+				(!playerLanded.faction.shipTable[i].unmanned) && 
+				(!playerLanded.faction.shipTable[i].station)) {
 				let sn = playerLanded.faction.shipTable[i].name;
 				let cost = shipCosts[i] * 15;
 				let s = playerLanded.faction.shipTable[i];
@@ -4170,7 +5076,14 @@
 		
 		// Display the player's reputation, first.
 		context.fillStyle = color;
-		var rt = playerLanded.faction==false?'Uninhabited':'Reputation: '+Math.floor(player.faction.getRelationship(playerLanded.faction));
+		let rt;
+		if (playerLanded.faction==false) {
+			rt = 'Uninhabited';
+		} else {
+			let rep = Math.floor(player.faction.getRelationship(playerLanded.faction));
+			if (rep < 0) { rep = 'HOSTILE' }
+			rt = 'Reputation: '+rep;
+		}
 		context.fillText(rt, sx + (i==menuPosition?20:10), sy);
 		sy += 5;
 		context.moveTo(sx,sy);
@@ -4210,7 +5123,7 @@
 		if (event.special==true) {
 			switch (event.name) {
 				case "startEvent": 
-					let factions = [objs.factions['Grey Republic'], objs.factions['Golden Empire']];
+					let factions = [objs.factions['Cyan Federation'], objs.factions['Grey Republic'], objs.factions['Golden Empire']];
 					let eVar = getEVar(factions.length);
 					setPlayerShip(factions[eVar].shipTable[startingShipTier]);
 					factions[eVar].armShip(player, 1); // Basic weapons
@@ -4262,7 +5175,7 @@
 		if (event.special==true) {
 			switch (event.name) {
 				case "startEvent": 
-					let factions = [objs.factions['Grey Republic'], objs.factions['Golden Empire']];
+					let factions = [objs.factions['Cyan Federation'], objs.factions['Grey Republic'], objs.factions['Golden Empire']];
 					let sx = mx;
 					let h = menuHeight - menuFontSize*2;
 					let ix = menuWidth/factions.length;
@@ -4325,17 +5238,21 @@
 
 	function loop() {
 		// Render the screen
+		let neonFX = false
 		context.fillStyle = '#111111';
 		// Neon FX
 		//*
+		neonFX = true;
 		context.lineWidth = Math.random()>.9?4:2;
 		context.fillStyle += '55';
-		//*/
+		// */
 		context.fillRect(0,0,screenWidth,screenHeight);
 		// Render and update
 		camera = pt_add(player.location, [-screenWidth/2, -screenHeight/2]);
 		// Render a background grid
-		drawGrid(context, camera);
+		if (neonFX==true) {
+			drawGrid(context, camera);
+		}
 		//
 		player.system.render(context, camera, objs);
 		objs.ships.forEach(function(o) {
@@ -4355,6 +5272,10 @@
 		renderMessages(context);
 		// Render the player's health and weapon status
 		renderPlayerHUD(context, player);
+		// If the player is holding the M key, display the map
+		if (keysDown.indexOf(M_KEY) != -1) {
+			renderGlobalMap(context, objs, player);
+		}
 		// If the player recently jumped, display a bright flash of light
 		if (player.jumpDelay > 0) {
 			context.fillStyle = '#FFFFFF'+toHex(Math.round(255*player.jumpDelay/MAXJUMPDELAY));
@@ -4366,8 +5287,12 @@
 			// If the player is jumping, jump.
 			if (player.jumpTarget != false && keysDown.indexOf(E_KEY) != -1) {
 				if (player.jumpReady == true && player.jumpDelay==0) {
+					let temp = player.system;
+					player.prevSystem = temp;
+					player.system = player.jumpTarget; // Allows 'updateUniverse' to recognize the player's new system
 					// Advance the universe one timestep.
 					updateUniverse(objs);
+					player.system = temp;
 					//
 					player.jumpTarget.enterSystem(objs, player);
 					player.jumpDelay = MAXJUMPDELAY;
@@ -4388,7 +5313,9 @@
 			handleLanded(context);
 		}
 		// Finally, render scan lines
-		drawCRT(context);
+		if (neonFX) {
+			drawCRT(context);
+		}
 		// Update the game state
 		getAnimationFrame(loop);
 	}
@@ -4406,7 +5333,7 @@
 	function initControls() {
 		window.onkeydown = function(e) {
 			if (keysDown.indexOf(e.keyCode) == -1) keysDown.push(e.keyCode);
-	    	e.preventDefault();
+	    	//e.preventDefault();
 		};
 
 		window.onkeyup = function(e) {
@@ -4415,7 +5342,7 @@
 				keysDown.splice(ix, 1);
 				keyPress(e.keyCode);
 			}
-	    	e.preventDefault();
+	    	//e.preventDefault();
 		};
 
 		window.onmousedown = function(e) {
@@ -4424,7 +5351,7 @@
 			} else if (e.button == 2) {
 				rightMouseDown = true;
 			}
-			e.preventDefault();
+			//e.preventDefault();
 		}
 		window.onmouseup = function(e) {
 			if (e.button == 0) {
@@ -4432,7 +5359,7 @@
 			} else if (e.button == 2) {
 				rightMouseDown = false;
 			}
-			e.preventDefault();
+			//e.preventDefault();
 		}
 		window.oncontextmenu = function(e) {
 			e.preventDefault();
@@ -4440,7 +5367,7 @@
 
 		window.onmousemove = function(e) {
 			mousePos = [e.clientX - screenWidth/2, e.clientY - screenHeight/2];
-			e.preventDefault();
+			//e.preventDefault();
 		}
 	}
 </script>
