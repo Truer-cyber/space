@@ -4929,6 +4929,14 @@
 		drawTextBlock(context,x,y,w-10,(2*h/3-menuFontSize*2),text,menuFontSize);
 	}
 
+	function getShapeRadius(shape) {
+		let radius = 0;
+		shape.forEach(s=>{
+			radius = Math.max(get_mag(s), radius);
+		});
+		return radius;
+	}
+
 	function displayBuyShip(context,x,w,y,h,c) {
 		// Ship name, image, description
 		context.strokeStyle = context.fillStyle = c;
@@ -4943,22 +4951,23 @@
 		context.stroke();
 		// Image
 		if (isdef(o.ship)) {
+			let sizeAdj = Math.min(1, (h/8) / getShapeRadius(o.ship.shape));
 			var adj = [x+w/2,y+h/6];
-			context.moveTo(...o.ship.shape[0]);
+			context.moveTo(...pt_add(pt_mul(o.ship.shape[0], sizeAdj), adj));
 			context.beginPath();
 			o.ship.shape.forEach(p =>{
-				context.lineTo(...pt_add(p, adj));
+				context.lineTo(...pt_add(pt_mul(p, sizeAdj), adj));
 			});
 			context.stroke();
 			// Display weapon slots
 			o.ship.weaponSlots.forEach(s =>{
-				var loc = pt_add(s.location, adj);
+				var loc = pt_add(pt_mul(s.location, sizeAdj), adj);
 				context.strokeStyle = '#FF0000AA';
 				context.beginPath();
-				context.arc(loc[0],loc[1], (s.secondary)?5:2, 0, 2*Math.PI);
+				context.arc(loc[0],loc[1], ((s.secondary)?5:2)*sizeAdj, 0, 2*Math.PI);
 				context.stroke();
 				context.beginPath();
-				context.arc(loc[0], loc[1], 10, s.angle - s.arc, s.angle + s.arc);
+				context.arc(loc[0], loc[1], 10*sizeAdj, s.angle - s.arc, s.angle + s.arc);
 				context.stroke();
 			});
 			context.strokeStyle = c;
@@ -4993,16 +5002,18 @@
 		context.lineTo(x+w,y);
 		context.stroke();
 		// Image
-		var adj = [x+w/2,y+h/6];
-		context.moveTo(...player.shape[0]);
+		let sizeAdj = Math.min(1, (h/8) / player.radius);
+		let adj = [x+w/2,y+h/6];
+		context.moveTo(...pt_add(pt_mul(player.shape[0], sizeAdj), adj));
 		context.beginPath();
 		player.shape.forEach(p =>{
-			context.lineTo(...pt_add(p, adj));
+			context.lineTo(...pt_add(pt_mul(p, sizeAdj), adj));
 		});
 		context.stroke();
 		// Display weapon slots
+		
 		player.weaponSlots.forEach(s =>{
-			var loc = pt_add(s.location, adj);
+			var loc = pt_add(pt_mul(s.location, sizeAdj), adj);
 			context.strokeStyle = (s.weapon==false)?'#FF000055':'#FF0000AA';
 			context.beginPath();
 			context.arc(loc[0],loc[1], (s.secondary)?5:2, 0, 2*Math.PI);
