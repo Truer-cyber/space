@@ -2328,7 +2328,11 @@
 			} else {
 				goalTilt=(turn==0)?0:this.maxTilt*turn;
 			}
-			this.tilt = .96*this.tilt+.04*goalTilt;
+			if (Math.sign(this.tilt)*-1==Math.sign(goalTilt) && Math.abs(this.tilt)>.1) {
+				this.tilt = this.tilt + Math.sign(this.tilt)*-.04*this.maxTilt;
+			} else {
+				this.tilt = .96*this.tilt+.04*goalTilt;
+			}
 			// Thrust control
 			// Strafing
 			if (this.strafe && strafe && this.strafeFuel>=1) {
@@ -2632,7 +2636,12 @@
 			this.recoil=wd.recoil||0;
 			//
 			this.clipSize = isdef(wd.clipSize)?wd.clipSize:1;
-			this.reloadRate = isdef(wd.reloadRate)?wd.reloadRate:this.rof;
+			if (isdef(wd.reloadRate)) {
+				this.reloadRate = wd.reloadRate
+			} else {
+				this.reloadRate = this.rof;
+				this.rof = 0;
+			}
 			this.incReload = isdef(wd.incReload)?wd.incReload:false;
 			this.firingResets = isdef(wd.firingResets)?wd.firingResets:true;
 			this.clipAmmo = this.clipSize; // Initialize the ammount of ammo in the clip.
@@ -4012,19 +4021,6 @@
 		setPlayerShip(objs.factions['Player'].shipTable[0]);
 		objs.player = player;
 		
-		/*
-		let sf = 'Grey Republic';
-		objs.factions[sf].armShip(player);
-		player.regen=100;
-		player.weaponSlots[1].weapon.rof=1;
-		player.weaponSlots[1].arc = Math.PI*2;
-		player.weaponSlots[1].weapon.reloadRate=1;
-		player.weaponSlots[1].weapon.incReload=false;
-		player.weaponSlots[1].weapon.projectile.damage = 1000;
-		player.max_vel=7;
-
-		player.faction.setRelationship(objs.factions['Golden Empire'],-1);
-		//*/
 		objs.ships.push(player);
 		// Update the universe
 		updateUniverse(objs);
@@ -4368,11 +4364,37 @@
 		let hbh = 5;
 		let sfw = 5;
 		//
+		let tracerMaxOpac = 70;
+		let tracerMinOpac = 32;
+		//
 		let base = [screenWidth-offsetX, offsetY];
 		let temp = 0;
 		let pm = get_mag(player.location);
 		let c = ((pm>player.system.killRadius||pm<player.system.sunKillRadius+100) && Math.random()>0.5)?'#FF0000':player.faction.color;
 		context.fillStyle = c+opacity;
+		// Weapon tracking
+		if (player.altitude==100 && player.health>0 && (!player.jumpTarget || keysDown.indexOf(E_KEY)==-1)) {
+			context.setLineDash([2,7]);
+			player.weaponSlots.forEach(s=>{
+				if (s.weapon) {
+					let w = s.weapon;
+					let opacity = (w.clipSize==1 && w.reloadRate<100)?toHex(tracerMaxOpac):(
+						(w.clipAmmo)?toHex(Math.round(tracerMinOpac+tracerMaxOpac*w.clipAmmo/w.clipSize)):toHex(tracerMinOpac)
+					);
+					context.strokeStyle = '#FF0000'+opacity;
+					let loc = [s.location[0], s.location[1]*Math.cos(player.tilt)];
+					loc = pt_addAng(loc, player.angle);
+					let ang = ang_turnTowards(player.angle+s.angle, get_ang(pt_sub(mousePos, loc)), s.arc)[0];
+					loc = pt_add([screenWidth/2, screenHeight/2], loc);
+					let endpoint = pt_add(loc, pt(((screenWidth/2)**2 + (screenHeight/2)**2)**.5, ang));
+					context.beginPath();
+					context.moveTo(...loc);
+					context.lineTo(...endpoint);
+					context.stroke();
+				}
+			});
+			context.setLineDash([]);
+		}
 		// Weapon displays
 		player.weaponSlots.forEach(s=>{
 			if (s.weapon) {
